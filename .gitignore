@@ -55,7 +55,8 @@ pnpm-debug.log*
 *.swo
 
 # Docker / Storage
-/data/
+/data/*
+!/data/financials/
 minio-data/
 postgres-data/
 redis-data/
