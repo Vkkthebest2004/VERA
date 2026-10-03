@@ -24,6 +24,7 @@ from ..domain.evidence_normalization import EvidenceNormalizationService
 from ..domain.source_credibility import SourceCredibilityEvaluator
 from ..infrastructure.search_provider import SearchProvider, AuthoritativeFinancialSearchProvider
 from ..infrastructure.searxng_provider import SearXNGSearchProvider
+from ..infrastructure.google_search_provider import GoogleAndMultiSearchProvider
 from ..infrastructure.crawler_service import CrawlerService
 from ..infrastructure.document_processor import DocumentProcessor
 from .gemma_simplification_pipeline import GemmaSimplificationPipeline
@@ -33,7 +34,7 @@ class InvestigationService:
     """Master research orchestrator for VERA's automated web evidence pipeline.
     
     Executes the 7-stage Perplexity-style verification architecture:
-    SearXNG → Crawl4AI → source extraction → evidence normalization → source credibility → claim verification → citation/provenance.
+    Google / SearXNG → Crawl4AI → source extraction → evidence normalization → source credibility → claim verification → citation/provenance.
     """
 
     def __init__(
@@ -52,7 +53,7 @@ class InvestigationService:
         self.normalization_service = EvidenceNormalizationService()
         self.credibility_evaluator = SourceCredibilityEvaluator()
 
-        self.search_provider = search_provider or SearXNGSearchProvider()
+        self.search_provider = search_provider or GoogleAndMultiSearchProvider()
         self.crawler_service = crawler_service or CrawlerService()
         self.document_processor = document_processor or DocumentProcessor()
         self.gemma_pipeline = GemmaSimplificationPipeline()

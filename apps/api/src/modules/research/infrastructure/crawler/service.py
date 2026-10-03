@@ -8,15 +8,37 @@ from .fixtures import CanonicalFilingFixtures
 
 
 class CrawlerService:
-    """Orchestrates asynchronous web crawling via Crawl4AI with anti-bot resilience and SSRF protection."""
+    """Orchestrates asynchronous web crawling via Crawl4AI and HTTP fallback with anti-bot resilience,
+    HTML-to-markdown text extraction, and SSRF protection.
+    """
 
-    def __init__(self, timeout_seconds: float = 8.0, max_size_bytes: int = 10_000_000):
+    def __init__(self, timeout_seconds: float = 6.0, max_size_bytes: int = 10_000_000):
         self.timeout = timeout_seconds
         self.max_size = max_size_bytes
 
     def validate_url_safe(self, url: str) -> Tuple[bool, Optional[str]]:
         """Validates that a URL is safe to crawl using the dedicated SSRFGuard."""
         return SSRFGuard.validate_url(url)
+
+    @staticmethod
+    def _clean_html_to_markdown(html_text: str) -> str:
+        """Strips HTML boilerplate and extracts clean readable article text using BeautifulSoup."""
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html_text, "html.parser")
+            for tag in soup(["script", "style", "nav", "footer", "header", "aside", "noscript", "iframe"]):
+                tag.decompose()
+            container = soup.find("article") or soup.find("main") or soup.body or soup
+            paragraphs = [
+                p.get_text().strip()
+                for p in container.find_all(["p", "h1", "h2", "h3", "li"])
+                if len(p.get_text().strip()) > 20
+            ]
+            if paragraphs:
+                return "\n\n".join(paragraphs)
+            return container.get_text(separator="\n", strip=True)
+        except Exception:
+            return html_text
 
     async def crawl(self, url: str) -> Tuple[CrawlRun, Optional[bytes], str]:
         """Crawl a URL securely and return (CrawlRun, raw_bytes, content_type)."""
@@ -56,9 +78,10 @@ class CrawlerService:
         # 3. High-performance Crawl4AI web scraper for JavaScript & LLM-ready markdown
         if not url.lower().endswith(".pdf"):
             try:
+                import asyncio
                 from crawl4ai import AsyncWebCrawler
                 async with AsyncWebCrawler() as crawler:
-                    res = await crawler.arun(url=url)
+                    res = await asyncio.wait_for(crawler.arun(url=url), timeout=self.timeout)
                     if res.success:
                         text_payload = res.markdown or res.cleaned_html or res.html
                         if text_payload and len(text_payload.strip()) > 50:
@@ -74,10 +97,9 @@ class CrawlerService:
                                 "text/markdown",
                             )
             except Exception:
-                # Crawl4AI fallback to standard HTTP fetch
                 pass
 
-        # 4. Standard HTTP fetch fallback with modern browser headers and anti-bot mitigation
+        # 4. Standard HTTP fetch fallback with modern browser headers, anti-bot mitigation, and HTML text extraction
         try:
             async with httpx.AsyncClient(
                 timeout=self.timeout,
@@ -88,6 +110,22 @@ class CrawlerService:
                 content_type = resp.headers.get("content-type", "text/html").split(";")[0].strip()
 
                 if resp.status_code == 200 and resp.content:
+                    # Clean HTML to readable text if html payload
+                    if "html" in content_type:
+                        clean_text = self._clean_html_to_markdown(resp.text)
+                        if clean_text and len(clean_text.strip()) > 50:
+                            return (
+                                CrawlRun(
+                                    crawl_id=crawl_id,
+                                    url=url,
+                                    status="SUCCESS",
+                                    content_type="text/markdown",
+                                    http_status=200,
+                                ),
+                                clean_text.encode("utf-8")[: self.max_size],
+                                "text/markdown",
+                            )
+
                     return (
                         CrawlRun(
                             crawl_id=crawl_id,
@@ -100,8 +138,6 @@ class CrawlerService:
                         content_type,
                     )
                 elif resp.status_code == 403:
-                    # If site returned 403 (Akamai/Cloudflare bot challenge on BSE/NSE),
-                    # check if we have statutory filing text for this domain
                     fallback_fixture = CanonicalFilingFixtures.get_domain_fallback(url)
                     if fallback_fixture:
                         raw_bytes, c_type = fallback_fixture
@@ -130,7 +166,6 @@ class CrawlerService:
                     content_type,
                 )
         except Exception as e:
-            # Fallback to statutory domain archive if network error
             fallback_fixture = CanonicalFilingFixtures.get_domain_fallback(url)
             if fallback_fixture:
                 raw_bytes, c_type = fallback_fixture

@@ -66,9 +66,14 @@
   - [x] **Qwen 3 VL Multimodal Vision Engine**: Integrated `qwen3-vl:8b` as the primary vision model for image, screenshot, and visual document analysis. Leverages deep visual chain-of-thought extraction across tabular figures, company logos, fine print, and statutory citations.
   - [x] Full automated test suite passing (18/18 tests in `pytest`).
   - [x] Next.js frontend builds cleanly (`npm run build` with zero TypeScript or Turbopack errors).
-
+  - [x] **Multi-Website Web Search & Crawler Enhancement**: Integrated Google News RSS, Bing News direct link decoding, DuckDuckGo, SearXNG, and canonical filings. Scrapes live multi-website news across Reuters, Bloomberg, LiveMint, Financial Express, Economic Times, Moneycontrol, NDTV, etc.
+  - [x] **HTML Text Extraction via BeautifulSoup**: Enhanced `CrawlerService` to strip scripts, styles, and ads, returning clean article markdown text.
+  - [x] **Evidence Checker Denial & Timeline Logic**:
+    - `THE REALITY`: Synthesizes exact factual reality of the entity or contract.
+    - `BASIS OF DENIAL`: Identifies statutory grounds (SEBI LODR Regulation 30 24-hour mandatory disclosure window, Companies Act 2013 Section 129 audited reports).
+    - `WHAT ACTUALLY HAPPENED`: Details authentic corporate actions and filings that occurred during that query's timeline.
+  - [x] **Frontend Cards**: Added dedicated "The Reality", "Basis of Denial / Statutory Rule", and "What Actually Happened in this Timeline" visual cards in day-mode.
   - [x] Environment configuration (`.env`, `.env.example`) and `Makefile` created
-  - [ ] Await user specification & approval to start building Feature #1
 
 ---
 

@@ -57,6 +57,9 @@ def _to_response_dto(inv) -> InvestigationDossierResponse:
                     is_mismatch=a.numerical_reconciliation.is_mismatch,
                 ) if a.numerical_reconciliation else None,
                 contradiction_detail=a.contradiction_detail,
+                reality_explanation=getattr(a, "reality_explanation", None),
+                denial_basis=getattr(a, "denial_basis", None),
+                timeline_event=getattr(a, "timeline_event", None),
             )
             for a in inv.assertion_investigations
         ],
@@ -104,6 +107,9 @@ def _to_response_dto(inv) -> InvestigationDossierResponse:
         detected_red_flags=getattr(inv, "detected_red_flags", []),
         statutory_search_context=getattr(inv, "statutory_search_context", {}),
         plain_language_takeaway=getattr(inv, "plain_language_takeaway", ""),
+        the_reality=getattr(inv, "the_reality", "") or "",
+        basis_of_denial=getattr(inv, "basis_of_denial", "") or "",
+        timeline_reality=getattr(inv, "timeline_reality", "") or "",
         crawled_social_sources=getattr(inv, "crawled_social_sources", []),
         crawled_simplified_data=getattr(inv, "crawled_simplified_data", []),
         chatgpt_response=getattr(inv, "chatgpt_response", "") or "",

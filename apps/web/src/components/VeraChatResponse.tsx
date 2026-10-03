@@ -19,6 +19,9 @@ import {
   FileText,
   X,
   Compass,
+  Scale,
+  History,
+  Info,
 } from 'lucide-react';
 
 interface VeraChatResponseProps {
@@ -45,6 +48,9 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
   const parseResponse = () => {
     let verdict = '';
     let claim = '';
+    let theReality = '';
+    let basisOfDenial = '';
+    let timelineReality = '';
     let why = '';
     let evidence: string[] = [];
     let veraSays = '';
@@ -60,6 +66,12 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
           currentSection = 'VERDICT';
         } else if (trimmed.startsWith('**CLAIM:**')) {
           currentSection = 'CLAIM';
+        } else if (trimmed.startsWith('**THE REALITY:**')) {
+          currentSection = 'THE_REALITY';
+        } else if (trimmed.startsWith('**BASIS OF DENIAL:**')) {
+          currentSection = 'BASIS_OF_DENIAL';
+        } else if (trimmed.startsWith('**WHAT ACTUALLY HAPPENED:**') || trimmed.startsWith('**TIMELINE REALITY:**')) {
+          currentSection = 'TIMELINE_REALITY';
         } else if (trimmed.startsWith('**WHY:**')) {
           currentSection = 'WHY';
         } else if (trimmed.startsWith('**EVIDENCE:**')) {
@@ -69,6 +81,12 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
         } else if (trimmed) {
           if (currentSection === 'CLAIM') {
             claim += (claim ? ' ' : '') + trimmed.replace(/^["“]|["”]$/g, '');
+          } else if (currentSection === 'THE_REALITY') {
+            theReality += (theReality ? ' ' : '') + trimmed;
+          } else if (currentSection === 'BASIS_OF_DENIAL') {
+            basisOfDenial += (basisOfDenial ? ' ' : '') + trimmed;
+          } else if (currentSection === 'TIMELINE_REALITY') {
+            timelineReality += (timelineReality ? ' ' : '') + trimmed;
           } else if (currentSection === 'WHY') {
             why += (why ? ' ' : '') + trimmed;
           } else if (currentSection === 'EVIDENCE' && (trimmed.startsWith('*') || trimmed.startsWith('-'))) {
@@ -91,6 +109,18 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
     if (!claim) {
       claim = investigation.claim_summary || userPrompt || 'Submitted financial claim';
       claim = claim.replace(/^["“]|["”]$/g, '');
+    }
+
+    if (!theReality) {
+      theReality = investigation.the_reality || '';
+    }
+
+    if (!basisOfDenial) {
+      basisOfDenial = investigation.basis_of_denial || '';
+    }
+
+    if (!timelineReality) {
+      timelineReality = investigation.timeline_reality || '';
     }
 
     if (!why) {
@@ -129,13 +159,18 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
       }
     }
 
-    return { verdict, claim, why, evidence, veraSays };
+    return { verdict, claim, theReality, basisOfDenial, timelineReality, why, evidence, veraSays };
   };
 
-  const { verdict, claim, why, evidence, veraSays } = parseResponse();
+  const { verdict, claim, theReality, basisOfDenial, timelineReality, why, evidence, veraSays } = parseResponse();
 
   const handleCopy = () => {
-    const textToCopy = `VERDICT: ${verdict.replace(/\*\*/g, '')}\n\nCLAIM:\n"${claim}"\n\nWHY:\n${why}\n\nEVIDENCE:\n${evidence.map((e) => `* ${e}`).join('\n')}\n\nVERA SAYS:\n${veraSays}`;
+    let textToCopy = `VERDICT: ${verdict.replace(/\*\*/g, '')}\n\nCLAIM:\n"${claim}"\n\n`;
+    if (theReality) textToCopy += `THE REALITY:\n${theReality}\n\n`;
+    if (basisOfDenial) textToCopy += `BASIS OF DENIAL:\n${basisOfDenial}\n\n`;
+    if (timelineReality) textToCopy += `WHAT ACTUALLY HAPPENED:\n${timelineReality}\n\n`;
+    textToCopy += `WHY:\n${why}\n\nEVIDENCE:\n${evidence.map((e) => `* ${e}`).join('\n')}\n\nVERA SAYS:\n${veraSays}`;
+    
     navigator.clipboard.writeText(textToCopy);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -189,15 +224,15 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
         {
           step: 1,
           name: 'SEARXNG_SEARCH',
-          label: 'SearXNG MetaSearch Aggregation',
-          detail: 'Aggregated regulatory announcements across BSE, NSE, SEBI & global registries.',
+          label: 'Google & Multi-Engine MetaSearch',
+          detail: 'Aggregated regulatory announcements across BSE, NSE, SEBI, Google News & global registries.',
           status: 'COMPLETED',
         },
         {
           step: 2,
           name: 'CRAWL4AI_SCRAPING',
-          label: 'Crawl4AI Asynchronous Web Scraper',
-          detail: 'Parsed statutory exchange filings into LLM-ready markdown & structured DOM trees.',
+          label: 'Crawl4AI & Live Web Scraper',
+          detail: 'Parsed statutory exchange filings & multi-website articles into clean LLM-ready markdown.',
           status: 'COMPLETED',
         },
         {
@@ -267,11 +302,11 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
             ))}
           </div>
 
-          {/* Collapsible Perplexity Research Trace (SearXNG → Crawl4AI) */}
+          {/* Collapsible Perplexity Research Trace (Google/SearXNG → Crawl4AI) */}
           {showSteps && (
             <div className="p-3.5 rounded-xl bg-white border border-neutral-200 space-y-2 animate-in fade-in duration-200 shadow-2xs">
               <div className="text-[10px] font-mono text-neutral-900 uppercase tracking-wider font-bold">
-                Verification Pipeline: SearXNG → Crawl4AI → Normalization → Credibility → Verification
+                Verification Pipeline: Search Aggregator → Web Crawler → Normalization → Credibility → Verification
               </div>
               <div className="space-y-1.5 pt-1">
                 {searchSteps.map((s) => (
@@ -289,7 +324,7 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
         </div>
       )}
 
-      {/* 🤖 VERA DECISION-FIRST CARD (Under 100 Words) */}
+      {/* 🤖 VERA DECISION-FIRST CARD */}
       <div className={`rounded-2xl border ${theme.cardBorder} bg-white shadow-sm p-6 sm:p-7 space-y-5`}>
         {/* Top Header */}
         <div className="flex items-center justify-between border-b border-neutral-100 pb-3.5">
@@ -339,7 +374,46 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
           </p>
         </div>
 
-        {/* 3. WHY */}
+        {/* 3. THE REALITY */}
+        {theReality && (
+          <div className="space-y-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-700 font-bold flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 text-neutral-800" />
+              <span>The Reality</span>
+            </div>
+            <div className="text-xs sm:text-sm font-normal text-neutral-950 bg-neutral-50 p-3 rounded-xl border border-neutral-200 leading-relaxed">
+              {theReality}
+            </div>
+          </div>
+        )}
+
+        {/* 4. BASIS OF DENIAL / REGULATORY STANDARD */}
+        {basisOfDenial && (
+          <div className="space-y-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-700 font-bold flex items-center gap-1.5">
+              <Scale className="w-3.5 h-3.5 text-neutral-800" />
+              <span>Basis of Denial / Statutory Rule</span>
+            </div>
+            <div className="text-xs sm:text-sm text-neutral-900 bg-neutral-50 p-3 rounded-xl border border-neutral-200 leading-relaxed font-normal">
+              {basisOfDenial}
+            </div>
+          </div>
+        )}
+
+        {/* 5. WHAT ACTUALLY HAPPENED IN THIS TIMELINE */}
+        {timelineReality && (
+          <div className="space-y-1">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-700 font-bold flex items-center gap-1.5">
+              <History className="w-3.5 h-3.5 text-neutral-800" />
+              <span>What Actually Happened in this Timeline</span>
+            </div>
+            <div className="text-xs sm:text-sm text-neutral-800 bg-neutral-50 p-3 rounded-xl border border-neutral-200 leading-relaxed font-normal">
+              {timelineReality}
+            </div>
+          </div>
+        )}
+
+        {/* 6. WHY */}
         <div className="space-y-1">
           <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-semibold">Why</div>
           <p className="text-sm text-neutral-800 leading-relaxed font-normal">
@@ -347,7 +421,7 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
           </p>
         </div>
 
-        {/* 4. EVIDENCE with Clickable Inline Citations */}
+        {/* 7. EVIDENCE with Clickable Inline Citations */}
         <div className="space-y-2">
           <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-500 font-semibold">Evidence</div>
           <div className="bg-neutral-50 rounded-xl p-3.5 border border-neutral-200 space-y-1.5">
@@ -371,7 +445,7 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
           </div>
         </div>
 
-        {/* 5. VERA SAYS */}
+        {/* 8. VERA SAYS */}
         <div className="pt-2">
           <div className="p-3.5 rounded-xl bg-neutral-950 border border-neutral-900 flex items-start gap-2.5 text-white shadow-sm">
             <span className="text-sm">⚠️</span>

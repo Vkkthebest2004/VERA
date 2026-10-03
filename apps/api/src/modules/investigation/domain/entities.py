@@ -63,6 +63,9 @@ class AssertionInvestigation:
     evidence_passages: List[EvidencePassage] = field(default_factory=list)
     numerical_reconciliation: Optional[NumericalReconciliation] = None
     contradiction_detail: Optional[str] = None
+    reality_explanation: Optional[str] = None
+    denial_basis: Optional[str] = None
+    timeline_event: Optional[str] = None
 
 
 @dataclass
@@ -94,6 +97,9 @@ class InvestigationDossier:
     detected_red_flags: List[dict] = field(default_factory=list)
     statutory_search_context: dict = field(default_factory=dict)
     plain_language_takeaway: str = ""
+    the_reality: str = ""
+    basis_of_denial: str = ""
+    timeline_reality: str = ""
     crawled_social_sources: List[dict] = field(default_factory=list)
     crawled_simplified_data: List[dict] = field(default_factory=list)
     chatgpt_response: str = ""

@@ -44,6 +44,9 @@ export interface AssertionInvestigation {
   evidence_passages: EvidencePassage[];
   numerical_reconciliation?: NumericalReconciliation | null;
   contradiction_detail?: string | null;
+  reality_explanation?: string | null;
+  denial_basis?: string | null;
+  timeline_event?: string | null;
 }
 
 export interface InvestorProtectionGuidance {
@@ -117,6 +120,9 @@ export interface InvestigationDossier {
     absence_of_evidence_notice?: string;
   };
   plain_language_takeaway?: string;
+  the_reality?: string;
+  basis_of_denial?: string;
+  timeline_reality?: string;
   crawled_social_sources?: Array<{
     platform: string;
     status: string;
