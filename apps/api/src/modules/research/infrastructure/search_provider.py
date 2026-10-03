@@ -93,8 +93,12 @@ class AuthoritativeFinancialSearchProvider(SearchProvider):
 
         rank = 1
         for item in self._index:
-            primary_entity = item.get("keywords", [])[0].lower() if item.get("keywords") else ""
-            if primary_entity and primary_entity not in ("sebi", "unsolicited", "general"):
+            kws = [k.lower() for k in item.get("keywords", [])]
+            primary_entity = kws[0] if kws else ""
+            if primary_entity in ("sebi", "unsolicited", "general"):
+                if not any(k in lower_q for k in ["sebi", "telegram", "whatsapp", "pump", "dump", "guaranteed", "circuit", "unsolicited", "tip", "operator"]):
+                    continue
+            elif primary_entity:
                 if primary_entity not in lower_q:
                     continue
 
