@@ -1,0 +1,42 @@
+# SearXNG configuration for VERA Automated Financial Verification
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "VERA SearXNG MetaSearch Engine"
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  secret_key: "vera_searxng_production_secret_key_random_seed"
+  limiter: false
+  image_proxy: false
+
+ui:
+  static_use_hash: true
+
+engines:
+  - name: google
+    engine: google
+    shortcut: g
+    disabled: false
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    disabled: false
+  - name: bing
+    engine: bing
+    shortcut: b
+    disabled: false
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: w
+    disabled: false
