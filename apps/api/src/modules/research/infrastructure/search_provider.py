@@ -93,6 +93,11 @@ class AuthoritativeFinancialSearchProvider(SearchProvider):
 
         rank = 1
         for item in self._index:
+            primary_entity = item.get("keywords", [])[0].lower() if item.get("keywords") else ""
+            if primary_entity and primary_entity not in ("sebi", "unsolicited", "general"):
+                if primary_entity not in lower_q:
+                    continue
+
             score = 0
             for term in terms:
                 if term in item["title"].lower():

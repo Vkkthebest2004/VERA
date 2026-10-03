@@ -301,90 +301,14 @@ class EvidenceInvestigationService:
 
         # Compare with the top retrieved passage
         top_doc = passages[0]
-        quote_lower = top_doc.exact_quote.lower()
-        stmt_lower = assertion.statement.lower()
+        quote_text = top_doc.exact_quote
+        quote_lower = quote_text.lower()
+        stmt_text = assertion.statement
+        stmt_lower = stmt_text.lower()
+        content_text = dossier.raw_verbatim_text or dossier.original_content
 
-        reconciliation = None
-        contradiction = None
-
-        # Check for numerical discrepancy
-        if "12,500" in dossier.original_content and "1,250" in top_doc.exact_quote:
-            top_doc.relationship = "PARTIAL_MATCH"
-            reconciliation = NumericalReconciliation(
-                metric_name="Order / Deal Value",
-                claimed_value="₹12,500 Crore",
-                official_value="₹1,250 Crore",
-                discrepancy_factor="10x Exaggeration (Inflated by 1,000%)",
-                is_mismatch=True,
-            )
-            return (
-                VerificationStatus.PARTIALLY_SUPPORTED,
-                "The solar contract exists, but the claimed value of ₹12,500 Cr is inflated by 10x compared to the official filing of ₹1,250 Cr.",
-                reconciliation,
-                "Official BSE/NSE filing confirms the project, but the social post exaggerated the contract size by 10 times to induce FOMO.",
-                "The solar project was awarded, but official exchange filings confirm the contract value is ₹1,250 Crore, NOT ₹12,500 Crore.",
-                "SEBI LODR Regulation 30 statutory disclosure: The claimed ₹12,500 Crore represents a 10x (1,000%) exaggeration over the signed ₹1,250 Crore contract filed on BSE/NSE.",
-                "On October 12, 2023, the company submitted an official BSE Regulation 30 disclosure confirming a 300 MW solar plant contract for ₹1,250 Crore. No ₹12,500 Crore transaction was ever executed.",
-            )
-
-        elif "850" in stmt_lower and "203" in top_doc.exact_quote:
-            top_doc.relationship = "CONTRADICTS"
-            reconciliation = NumericalReconciliation(
-                metric_name="Quarterly Net Profit / Growth",
-                claimed_value="₹850 Cr / +300% YoY",
-                official_value="₹203 Cr PAT / +160% YoY",
-                discrepancy_factor="Substantial Discrepancy",
-                is_mismatch=True,
-            )
-            return (
-                VerificationStatus.CONTRADICTED,
-                "Official Audited Financial Statements contradict the claim: Actual PAT is ₹203 Cr (160% YoY), not ₹850 Cr or 300% YoY.",
-                reconciliation,
-                "Audited quarterly filing refutes the claimed metrics.",
-                "Audited financial statements show the company achieved Net Profit (PAT) of ₹203 Crore (+160% YoY), directly disproving the claimed ₹850 Crore (+300% YoY).",
-                "Companies Act 2013 (Section 129) & SEBI LODR Regulation 33 audited quarterly financial statements. Certified auditor reports directly refute the viral social media numbers.",
-                "During the quarterly earnings disclosure, the company's Board of Directors submitted audited financial results to BSE and NSE confirming PAT of ₹203 Crore. No restatement or ₹850 Crore profit was ever reported.",
-            )
-
-        elif "51%" in stmt_lower and "350" in stmt_lower:
-            top_doc.relationship = "SUPPORTS"
-            reconciliation = NumericalReconciliation(
-                metric_name="Acquisition Stake & Value",
-                claimed_value="51% stake for ₹350 Crore",
-                official_value="51% stake for ₹350 Crore",
-                discrepancy_factor="Exact Match (100% Verified)",
-                is_mismatch=False,
-            )
-            return (
-                VerificationStatus.SUPPORTED,
-                "Fully substantiated by official BSE Regulation 30 corporate announcement dated September 6, 2023.",
-                reconciliation,
-                None,
-                "The company acquired a 51% stake for ₹350 Crore, exactly as reported.",
-                "N/A — Claim is fully substantiated by statutory filings under SEBI LODR Regulation 30.",
-                "On September 6, 2023, the company officially notified the BSE Corporate Announcements portal of the binding 51% acquisition agreement for ₹350 Crore.",
-            )
-
-        elif "24,000" in stmt_lower or "180" in stmt_lower:
-            top_doc.relationship = "SUPPORTS"
-            reconciliation = NumericalReconciliation(
-                metric_name="Revenue & Margin",
-                claimed_value="₹24,000 Cr & 180 bps",
-                official_value="₹24,000 Cr & 180 bps margin expansion",
-                discrepancy_factor="Exact Match",
-                is_mismatch=False,
-            )
-            return (
-                VerificationStatus.SUPPORTED,
-                "Confirmed by Audited Quarterly Financial Results filed with stock exchanges.",
-                reconciliation,
-                None,
-                "Revenue of ₹24,000 Crore and 180 bps margin expansion are confirmed by audited financial statements.",
-                "N/A — Claim is fully substantiated by audited financial disclosures.",
-                "On the audited earnings filing date, the company formally submitted its quarterly financial statements confirming ₹24,000 Cr revenue to stock exchanges.",
-            )
-
-        elif top_doc.filing_type == "SEBI_CIRCULAR":
+        # Handle SEBI warning circulars
+        if top_doc.filing_type == "SEBI_CIRCULAR" or "SEBI Caution" in top_doc.document_title:
             top_doc.relationship = "CONTEXT"
             return (
                 VerificationStatus.INSUFFICIENT_EVIDENCE,
@@ -396,15 +320,210 @@ class EvidenceInvestigationService:
                 "During this period, no corporate disclosure was made by the company; SEBI issued public advisories warning against unregistered tip syndicates.",
             )
 
-        # Default fallback
+        # -------------------------------------------------------------
+        # DYNAMIC NUMERICAL & PERCENTAGE EXTRACTION ENGINE
+        # -------------------------------------------------------------
+        from ...research.domain.numerical_engine import NumericalReasoningEngine
+        engine = NumericalReasoningEngine()
+
+        def extract_amounts(text: str) -> List[str]:
+            m = re.findall(r"([\$₹]?\s*[\d,]+(?:\.\d+)?\s*(?:cr(?:ore)?s?|crores?|lakh?s?|lacs?|billion|bn|million|mn)\b)", text, re.IGNORECASE)
+            if not m:
+                m = re.findall(r"([\$₹]\s*[\d,]+(?:\.\d+)?)", text)
+            return [x.strip() for x in m]
+
+        def extract_pcts(text: str) -> List[float]:
+            matches = re.findall(r"(\d+(?:\.\d+)?)\s*%", text)
+            return [float(x) for x in matches]
+
+        def extract_bps(text: str) -> List[float]:
+            matches = re.findall(r"(\d+(?:\.\d+)?)\s*(?:bps|basis\s*points)\b", text, re.IGNORECASE)
+            return [float(x) for x in matches]
+
+        claim_amounts = extract_amounts(stmt_text) or extract_amounts(content_text)
+        passage_amounts = extract_amounts(quote_text)
+
+        claim_pcts = extract_pcts(stmt_text) or extract_pcts(content_text)
+        passage_pcts = extract_pcts(quote_text)
+
+        claim_bps = extract_bps(stmt_text) or extract_bps(content_text)
+        passage_bps = extract_bps(quote_text)
+
+        reconciliation = None
+        contradiction = None
+
+        # 1. Basis points comparison e.g. 180 bps margin expansion
+        if claim_bps and passage_bps:
+            if abs(claim_bps[0] - passage_bps[0]) < 1.0:
+                top_doc.relationship = "SUPPORTS"
+                claimed_v = f"{claim_amounts[0]} & {int(claim_bps[0])} bps" if claim_amounts else f"{int(claim_bps[0])} bps"
+                official_v = f"{passage_amounts[0]} & {int(passage_bps[0])} bps margin expansion" if passage_amounts else f"{int(passage_bps[0])} bps"
+                reconciliation = NumericalReconciliation(
+                    metric_name="Revenue & Margin",
+                    claimed_value=claimed_v,
+                    official_value=official_v,
+                    discrepancy_factor="Exact Match",
+                    is_mismatch=False,
+                )
+                return (
+                    VerificationStatus.SUPPORTED,
+                    "Confirmed by Audited Quarterly Financial Results filed with stock exchanges.",
+                    reconciliation,
+                    None,
+                    f"Revenue and margin expansion of {official_v} are confirmed by audited financial statements.",
+                    "N/A — Claim is fully substantiated by audited financial disclosures.",
+                    f"On the audited earnings filing date, the company formally submitted its quarterly financial statements confirming {official_v}.",
+                )
+
+        # 2. Percentage stake or growth comparison
+        if claim_pcts and passage_pcts:
+            c_pct = claim_pcts[0]
+            p_pct = passage_pcts[0]
+
+            if abs(c_pct - p_pct) < 0.5:
+                amt_str = f" for {passage_amounts[0]}" if passage_amounts else ""
+                claim_amt_str = f" for {claim_amounts[0]}" if claim_amounts else ""
+                top_doc.relationship = "SUPPORTS"
+                reconciliation = NumericalReconciliation(
+                    metric_name="Acquisition Stake & Value",
+                    claimed_value=f"{int(c_pct)}% stake{claim_amt_str}",
+                    official_value=f"{int(p_pct)}% stake{amt_str}",
+                    discrepancy_factor="Exact Match (100% Verified)",
+                    is_mismatch=False,
+                )
+                return (
+                    VerificationStatus.SUPPORTED,
+                    f"Fully substantiated by official BSE Regulation 30 corporate announcement dated {top_doc.filing_date}.",
+                    reconciliation,
+                    None,
+                    f"The company acquired a {int(p_pct)}% stake{amt_str}, exactly as reported.",
+                    "N/A — Claim is fully substantiated by statutory filings under SEBI LODR Regulation 30.",
+                    f"On {top_doc.filing_date}, the company officially notified the stock exchanges of the binding agreement.",
+                )
+            elif c_pct > p_pct * 1.3:
+                top_doc.relationship = "CONTRADICTS"
+                claimed_str = f"{claim_amounts[0]} / +{int(c_pct)}% YoY" if claim_amounts else f"+{int(c_pct)}% YoY"
+                official_str = f"{passage_amounts[0]} PAT / +{int(p_pct)}% YoY" if passage_amounts else f"+{int(p_pct)}% YoY"
+                reconciliation = NumericalReconciliation(
+                    metric_name="Quarterly Net Profit / Growth",
+                    claimed_value=claimed_str,
+                    official_value=official_str,
+                    discrepancy_factor="Substantial Discrepancy",
+                    is_mismatch=True,
+                )
+                return (
+                    VerificationStatus.CONTRADICTED,
+                    f"Official Audited Financial Statements contradict the claim: Actual PAT is {passage_amounts[0] if passage_amounts else 'lower'} ({int(p_pct)}% YoY), not {claim_amounts[0] if claim_amounts else 'higher'} or {int(c_pct)}% YoY.",
+                    reconciliation,
+                    "Audited quarterly filing refutes the claimed metrics.",
+                    f"Audited financial statements show the company achieved {official_str}, directly disproving the claimed {claimed_str}.",
+                    "Companies Act 2013 (Section 129) & SEBI LODR Regulation 33 audited quarterly financial statements. Certified auditor reports directly refute the viral social media numbers.",
+                    f"During the quarterly earnings disclosure, the company's Board of Directors submitted audited financial results to BSE and NSE confirming {official_str}. No restatement or higher figure was ever reported.",
+                )
+
+        # 3. Dynamic Monetary Amount Comparison
+        if claim_amounts and passage_amounts:
+            c_raw = claim_amounts[0]
+            p_raw = passage_amounts[0]
+            c_norm = engine.normalize_to_inr(c_raw) or 0.0
+            p_norm = engine.normalize_to_inr(p_raw) or 0.0
+
+            if c_norm > 0 and p_norm > 0:
+                ratio = c_norm / p_norm
+
+                if 0.95 <= ratio <= 1.05 or abs(c_norm - p_norm) < 1000.0:
+                    top_doc.relationship = "SUPPORTS"
+                    reconciliation = NumericalReconciliation(
+                        metric_name="Transaction / Deal Value",
+                        claimed_value=c_raw,
+                        official_value=p_raw,
+                        discrepancy_factor="Exact Match (100% Verified)",
+                        is_mismatch=False,
+                    )
+                    return (
+                        VerificationStatus.SUPPORTED,
+                        f"Corroborated by official regulatory disclosure: {top_doc.document_title}",
+                        reconciliation,
+                        None,
+                        f"The transaction value of {p_raw} is confirmed by official records.",
+                        "N/A — Claim is fully substantiated by statutory filings under SEBI LODR Regulation 30.",
+                        f"On {top_doc.filing_date}, the company officially notified stock exchanges of the agreement valued at {p_raw}.",
+                    )
+
+                elif ratio > 1.2:
+                    top_doc.relationship = "PARTIAL_MATCH"
+                    ratio_rounded = round(ratio, 1)
+                    factor_str = f"{int(round(ratio))}x Exaggeration (Inflated by {(ratio - 1.0)*100:,.0f}%)" if abs(ratio - round(ratio)) < 0.1 else f"{ratio_rounded:.1f}x Exaggeration (Inflated by {(ratio - 1.0)*100:,.0f}%)"
+
+                    reconciliation = NumericalReconciliation(
+                        metric_name="Order / Deal Value",
+                        claimed_value=c_raw,
+                        official_value=p_raw,
+                        discrepancy_factor=factor_str,
+                        is_mismatch=True,
+                    )
+                    topic = "contract/transaction"
+                    if any(w in quote_lower or w in stmt_lower for w in ["solar", "renewable", "power"]):
+                        topic = "solar project/contract"
+                    elif any(w in quote_lower or w in stmt_lower for w in ["acquisition", "stake", "buyout", "merger"]):
+                        topic = "acquisition transaction"
+                    elif any(w in quote_lower or w in stmt_lower for w in ["order", "tender", "contract"]):
+                        topic = "commercial order"
+                    elif any(w in quote_lower or w in stmt_lower for w in ["investment", "capex", "funding"]):
+                        topic = "investment commitment"
+
+                    return (
+                        VerificationStatus.PARTIALLY_SUPPORTED,
+                        f"The underlying {topic} exists, but the claimed value of {c_raw} is inflated by {factor_str} compared to the official filing of {p_raw}.",
+                        reconciliation,
+                        f"Official BSE/NSE filing confirms the {topic}, but the social post exaggerated the size by {factor_str} to induce FOMO.",
+                        f"Official regulatory disclosures confirm the true transaction size is {p_raw}, NOT {c_raw}.",
+                        f"SEBI LODR Regulation 30 statutory disclosure: The claimed {c_raw} represents a {factor_str} over the authentic {p_raw} disclosure filed on BSE/NSE.",
+                        f"On {top_doc.filing_date}, the company submitted an official regulatory disclosure confirming the {topic} for {p_raw}. No {c_raw} transaction was ever executed.",
+                    )
+
+                else:
+                    top_doc.relationship = "CONTRADICTS"
+                    reconciliation = NumericalReconciliation(
+                        metric_name="Reported Metric",
+                        claimed_value=c_raw,
+                        official_value=p_raw,
+                        discrepancy_factor=f"Discrepancy (Official: {p_raw})",
+                        is_mismatch=True,
+                    )
+                    return (
+                        VerificationStatus.CONTRADICTED,
+                        f"Official regulatory records show {p_raw}, which contradicts the claimed figure of {c_raw}.",
+                        reconciliation,
+                        "Official records contradict the claimed figures.",
+                        f"Official financial records contradict this claim: verified metric is {p_raw}, refuting the claimed {c_raw}.",
+                        "Audited corporate filings directly refute the claimed figure.",
+                        f"During this period, official records confirmed {p_raw}.",
+                    )
+
+        # 4. Debunk Sentiment Check
+        debunk_keywords = ["denied", "denies", "refutes", "dismisses", "fake", "clarifies rumor", "no talks", "misleading", "fraud", "untrue", "scam"]
+        if any(dk in quote_lower for dk in debunk_keywords):
+            top_doc.relationship = "CONTRADICTS"
+            return (
+                VerificationStatus.CONTRADICTED,
+                f"Official statements directly refute this report: \"{quote_text[:180]}...\"",
+                None,
+                "Company or regulatory clarification directly refutes this claim.",
+                f"The company or exchange formally refuted this rumor: {quote_text[:200]}",
+                "Official exchange clarification refutes the unverified report.",
+                f"On {top_doc.filing_date}, an official clarification was issued refuting this speculative rumor.",
+            )
+
+        # Default fallback: Corroborated
         top_doc.relationship = "SUPPORTS"
         return (
             VerificationStatus.SUPPORTED,
             f"Corroborated by official regulatory disclosure: {top_doc.document_title}",
             None,
             None,
-            f"Corroborated by official regulatory disclosure: {top_doc.document_title}",
-            "N/A — Supported by authentic public filing.",
+            f"Corroborated by official public records: {top_doc.document_title}.",
+            "N/A — Supported by authentic public filing or verified reporting.",
             f"The company officially submitted {top_doc.document_title} on {top_doc.filing_date}.",
         )
 
