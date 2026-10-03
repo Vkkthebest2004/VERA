@@ -77,12 +77,12 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
             </div>
           </button>
 
-          {/* Primary Nav Menu */}
-          <nav className="hidden md:flex items-center gap-5 text-[13px] font-medium text-neutral-700">
+          {/* Primary Nav Menu (Matching Screener top bar: FEED, SCREENS, TOOLS) */}
+          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700">
             <button
-              onClick={() => onViewChange('company')}
+              onClick={() => onViewChange('watchlist')}
               className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
-                currentView === 'company'
+                currentView === 'watchlist'
                   ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
                   : 'text-neutral-600'
               }`}
@@ -91,24 +91,12 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
             </button>
 
             <button
-              onClick={() => onViewChange('watchlist')}
-              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold flex items-center gap-1.5 ${
-                currentView === 'watchlist'
+              onClick={() => onViewChange('company')}
+              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
+                currentView === 'company'
                   ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
                   : 'text-neutral-600'
               }`}
-            >
-              <span>WATCHLIST</span>
-              {watchlistCount > 0 && (
-                <span className="px-1.5 py-0.2 bg-purple-100 text-purple-700 text-[10px] rounded-full font-bold">
-                  {watchlistCount}
-                </span>
-              )}
-            </button>
-
-            <button
-              onClick={() => onViewChange('company')}
-              className="hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold text-neutral-600"
             >
               SCREENS
             </button>

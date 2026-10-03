@@ -281,46 +281,84 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
             </button>
           </div>
 
-          {/* Power Feature Promo Card (Image 2 Bottom Card) */}
+          {/* Power Feature Promo Card (Matching Screener UI) */}
           <div className="bg-white rounded-xl border border-neutral-200/90 shadow-2xs overflow-hidden">
-            {/* Illustrated Banner Graphic with Purple Play Button */}
-            <div className="h-40 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 p-4 relative flex items-center justify-center overflow-hidden">
-              {/* Graphic background curves */}
-              <div className="absolute inset-0 opacity-20">
-                <svg viewBox="0 0 400 200" className="w-full h-full">
+            {/* Screener UI Mockup Graphic with Purple Play Button */}
+            <div className="h-44 bg-gradient-to-b from-slate-100 to-indigo-50/60 p-3 relative flex flex-col justify-between overflow-hidden border-b border-neutral-100 select-none">
+              {/* Top search & user bar mockup */}
+              <div className="flex items-center justify-between gap-2 text-[10px] text-neutral-400">
+                <div className="flex items-center gap-1 bg-white/90 border border-neutral-200 rounded px-2 py-0.5 shadow-2xs">
+                  <span className="text-neutral-400">🔍</span>
+                  <span className="truncate max-w-[90px]">Search for a company</span>
+                </div>
+                <div className="flex items-center gap-1 font-semibold text-neutral-600 bg-white/90 border border-neutral-200 rounded px-1.5 py-0.5">
+                  <span>PRATYUSH</span>
+                  <span>⌵</span>
+                </div>
+              </div>
+
+              {/* Middle navigation links mockup */}
+              <div className="flex items-center gap-2 text-[9px] text-neutral-400 pl-1">
+                <span>Ratios</span>
+                <span>Investors</span>
+                <span>Documents</span>
+                <span className="ml-auto text-neutral-500">📓 Notebook</span>
+              </div>
+
+              {/* Action chips: Price, PE Ratio, More, Alerts */}
+              <div className="flex items-center gap-1.5 text-[9px] z-10 pl-1">
+                <span className="px-1.5 py-0.5 bg-blue-50 text-blue-600 border border-blue-200 rounded font-semibold">
+                  Price
+                </span>
+                <span className="px-1.5 py-0.5 bg-white text-neutral-500 border border-neutral-200 rounded">
+                  PE Ratio
+                </span>
+                <span className="px-1.5 py-0.5 bg-white text-neutral-500 border border-neutral-200 rounded">
+                  More ⌵
+                </span>
+                <span className="ml-auto px-1.5 py-0.5 bg-white text-amber-800 border border-amber-200 rounded font-bold flex items-center gap-0.5 shadow-2xs">
+                  🔔 Alerts
+                </span>
+              </div>
+
+              {/* Blue Chart wave background */}
+              <div className="absolute inset-0 top-12 opacity-85 pointer-events-none">
+                <svg viewBox="0 0 360 140" className="w-full h-full">
+                  <defs>
+                    <linearGradient id="alertGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#818cf8" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="#818cf8" stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
                   <path
-                    d="M 0,160 Q 100,60 200,120 T 400,80"
-                    fill="none"
-                    stroke="#ffffff"
-                    strokeWidth="3"
+                    d="M 0,90 Q 40,65 90,85 T 180,60 T 270,95 T 360,40 L 360,140 L 0,140 Z"
+                    fill="url(#alertGrad)"
                   />
                   <path
-                    d="M 0,180 Q 120,90 240,150 T 400,110"
+                    d="M 0,90 Q 40,65 90,85 T 180,60 T 270,95 T 360,40"
                     fill="none"
-                    stroke="#a855f7"
+                    stroke="#4f46e5"
                     strokeWidth="2"
                   />
                 </svg>
               </div>
 
-              {/* Play Button Icon */}
-              <button
-                onClick={() =>
-                  onOpenAiWithClaim('How do price alerts and SEBI price band upper/lower circuits work?')
-                }
-                className="w-12 h-12 rounded-full bg-purple-600/90 hover:bg-purple-600 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-105 z-10 cursor-pointer"
-              >
-                <Play className="w-5 h-5 ml-0.5 fill-white" />
-              </button>
-
-              <div className="absolute bottom-2 left-3 text-[10px] text-white/60 font-mono">
-                Interactive Screener Alerts
+              {/* Prominent Purple Circular Play Button */}
+              <div className="absolute inset-0 flex items-center justify-center z-20">
+                <button
+                  onClick={() =>
+                    onOpenAiWithClaim('How do stock price alerts and SEBI circuit filters work in Screener and VERA?')
+                  }
+                  className="w-11 h-11 rounded-full bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110 cursor-pointer border-2 border-white/80"
+                >
+                  <Play className="w-5 h-5 ml-0.5 fill-white" />
+                </button>
               </div>
             </div>
 
             {/* Promo Content */}
             <div className="p-4 space-y-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">
                 <Flame className="w-3 h-3 text-amber-600" />
                 <span>Power Feature</span>
               </span>

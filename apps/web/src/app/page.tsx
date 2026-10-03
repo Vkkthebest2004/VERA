@@ -10,7 +10,7 @@ import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { Sparkles, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const [currentView, setCurrentView] = useState<'company' | 'watchlist' | 'raw_ingestion'>('company');
+  const [currentView, setCurrentView] = useState<'company' | 'watchlist' | 'raw_ingestion'>('watchlist');
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>('ALLETEC');
   const [watchlistIds, setWatchlistIds] = useState<string[]>([]);
   const [isAiSidebarOpen, setIsAiSidebarOpen] = useState<boolean>(false);
