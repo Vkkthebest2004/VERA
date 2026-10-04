@@ -1,171 +1,170 @@
-# 🎙️ VERA — Official Teleprompter & Recording Studio Script
+# 🎙️ VERA — Super Simple & Easy-to-Record Voiceover Script
 
-> **Master Voiceover Guide for VERA Institutional Demonstration**  
-> ⏱️ **Video Duration:** `01:42` (102 Seconds)  
-> 🎯 **Pacing:** Relaxed & confident (~120 words per minute)  
-> 💡 **Tip:** Keep this document open on half of your screen while playing the video on the other half. Every section has countdown markers and exact visual cues!
-
----
-
-## 🎧 Quick Vocal Setup & Pronunciation Key
-
-| Term | Pronunciation | Spoken Note |
-| :--- | :--- | :--- |
-| **VERA** | **VEER-uh** | Like "era" with a V |
-| **Artha** | **AR-thuh** | Soft 'th', Sanskrit for wealth/purpose |
-| **SEBI LODR** | **SEB-ee L-O-D-R** | Spell out L-O-D-R |
-| **ROCE** | **R-O-C-E** | Spell out letters (Return on Capital Employed) |
-| **BSE / NSE** | **B-S-E and N-S-E** | Crisp and distinct |
-| **DuPont** | **doo-PONT** | French origin, stress second syllable |
+> **Plain English & Zero Jargon Guide**  
+> ⏱️ **Total Video Time:** `1 Minute 42 Seconds`  
+> 🗣️ **Tone:** Friendly, conversational, clear, and relaxed — like you're showing a cool app to a friend.  
+> 💡 **How to record:** Just play the video ([`docs/recordings/vera_full_workflow.mp4`](file:///Users/vaibhavkrishnakesarwani/Desktop/VERA/docs/recordings/vera_full_workflow.mp4)) and read the lines when the countdown timer hits!
 
 ---
 
-## ⏱️ Video Cue Master Chart (1:42 Total)
-
-```
-00:00 ─── Scene 1: Landing & Mission Statement (11s)
-00:11 ─── Scene 2: 20 Indian Languages Hub (16s)
-00:27 ─── Scene 3: Live Search & Autocomplete (13s)
-00:40 ─── Scene 4: Audited 10-Yr Terminal (14s)
-00:54 ─── Scene 5: Visualizer & Time Machine (14s)
-01:08 ─── Scene 6: Artha Copilot & Memory Vault (17s)
-01:25 ─── Scene 7: SEBI Evidence Tracker (11s)
-01:36 ─── Scene 8: Final Conclusion (6s)
-01:42 ─── [End of Video]
-```
+## 🎬 1. Super Simple English (Teleprompter Mode)
 
 ---
 
-# 🎬 Teleprompter Mode (Read Along With Video)
+### 🟢 Scene 1: Welcome & Mission (`00:00 – 00:11`)
+👀 **WHAT’S ON SCREEN:** Clean landing page with the green badge at the top.  
+🎙️ **START SPEAKING AT:** `00:01`
 
----
-
-### 🟢 Scene 1: Introduction & Mission (`00:00 – 00:11`)
-👀 **LOOK FOR ON SCREEN:** Clean white landing page appears, mouse hovers green badge.  
-🎙️ **SPEAK AT:** `00:01`
-
-> *"Welcome to **VERA** —*  
-> *India’s autonomous, **evidence-first** financial verification platform.* `[breathe]`  
+> *"Hey everyone! This is **VERA** —*  
+> *a platform built to make stock market research **simple**, **honest**, and **easy for everyone**.*  
 > 
-> *Our mission is simple:*  
-> *Making complex financial information **transparent**, **verified**, and **simple to understand** for every investor."*  
-> `[1-second pause]`
+> *No confusing jargon. No fake rumors.*  
+> *Just verified financial facts you can actually trust."*  
+> `[Pause 1 second]`
 
 ---
 
-### 🌐 Scene 2: 20 Indian Languages Hub (`00:11 – 00:27`)
-👀 **LOOK FOR ON SCREEN:** Language modal pops up, scrolls languages, clicks Hindi (`हिन्दी`), then Tamil (`தமிழ்`).  
-🎙️ **SPEAK AT:** `00:12`
+### 🌐 Scene 2: 20 Indian Languages (`00:11 – 00:27`)
+👀 **WHAT’S ON SCREEN:** Language box opens, changes to Hindi, then Tamil, then back to English.  
+🎙️ **START SPEAKING AT:** `00:12`
 
-> *"To democratize financial literacy,*  
-> *VERA natively supports **twenty official Indian languages**.* `[breathe]`  
+> *"Finance shouldn't just be in English.*  
+> *So VERA works in **twenty different Indian languages**.*  
 > 
-> *With a single click —*  
-> *from balance sheets to conversational AI —*  
-> *the entire platform localizes into **Hindi**, **Tamil**, **Bengali**, and **seventeen more**,*  
-> *breaking down language barriers across Bharat."*  
-> `[1-second pause]`
+> *With just one click —*  
+> *everything from company charts to our AI chatbot*  
+> *switches into **Hindi**, **Tamil**, **Bengali**, and more.*  
+> *Now, anyone across India can learn and invest with confidence."*  
+> `[Pause 1 second]`
 
 ---
 
-### 🔍 Scene 3: Live Search & Autocomplete (`00:27 – 00:40`)
-👀 **LOOK FOR ON SCREEN:** Search box types "Tata", then types "Reliance" with live ticker dropdown.  
-🎙️ **SPEAK AT:** `00:28`
+### 🔍 Scene 3: Instant Search (`00:27 – 00:40`)
+👀 **WHAT’S ON SCREEN:** Search box types "Tata", then types "Reliance" and clicks it.  
+🎙️ **START SPEAKING AT:** `00:28`
 
-> *"Finding insights is instantaneous.*  
-> *Our search-first engine matches tickers across **BSE** and **NSE** in sub-seconds.* `[breathe]`  
+> *"Finding any company is super fast.*  
+> *Just start typing in the search bar — like **Tata** or **Reliance**.*  
 > 
-> *Let’s search for **Reliance Industries** —*  
-> *and step directly into its audited financial terminal."*  
-> `[1-second pause]`
+> *You instantly get live share prices, market size, and official exchange tickers.*  
+> *Let’s click on **Reliance** to see its full breakdown."*  
+> `[Pause 1 second]`
 
 ---
 
-### 📊 Scene 4: Audited 10-Year Terminal (`00:40 – 00:54`)
-👀 **LOOK FOR ON SCREEN:** Terminal loads, mouse hovers Market Cap & ROCE, clicks "Profit & Loss" tab, then "Balance Sheet".  
-🎙️ **SPEAK AT:** `00:41`
+### 📊 Scene 4: 10-Year Financial Statements (`00:40 – 00:54`)
+👀 **WHAT’S ON SCREEN:** Terminal page opens, clicks "Profit & Loss", then "Balance Sheet".  
+🎙️ **START SPEAKING AT:** `00:41`
 
-> *"Inside the Terminal,*  
-> *you get **ten continuous years** of audited statutory financials.* `[breathe]`  
+> *"Here, you get **ten full years** of real, audited company numbers.*  
 > 
-> *Explore historical **Profit and Loss**, balance sheet health, cash flows,*  
-> *and institutional **DuPont** capital efficiency metrics —*  
-> *with **zero** clutter."*  
-> `[1-second pause]`
+> *You can check how much money the business actually made,*  
+> *how much profit they kept, and how much debt they have.*  
+> *Everything is clean, organized, and straightforward."*  
+> `[Pause 1 second]`
 
 ---
 
-### ⏳ Scene 5: Visualizer & Time Machine (`00:54 – 01:08`)
-👀 **LOOK FOR ON SCREEN:** Canvas opens, Global Financial Time Machine slider scrubs across FY15, FY18, FY21, FY24.  
-🎙️ **SPEAK AT:** `00:55`
+### ⏳ Scene 5: The 10-Year Time Slider (`00:54 – 01:08`)
+👀 **WHAT’S ON SCREEN:** Visualizer opens, slider moves across FY15, FY18, FY21, FY24.  
+🎙️ **START SPEAKING AT:** `00:55`
 
-> *"For deep visual analysis,*  
-> *VERA features the **Multi-Dimensional Visualizer**.* `[breathe]`  
+> *"Want to see how the company grew over time?*  
+> *Check out this **Financial Time Machine**.*  
 > 
-> *Using our **Global Financial Time Machine**,*  
-> *you can scrub across a decade of history,*  
-> *watching **Revenue**, **EBITDA**, and **Cash Flow** curves evolve dynamically year over year."*  
-> `[1-second pause]`
+> *Just drag this slider across the years —*  
+> *and the charts instantly update to show you*  
+> *how sales, profits, and cash flow changed year after year."*  
+> `[Pause 1 second]`
 
 ---
 
-### 🤖 Scene 6: Artha Copilot & Memory Vault (`01:08 – 01:25`)
-👀 **LOOK FOR ON SCREEN:** Right drawer slides in, asks segment question, answers stream, clicks "Sources verified", opens Memory Vault.  
-🎙️ **SPEAK AT:** `01:09`
+### 🤖 Scene 6: Artha — Your AI Financial Helper (`01:08 – 01:25`)
+👀 **WHAT’S ON SCREEN:** Right drawer opens, types a question, answers appear, clicks "Sources verified".  
+🎙️ **START SPEAKING AT:** `01:09`
 
-> *"Need instant answers without reading 400-page annual reports?*  
-> *Meet **Artha** — our autonomous conversational copilot.* `[breathe]`  
+> *"Don't want to read a 400-page annual report?*  
+> *Just ask **Artha**, our smart AI assistant.*  
 > 
-> *Artha explains business models and segment mixes*  
-> *strictly anchored to **regulatory filings**.*  
-> *Click **Sources Verified** to inspect authentic citations,*  
-> *or open the **Memory Vault** to review persistent investor context."*  
-> `[1-second pause]`
-
----
-
-### 🛡️ Scene 7: SEBI Statutory Evidence Tracker (`01:25 – 01:36`)
-👀 **LOOK FOR ON SCREEN:** Evidence tab opens, clicks rumor card (Ed-a-Mamma 51% stake), shows Tier-1 1.00 score.  
-🎙️ **SPEAK AT:** `01:26`
-
-> *"To protect investors from viral misinformation,*  
-> *VERA integrates a dedicated **SEBI LODR Evidence Tracker**.* `[breathe]`  
+> *You can ask simple questions like:*  
+> *'How does Reliance make its money?'*  
 > 
-> *Our invariant verifier audits market claims directly against exchange disclosures —*  
-> *instantly flagging rumors and confirming genuine corporate events."*  
-> `[1-second pause]`
+> *Artha breaks it down in plain words —*  
+> *and every single answer comes with clickable links to **official stock exchange filings**."*  
+> `[Pause 1 second]`
 
 ---
 
-### ✨ Scene 8: Return to Landing & Grand Closing (`01:36 – 01:42`)
-👀 **LOOK FOR ON SCREEN:** Screen transitions back to the front page, mission statement resting clean.  
-🎙️ **SPEAK AT:** `01:37`
+### 🛡️ Scene 7: Fake News & Rumor Buster (`01:25 – 01:36`)
+👀 **WHAT’S ON SCREEN:** Evidence tab opens, clicks on a rumor card (Ed-a-Mamma stake), shows verified score.  
+🎙️ **START SPEAKING AT:** `01:26`
+
+> *"Ever see a crazy stock tip on WhatsApp or Telegram?*  
+> *Our **Evidence Tracker** is your personal rumor buster.*  
+> 
+> *It checks viral claims against official BSE and NSE records in seconds —*  
+> *protecting your hard-earned money from scams and hype."*  
+> `[Pause 1 second]`
+
+---
+
+### ✨ Scene 8: The Conclusion (`01:36 – 01:42`)
+👀 **WHAT’S ON SCREEN:** Screen smoothly returns back to the clean home page.  
+🎙️ **START SPEAKING AT:** `01:37`
 
 > *"**VERA**: Simple. Transparent. Verified.*  
-> *Delivering institutional intelligence for India’s next generation of investors."*  
-> `[End of Voiceover]`
+> *Making investing smart and safe for all of India."*  
+> `[Done!]`
 
 ---
 
-# 🎯 Alternative Delivery: The 60-Second Fast Pitch Option
+## 🇮🇳 2. Natural Hinglish Option (If you prefer speaking Hindi + English)
 
-*(If you ever need a shorter, high-energy 60-second version for social media reels, X, or YouTube Shorts!)*
+*(Super popular on YouTube, Instagram Reels, and Indian tech demos!)*
 
-> *"What if financial research in India was as simple as search?*  
-> *Meet **VERA** — the autonomous, evidence-first financial intelligence platform.*  
-> 
-> *With native support for **twenty official Indian languages**, VERA breaks down balance sheets into plain terms.*  
-> *Type any ticker to explore **ten years of audited statements** and our interactive **Financial Time Machine**.*  
-> 
-> *Ask **Artha**, your conversational copilot, for segment breakdowns backed by verified BSE and NSE citations.*  
-> *And use our **SEBI LODR Evidence Tracker** to bust viral WhatsApp rumors in seconds.*  
-> 
-> *Simple. Transparent. Verified. This is **VERA**."*
+```
+[00:00 - 00:11] SCENE 1: INTRODUCTION
+"Namaste dosto! Yeh hai VERA — ek aisa platform jo stock market research ko
+bilkul simple, transparent aur aasan banata hai.
+Koyi confusing words nahi, koyi fake rumors nahi — bas 100% verified data."
+
+[00:11 - 00:27] SCENE 2: 20 BHARTIYA BHASHAYEIN
+"Sabse badiya baat? VERA 20 Indian languages mein kaam karta hai.
+Sirf ek click mein pura platform Hindi, Tamil, Telugu ya Bengali mein switch ho jata hai.
+Toh ab har koi apni bhasha mein finance samajh sakta hai."
+
+[00:27 - 00:40] SCENE 3: INSTANT SEARCH
+"Kisi bhi company ko dhoondna super easy hai.
+Bas search bar mein type kijiye — jaise Tata ya Reliance.
+Instant live prices aur details mil jaayenge. Chaliye Reliance open karte hain."
+
+[00:40 - 00:54] SCENE 4: 10-SAAL KA DATA
+"Terminal mein aapko pure 10 saal ke audited financial statements milte hain.
+Company ne kitna profit banaya, kitna karz hai, sab kuch clean format mein dikhta hai."
+
+[00:54 - 01:08] SCENE 5: TIME MACHINE SLIDER
+"Aur agar aapko company ki growth dekhni hai, toh yeh Time Machine slider use kijiye.
+Jaise-jaise aap saal aage badhate hain, sales aur profits ke charts live update hote hain."
+
+[01:08 - 01:25] SCENE 6: ARTHA AI COPILOT
+"Heavy reports padhne ki koyi zaroorat nahi hai.
+Aap Artha se seedha aasan bhasha mein pooch sakte hain —
+jaise 'Reliance paise kaise kamati hai?'.
+Artha official government filings ke sath simple explanation deta hai."
+
+[01:25 - 01:36] SCENE 7: RUMOR BUSTER
+"WhatsApp ya Telegram ke fake stock tips se bachne ke liye
+VERA ke paas hai Evidence Tracker.
+Yeh har viral claim ko BSE aur NSE disclosures se verify karta hai."
+
+[01:36 - 01:42] SCENE 8: CONCLUSION
+"VERA: Simple, Transparent aur Verified.
+Smart investing har Indian ke liye."
+```
 
 ---
 
-## 🎙️ Pro Tips for an Incredible Voice Recording
-
-1. **Smile while you speak:** It naturally brightens your vocal tone and makes the video sound welcoming and innovative.
-2. **Hit spacebar to pause:** If you're using QuickTime or your phone recorder, play the video on your laptop and hit record. The video has built-in pauses between actions so you will never feel rushed.
-3. **If you stumble:** Don't restart! Just pause for 2 seconds, take a breath, and re-read the sentence. You can trim that 2 seconds in iMovie or CapCut in one click.
+## 💡 Quick Tips for a 10/10 Voiceover:
+1. **Talk like you're talking to a friend:** Don't sound like a robot or a news reporter. Be yourself!
+2. **Take it easy:** The video is 1 minute 42 seconds long, which gives you plenty of time. You don't need to speak fast.
+3. **If you make a mistake:** Just take a breath, wait 2 seconds, and say the sentence again. You can cut the mistake out later in 5 seconds!
