@@ -174,9 +174,6 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 font-sans">
               {t('searchTitle')}
             </h1>
-            <p className="text-sm sm:text-base text-neutral-600 max-w-lg mx-auto">
-              {t('searchSubtitle')}
-            </p>
           </div>
 
           {/* Search Box & Dropdown */}
