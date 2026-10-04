@@ -76,12 +76,12 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
             onClick={() => onViewChange('company')}
             className="flex items-center gap-1.5 focus:outline-hidden group cursor-pointer"
           >
-            <span className="text-2xl font-bold tracking-tight text-neutral-900 group-hover:text-emerald-700 transition-colors">
-              vera<span className="text-emerald-600">.ai</span>
+            <span className="text-2xl font-bold tracking-tight text-neutral-950 transition-colors">
+              vera<span className="text-neutral-400 font-medium">.ai</span>
             </span>
             <div className="flex items-end gap-[3px] h-5 mb-0.5">
-              <span className="w-1.5 h-3.5 bg-emerald-600 rounded-[1px]" />
-              <span className="w-1.5 h-5 bg-emerald-600 rounded-[1px]" />
+              <span className="w-1.5 h-3.5 bg-neutral-900 rounded-[1px]" />
+              <span className="w-1.5 h-5 bg-neutral-900 rounded-[1px]" />
             </div>
           </button>
 
@@ -113,11 +113,11 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               onClick={() => onViewChange('visualizer')}
               className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold flex items-center gap-1.5 ${
                 currentView === 'visualizer'
-                  ? 'text-purple-700 font-bold border-b-2 border-purple-600 pb-[17px] mt-[17px]'
-                  : 'text-neutral-700 hover:text-purple-700'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
+                  : 'text-neutral-600 hover:text-neutral-950'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-800" />
               <span>VISUALIZER</span>
             </button>
 
@@ -328,14 +328,14 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                 if (onOpenChat) onOpenChat();
                 else if (onToggleAiSidebar) onToggleAiSidebar();
               }}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
                 isAiSidebarOpen && activeDrawerMode === 'chat'
-                  ? 'bg-purple-800 text-white ring-2 ring-purple-300 shadow-md'
-                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  ? 'bg-black text-white ring-2 ring-neutral-400 shadow-md'
+                  : 'bg-neutral-900 hover:bg-neutral-800 text-white'
               }`}
               title="Chat with Artha"
             >
-              <Sparkles className="w-3.5 h-3.5 text-purple-200" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-300" />
               <span>✦ Artha</span>
             </button>
 
@@ -345,14 +345,14 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                 if (onOpenEvidence) onOpenEvidence();
                 else if (onToggleAiSidebar) onToggleAiSidebar();
               }}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer border ${
                 isAiSidebarOpen && activeDrawerMode === 'evidence'
-                  ? 'bg-emerald-800 text-white ring-2 ring-emerald-300 shadow-md'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  ? 'bg-neutral-200 text-neutral-950 border-neutral-400 ring-2 ring-neutral-300 font-bold'
+                  : 'bg-white hover:bg-neutral-100 text-neutral-800 border-neutral-300'
               }`}
               title="Audit Viral Rumors & Verify SEBI LODR 30 Filings"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-100" />
+              <ShieldCheck className="w-3.5 h-3.5 text-neutral-700" />
               <span className="hidden sm:inline">Evidence Tracker</span>
               <span className="sm:hidden">Evidence</span>
             </button>

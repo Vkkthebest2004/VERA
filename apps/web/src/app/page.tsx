@@ -8,6 +8,7 @@ import { IngestionStudio } from '@/components/IngestionStudio';
 import { VeraAssistantDrawer, AssistantMode } from '@/components/VeraAssistantDrawer';
 import { VeraConversationalVisualizer } from '@/components/visualization/VeraConversationalVisualizer';
 import { VeraBentoShowcase } from '@/components/VeraBentoShowcase';
+import { VeraFooter } from '@/components/VeraFooter';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { ShieldCheck } from 'lucide-react';
 
@@ -156,6 +157,15 @@ export default function Home() {
         onModeChange={setAiDrawerMode}
         initialClaim={activeClaimForSidebar}
         onNavigateToVisualizer={() => setCurrentView('visualizer')}
+      />
+
+      {/* 4. Comprehensive Monochrome Platform Footer */}
+      <VeraFooter
+        onNavigateToVisualizer={() => setCurrentView('visualizer')}
+        onOpenChat={handleOpenChat}
+        onOpenEvidence={handleOpenEvidence}
+        onOpenIngestion={() => setCurrentView('raw_ingestion')}
+        onViewChange={setCurrentView}
       />
     </main>
   );

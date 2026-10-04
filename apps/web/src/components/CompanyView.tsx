@@ -113,8 +113,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('chart')}
             className={`py-2 px-3 border-b-2 font-semibold text-[13px] transition-colors cursor-pointer ${
               activeTab === 'chart'
-                ? 'border-purple-600 text-purple-700 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             {company.name.length > 17 ? company.name.slice(0, 16) + '.' : company.name}
@@ -123,8 +123,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('chart')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'chart'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Chart
@@ -133,8 +133,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('analysis')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'analysis'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Analysis
@@ -143,8 +143,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('peers')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'peers'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Peers
@@ -153,8 +153,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('quarters')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'quarters'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Quarters
@@ -163,8 +163,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('profit-loss')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'profit-loss'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Profit & Loss
@@ -173,8 +173,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('balance-sheet')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'balance-sheet'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Balance Sheet
@@ -183,8 +183,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('cash-flow')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'cash-flow'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Cash Flow
@@ -193,8 +193,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('ratios')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'ratios'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Ratios
@@ -203,8 +203,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('investors')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'investors'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Investors
@@ -213,8 +213,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             onClick={() => setActiveTab('documents')}
             className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'documents'
-                ? 'border-blue-600 text-blue-600 font-bold'
-                : 'border-transparent hover:text-neutral-900'
+                ? 'border-neutral-900 text-neutral-900 font-bold'
+                : 'border-transparent text-neutral-600 hover:text-neutral-900'
             }`}
           >
             Documents
@@ -240,7 +240,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <div className="flex flex-wrap items-center gap-3">
               {/* Logo Badge */}
               <div
-                className={`w-9 h-9 rounded-full ${company.logoBg} text-white flex items-center justify-center font-bold text-sm shadow-xs`}
+                className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-xs"
               >
                 {company.ticker[0]}
               </div>
@@ -307,8 +307,8 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
               onClick={() => onToggleWatchlist(company.id)}
               className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-bold transition-all shadow-xs cursor-pointer ${
                 isInWatchlist
-                  ? 'bg-purple-100 text-purple-800 border border-purple-300'
-                  : 'bg-[#5b51d8] hover:bg-[#4b43c6] text-white uppercase tracking-wider'
+                  ? 'bg-neutral-100 text-neutral-900 border border-neutral-300'
+                  : 'bg-neutral-900 hover:bg-neutral-800 text-white uppercase tracking-wider'
               }`}
             >
               {isInWatchlist ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
@@ -423,39 +423,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
         </div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────
-          4. VERA Statutory Evidence Banner (Direct AI Hook)
-      ────────────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-950 to-neutral-900 text-white rounded-xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="p-1 rounded bg-purple-500/30 text-purple-300">
-              <ShieldCheck className="w-4 h-4" />
-            </span>
-            <span className="font-bold text-sm">SEBI Regulation 30 & 33 Statutory Audit Engine</span>
-            <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono uppercase font-bold">
-              VERA Active
-            </span>
-          </div>
-          <p className="text-xs text-purple-200/90 max-w-2xl">
-            Audit social rumors, WhatsApp forwards, viral news headlines, or exaggerated figures for {company.name} against verified stock exchange filings.
-          </p>
-        </div>
 
-        {/* Quick Sample Rumor Audit Chips */}
-        <div className="flex flex-wrap items-center gap-2">
-          {company.sampleClaims.map((item, idx) => (
-            <button
-              key={idx}
-              onClick={() => onOpenAiWithClaim(item.claim)}
-              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors border border-white/10 flex items-center gap-1.5 cursor-pointer"
-            >
-              <Sparkles className="w-3 h-3 text-purple-300" />
-              <span>Audit: {item.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* ─────────────────────────────────────────────────────────────
           5. Tab 1: Interactive Stock Chart Card (ECharts Dual-Axis Screener)

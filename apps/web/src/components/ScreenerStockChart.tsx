@@ -229,13 +229,13 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
           showSymbol: false,
           symbolSize: 6,
           lineStyle: {
-            color: '#3b82f6', // Clean vibrant Screener blue
+            color: '#18181b', // Crisp black/dark slate
             width: 1.8,
           },
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(59, 130, 246, 0.12)' },
-              { offset: 1, color: 'rgba(59, 130, 246, 0.0)' },
+              { offset: 0, color: 'rgba(24, 24, 27, 0.08)' },
+              { offset: 1, color: 'rgba(24, 24, 27, 0.0)' },
             ]),
           },
         },
@@ -284,8 +284,8 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
                 onClick={() => setActiveTimeframe(tf)}
                 className={`px-3 py-1 font-medium transition-colors cursor-pointer ${
                   isActive
-                    ? 'bg-blue-50 text-blue-600 font-bold'
-                    : 'text-neutral-700 hover:bg-neutral-50'
+                    ? 'bg-neutral-900 text-white font-semibold'
+                    : 'text-neutral-700 hover:bg-neutral-100'
                 }`}
               >
                 {tf}
@@ -302,8 +302,8 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
               onClick={() => setChartMode('Price')}
               className={`px-3 py-1 font-medium transition-colors cursor-pointer ${
                 chartMode === 'Price'
-                  ? 'bg-blue-50 text-blue-600 font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-50'
+                  ? 'bg-neutral-900 text-white font-semibold'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
               Price
@@ -312,8 +312,8 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
               onClick={() => setChartMode('PE Ratio')}
               className={`px-3 py-1 font-medium transition-colors cursor-pointer ${
                 chartMode === 'PE Ratio'
-                  ? 'bg-blue-50 text-blue-600 font-bold'
-                  : 'text-neutral-700 hover:bg-neutral-50'
+                  ? 'bg-neutral-900 text-white font-semibold'
+                  : 'text-neutral-700 hover:bg-neutral-100'
               }`}
             >
               PE Ratio
@@ -336,9 +336,9 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
                     setIsMoreOpen(false);
                     onOpenAiWithClaim?.(`Explain the price and volume patterns for ${companyName}`);
                   }}
-                  className="w-full px-3 py-2 text-left hover:bg-neutral-50 flex items-center gap-2 text-purple-700 font-semibold"
+                  className="w-full px-3 py-2 text-left hover:bg-neutral-50 flex items-center gap-2 text-neutral-900 font-medium"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
                   <span>Explain Price Action</span>
                 </button>
               </div>
@@ -348,9 +348,9 @@ export const ScreenerStockChart: React.FC<ScreenerStockChartProps> = ({
           {/* Alerts Button */}
           <button
             onClick={() => onOpenAiWithClaim?.(`Set up automated statutory filing alerts for ${companyName}`)}
-            className="flex items-center gap-1.5 px-3 py-1 text-xs border border-neutral-300 rounded-md text-neutral-700 hover:bg-neutral-50 font-medium shadow-2xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1 text-xs border border-neutral-300 rounded-md text-neutral-800 hover:bg-neutral-50 font-medium shadow-2xs cursor-pointer"
           >
-            <Bell className="w-3.5 h-3.5 text-blue-600 fill-blue-600" />
+            <Bell className="w-3.5 h-3.5 text-neutral-700" />
             <span>Alerts</span>
           </button>
         </div>
