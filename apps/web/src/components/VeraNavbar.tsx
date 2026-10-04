@@ -14,12 +14,13 @@ import {
   Menu,
   X,
   MessageSquare,
+  LayoutGrid,
 } from 'lucide-react';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 
 interface VeraNavbarProps {
-  currentView: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion';
-  onViewChange: (view: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion') => void;
+  currentView: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento';
+  onViewChange: (view: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento') => void;
   selectedCompanyId: string;
   onSelectCompany: (companyId: string) => void;
   onToggleAiSidebar?: () => void;
@@ -167,10 +168,23 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                     }}
                     className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-50 flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
-                    <FileSpreadsheet className="w-4 h-4 text-blue-600 shrink-0" />
+                    <FileSpreadsheet className="w-4 h-4 text-neutral-700 shrink-0" />
                     <div>
                       <div className="font-semibold text-neutral-900">Raw Media Ingestion Studio</div>
                       <div className="text-[10px] text-neutral-500">Extract tables, PDFs & filings</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onViewChange('bento');
+                      setIsToolsOpen(false);
+                    }}
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <LayoutGrid className="w-4 h-4 text-neutral-900 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-neutral-900">Bento Architecture Grid</div>
+                      <div className="text-[10px] text-neutral-500">Monochrome interactive feature cards</div>
                     </div>
                   </button>
                 </div>
