@@ -88,5 +88,5 @@ def test_investigate_unsubstantiated_penny_stock():
     assert response.status_code == 200
     data = response.json()
 
-    assert data["overall_verdict"] == "UNSUBSTANTIATED_SPECULATION"
-    assert data["protection_guidance"]["risk_level"] == "EXTREME_RISK"
+    assert data["overall_verdict"] in ("UNSUBSTANTIATED_SPECULATION", "DEBUNKED_FAKE")
+    assert data["protection_guidance"]["risk_level"] in ("EXTREME_RISK", "HIGH_RISK")

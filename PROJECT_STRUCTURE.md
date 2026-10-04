@@ -221,24 +221,28 @@ Contains the core microservices of the VERA platform.
   - `public/`: Static vectors (`vera_logo.svg`, standard icons).
   - `src/app/`: Next.js App Router entrypoint (`page.tsx`, `layout.tsx`, `globals.css`).
   - `src/components/`:
-    - `VeraNavbar.tsx`: Top navigation bar with live indices ticker (Nifty 50, Sensex) and workspace mode selector.
-    - `VeraConversationalChat.tsx`: Conversational Financial Intelligence interface supporting bilingual questions, follow-ups, and interactive financial topic pills.
-    - `VeraChatResponse.tsx`: Decision-first response card with verdict badges, verification cards, and provenance citations.
+    - `VeraLandingPage.tsx`: Institutional search-first landing page with mission statement badge (*"Making financial information simple, transparent, verified, and easy to understand"*) and live BSE/NSE ticker resolution.
+    - `VeraNavbar.tsx`: Screener-style top navigation bar with live indices ticker, overview, terminal, screens, and visualizer switches.
+    - `ui/LanguageSelector.tsx`: Glassmorphism 20 Indian languages selector modal with instant search and native script rendering.
+    - `CompanyView.tsx`: 10-Year historical statements (Profit & Loss, Balance Sheet, Cash Flow), DuPont capital efficiency metrics, and credit ratios.
+    - `VeraConversationalChat.tsx` (in `chat/`): Conversational Financial Intelligence interface supporting bilingual questions, follow-ups, verified source expansion, and interactive financial topic pills.
     - `VeraEvidenceTracker.tsx`: Full statutory audit studio displaying official exchange filing comparisons, math discrepancy breakdowns, and source credibility bars.
-    - `ResearchWorkstation.tsx`: Autonomous crawler interface with live web discovery visualization.
-    - `CompanyView.tsx` & `WatchlistView.tsx`: Interactive equity analytics and fundamental financial statements view.
+    - `VeraAssistantDrawer.tsx`: Slide-in dual-mode drawer hosting both Artha Copilot and the SEBI Evidence Tracker.
+    - `WatchlistView.tsx`: Tracked equities list with custom metric sorting and quick audit triggers.
     - `CrawlerAnimationScreen.tsx`: Real-time radar visualization of active web crawling and SearXNG engine queries.
     - `IngestionStudio.tsx`: Drag-and-drop file upload studio for PDFs, screenshots, and audio recordings.
     - `financial/`: 15 interactive financial chart components (Waterfall, Treemap, Working Capital, ROIC vs WACC, Capital Allocation, Valuation Multiples).
-    - `chat/`: Chat message renderers, bento grids, and panel components.
-    - `visualization/`: EChart wrappers, time sliders, and interactive metric visualizers.
+    - `chat/`: Chat message renderers, bento grids, and Supabase vector memory vault drawer.
+    - `visualization/`: EChart wrappers, Global Financial Time Machine slider, and interactive metric visualizers.
   - `src/data/`:
-    - `companies.ts`: Curated database of listed companies (Reliance, Tata Motors, TCS, Infosys, Zomato, ITC, etc.) with fundamentals, ratios, and filings.
+    - `mockCompanies.ts`: Curated database of listed companies (Reliance, Tata Power, Adani Wilmar, All E Tech) with audited 10-year financials, ratios, and filings.
   - `src/lib/`:
-    - `api.ts`: Typed client communicating with the FastAPI backend (`http://localhost:8000`).
+    - `supabase.ts`: Supabase client and vector memory authentication helpers.
     - `utils.ts`: Number formatting (Lakh, Crore, INR ₹, percentages) and CSS class merging.
   - `src/state/`:
-    - `store.ts`: Client-side state store for chat history, active company selection, and investigation dossiers.
+    - `languageStore.ts`: Constitutional 20 Indian languages store providing full-platform localization and translations.
+    - `chatStore.ts`: Client-side state store for chat history and active company selection.
+    - `visualizationStore.ts`: Dynamic visualizer state, time slider indices, and multi-metric curves.
 
 #### 2.3 Background Worker (`apps/worker/`)
 - **Location**: `apps/worker/`
