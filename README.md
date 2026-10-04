@@ -2,6 +2,25 @@
 
 > **VERA** is an evidence-first, decision-driven financial verification platform designed to combat viral market manipulation, pump-and-dump rumors, and fabricated corporate news across social channels.
 
+
+---
+
+## 🎬 Live Interactive Workflow Showcase
+
+![VERA Full Workflow Demo](docs/recordings/vera_full_workflow.gif)
+
+> 📹 **High-Definition Master Video**: [Download / Watch MP4 (1440x900, 50.9s)](docs/recordings/vera_full_workflow.mp4) | [WebM Format](docs/recordings/vera_full_workflow.webm)
+
+### 🚀 Key Functional Modules Shown in Workflow
+| Feature | Capabilities Demonstrated | Visual Evidence |
+| :--- | :--- | :--- |
+| **Search-First Front Page** | Mission badge *"Making financial information simple, transparent, verified, and easy to understand"*, live autocomplete across BSE/NSE tickers. | [`docs/screenshots/workflow/01_front_page_mission_statement.png`](docs/screenshots/workflow/01_front_page_mission_statement.png) |
+| **20 Indian Languages Hub** | Real-time script & terminology localization across Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Odia, and 10 more languages. | [`docs/screenshots/workflow/02_language_selector_20_languages.png`](docs/screenshots/workflow/02_language_selector_20_languages.png) |
+| **Audited Financial Terminal** | 10-Year historical statements (P&L, Balance Sheet, Cash Flow), DuPont capital efficiency metrics, and credit ratios. | [`docs/screenshots/workflow/07_reliance_terminal_overview.png`](docs/screenshots/workflow/07_reliance_terminal_overview.png) |
+| **Visualizer & Time Machine** | Interactive time-travel scrubber (FY15-FY24), multi-metric financial curves (Revenue, EBITDA, PAT, OCF). | [`docs/screenshots/workflow/08_visualizer_canvas_charts.png`](docs/screenshots/workflow/08_visualizer_canvas_charts.png) |
+| **Artha Multilingual Copilot** | Evidence-first conversational copilot answering in native languages (Hindi/English), expandable verified source citations drawer, Supabase memory vault. | [`docs/screenshots/workflow/09_artha_chat_hindi.png`](docs/screenshots/workflow/09_artha_chat_hindi.png) |
+| **SEBI LODR 30/33 Verifier** | Mathematical Invariant Verifier, statutory filing audit trail, debunking fabricated rumors with official exchange confirmations. | [`docs/screenshots/workflow/13_evidence_tracker_verifier.png`](docs/screenshots/workflow/13_evidence_tracker_verifier.png) |
+
 ---
 
 ## ⚡ Core Architecture
