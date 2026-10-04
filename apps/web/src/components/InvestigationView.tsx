@@ -425,7 +425,7 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
             </div>
           )}
 
-          {/* SUTRA PRINCIPLE 5: STATUTORY SEARCH AUDIT (When no filings match) */}
+          {/* VERA PRINCIPLE 5: STATUTORY SEARCH AUDIT (When no filings match) */}
           {investigation.evidence_trail.length === 0 && (
             <div className="rounded-2xl border border-yellow-800/50 bg-yellow-950/20 p-6 backdrop-blur-xl space-y-4">
               <div className="flex items-start gap-3">

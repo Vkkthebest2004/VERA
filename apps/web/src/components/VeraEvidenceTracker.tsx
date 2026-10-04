@@ -490,22 +490,36 @@ export const VeraEvidenceTracker: React.FC<VeraEvidenceTrackerProps> = ({
             Suggested for {company.ticker}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {company.sampleClaims.map((item, idx) => (
-              <button
-                key={idx}
-                onClick={() => {
-                  setClaimText(item.claim);
-                  handleVerify(item.claim);
-                }}
-                className="p-2.5 rounded-xl border border-neutral-200/80 hover:border-neutral-900 hover:bg-neutral-100 text-left transition-all text-xs space-y-1 group cursor-pointer"
-              >
-                <div className="font-medium text-neutral-800 group-hover:text-neutral-950 flex items-center justify-between">
-                  <span>{item.label}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900 transition-transform group-hover:translate-x-0.5" />
-                </div>
-                <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">{item.claim}</p>
-              </button>
-            ))}
+            {company.sampleClaims.map((item, idx) => {
+              const badgeColors = {
+                TRUE: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+                EXAGGERATED: 'bg-amber-50 text-amber-800 border-amber-200',
+                CONTRADICTED: 'bg-rose-50 text-rose-800 border-rose-200',
+                UNSUBSTANTIATED: 'bg-neutral-100 text-neutral-700 border-neutral-300',
+              }[item.type || 'TRUE'];
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setClaimText(item.claim);
+                    handleVerify(item.claim);
+                  }}
+                  className="p-3 rounded-xl border border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50/80 text-left transition-all text-xs space-y-1.5 group cursor-pointer shadow-2xs"
+                >
+                  <div className="flex items-center justify-between gap-1">
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase tracking-wider border ${badgeColors}`}>
+                      {item.type}
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900 transition-transform group-hover:translate-x-0.5" />
+                  </div>
+                  <div className="font-semibold text-neutral-900 group-hover:text-neutral-950 text-xs leading-snug">
+                    {item.label}
+                  </div>
+                  <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">{item.claim}</p>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

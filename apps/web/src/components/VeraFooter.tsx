@@ -8,7 +8,7 @@ interface VeraFooterProps {
   onOpenChat?: () => void;
   onOpenEvidence?: () => void;
   onOpenIngestion?: () => void;
-  onViewChange?: (view: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento') => void;
+  onViewChange?: (view: 'landing' | 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento') => void;
 }
 
 export const VeraFooter: React.FC<VeraFooterProps> = ({
@@ -27,14 +27,15 @@ export const VeraFooter: React.FC<VeraFooterProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Brand Info & User's Action Segment Group */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
+              <img
+                src="/vera_icon.svg"
+                alt="VERA Logo"
+                className="w-7 h-7 object-contain"
+              />
               <span className="text-xl font-bold tracking-tight text-neutral-950 font-sans">
-                vera<span className="text-neutral-400">.ai</span>
+                VERA
               </span>
-              <div className="flex items-end gap-[3px] h-4 mb-0.5">
-                <span className="w-1.5 h-2.5 bg-neutral-900 rounded-[1px]" />
-                <span className="w-1.5 h-4 bg-neutral-900 rounded-[1px]" />
-              </div>
             </div>
 
             <p className="text-neutral-600 leading-relaxed text-xs max-w-sm">
@@ -59,6 +60,14 @@ export const VeraFooter: React.FC<VeraFooterProps> = ({
                 Platform
               </h3>
               <ul className="space-y-2 text-neutral-600">
+                <li>
+                  <button
+                    onClick={() => onViewChange && onViewChange('landing')}
+                    className="hover:text-neutral-950 transition-colors cursor-pointer"
+                  >
+                    Platform Overview
+                  </button>
+                </li>
                 <li>
                   <button
                     onClick={() => onViewChange && onViewChange('company')}

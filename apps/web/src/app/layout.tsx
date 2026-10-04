@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'VERA - Financial Intelligence & Statutory Evidence Platform',
-  description: 'Evidence-first financial information verification platform',
+  title: 'VERA — Financial Intelligence & Statutory Evidence Platform',
+  description: 'Evidence-first financial information verification platform for Indian equities',
+  icons: {
+    icon: '/vera_icon.svg',
+    shortcut: '/vera_icon.svg',
+    apple: '/vera_icon.svg',
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

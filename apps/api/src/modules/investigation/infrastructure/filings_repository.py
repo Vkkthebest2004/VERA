@@ -37,11 +37,18 @@ class AuthoritativeFilingsRepository:
             if not is_company_match:
                 continue
 
-            score = 0.85 if (ticker and doc_ticker == ticker.upper()) else 0.6
             keywords = doc.get("keywords", [])
-            for kw in keywords:
-                if kw in lower_query:
-                    score += 0.15
+            matched_keywords = [kw for kw in keywords if kw in lower_query]
+
+            if doc_ticker == "SEBI_GENERAL":
+                if matched_keywords:
+                    score = 0.80
+                else:
+                    continue
+            elif matched_keywords:
+                score = 0.80 + min(len(matched_keywords) * 0.05, 0.19)
+            else:
+                continue
 
             if score >= 0.5:
                 url = doc["source_url"]
@@ -64,35 +71,37 @@ class AuthoritativeFilingsRepository:
                 )
 
         # 2. Live Multi-Source Search (Google News RSS, Bing News, DuckDuckGo) for ANY entity / query
-        try:
-            live_results = self.search_provider.search(query)
-            for lr in live_results:
-                if lr.url in seen_urls:
-                    continue
-                seen_urls.add(lr.url)
+        # Skip slow external network roundtrips if an authoritative statutory filing is already matched
+        if not any(r.relevance_score >= 0.85 for r in results):
+            try:
+                live_results = self.search_provider.search(query)
+                for lr in live_results:
+                    if lr.url in seen_urls:
+                        continue
+                    seen_urls.add(lr.url)
 
-                is_exchange = any(dom in lr.url.lower() for dom in ["bseindia.com", "nseindia.com", "sebi.gov.in", "mca.gov.in"])
-                source_tier = SourceTier.TIER_1_REGULATORY if is_exchange else SourceTier.TIER_3_FINANCIAL_MEDIA
-                filing_type = "STATUTORY_EXCHANGE_FILING" if is_exchange else "ACCREDITED_FINANCIAL_MEDIA"
+                    is_exchange = any(dom in lr.url.lower() for dom in ["bseindia.com", "nseindia.com", "sebi.gov.in", "mca.gov.in"])
+                    source_tier = SourceTier.TIER_1_REGULATORY if is_exchange else SourceTier.TIER_3_FINANCIAL_MEDIA
+                    filing_type = "STATUTORY_EXCHANGE_FILING" if is_exchange else "ACCREDITED_FINANCIAL_MEDIA"
 
-                results.append(
-                    EvidencePassage(
-                        passage_id=f"ev_web_{uuid.uuid4().hex[:6]}",
-                        document_title=lr.title,
-                        filing_type=filing_type,
-                        source_name=lr.provider,
-                        source_tier=source_tier,
-                        filing_date=lr.retrieved_at.strftime("%Y-%m-%d"),
-                        page_number=1,
-                        paragraph_number=lr.rank,
-                        exact_quote=lr.snippet,
-                        source_url=lr.url,
-                        relevance_score=0.85 if is_exchange else 0.75,
-                        relationship="CONTEXT",
+                    results.append(
+                        EvidencePassage(
+                            passage_id=f"ev_web_{uuid.uuid4().hex[:6]}",
+                            document_title=lr.title,
+                            filing_type=filing_type,
+                            source_name=lr.provider,
+                            source_tier=source_tier,
+                            filing_date=lr.retrieved_at.strftime("%Y-%m-%d"),
+                            page_number=1,
+                            paragraph_number=lr.rank,
+                            exact_quote=lr.snippet,
+                            source_url=lr.url,
+                            relevance_score=0.85 if is_exchange else 0.75,
+                            relationship="CONTEXT",
+                        )
                     )
-                )
-        except Exception:
-            pass
+            except Exception:
+                pass
 
         results.sort(key=lambda x: x.relevance_score, reverse=True)
         return results

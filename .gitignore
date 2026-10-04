@@ -60,3 +60,4 @@ pnpm-debug.log*
 minio-data/
 postgres-data/
 redis-data/
+scratch/

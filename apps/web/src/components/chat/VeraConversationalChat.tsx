@@ -11,11 +11,14 @@ import {
   ArrowUpRight,
   BarChart3,
   LayoutGrid,
+  Brain,
 } from 'lucide-react';
 import { CompanyData } from '@/data/mockCompanies';
 import { VeraMessageRenderer } from './VeraMessageRenderer';
 import { VeraChatBentoGrid } from './VeraChatBentoGrid';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
+import { VeraMemoryDrawer } from './VeraMemoryDrawer';
+import { getAuthHeaders } from '@/lib/supabase';
 
 interface Message {
   id: string;
@@ -25,6 +28,8 @@ interface Message {
   tags?: string[];
   suggestedFollowUps?: string[];
   visualizerLink?: boolean;
+  citations?: Array<{ title: string; domain: string; url: string; source: string }>;
+  marketSnapshot?: Record<string, any>;
 }
 
 interface VeraConversationalChatProps {
@@ -40,6 +45,8 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
 }) => {
   const shortName = company.name.split(' ')[0];
 
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [isMemoryOpen, setIsMemoryOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome-1',
@@ -112,13 +119,19 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
 
-    // 1. First attempt query to live backend API
+    // 1. First attempt query to live backend API with Supabase memory context
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/v1/chat', {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const authHeaders = await getAuthHeaders();
+      const response = await fetch(`${apiBase}/api/v1/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...authHeaders,
+        },
         body: JSON.stringify({
           message: text,
+          conversation_id: conversationId,
           company_id: company.id,
           company_name: company.name,
         }),
@@ -126,6 +139,9 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
 
       if (response.ok) {
         const data = await response.json();
+        if (data.conversation_id) {
+          setConversationId(data.conversation_id);
+        }
         if (data.response) {
           const assistantMsg: Message = {
             id: `assist-${Date.now()}`,
@@ -134,6 +150,8 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
             timestamp: Date.now(),
             suggestedFollowUps: (data.suggested_follow_ups || []).slice(0, 3),
             visualizerLink: text.toLowerCase().includes('chart') || text.toLowerCase().includes('visualizer'),
+            citations: data.citations,
+            marketSnapshot: data.market_intelligence?.market_snapshot,
           };
           setMessages((prev) => [...prev, assistantMsg]);
           setIsTyping(false);
@@ -266,6 +284,14 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
             }}
           />
           <button
+            onClick={() => setIsMemoryOpen(true)}
+            className="px-2 py-1 rounded text-[11px] font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors border border-neutral-200 cursor-pointer flex items-center gap-1"
+            title="Open Supabase Investor Memory Vault"
+          >
+            <Brain className="w-3.5 h-3.5 text-purple-600" />
+            <span className="hidden sm:inline">Memory</span>
+          </button>
+          <button
             onClick={() => setShowBento(!showBento)}
             className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1 border ${
               showBento
@@ -303,13 +329,13 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
             >
               {/* Avatar */}
               <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-[11px] font-bold transition-transform ${
+                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-[11px] font-bold overflow-hidden ${
                   isUser
                     ? 'bg-neutral-900 text-white'
-                    : 'bg-neutral-900 text-white font-mono'
+                    : 'bg-white border border-neutral-200 p-0.5'
                 }`}
               >
-                {isUser ? <User className="w-3.5 h-3.5" /> : <span>V</span>}
+                {isUser ? <User className="w-3.5 h-3.5" /> : <img src="/vera_icon.svg" alt="VERA" className="w-full h-full object-contain" />}
               </div>
 
               {/* Message Bubble */}
@@ -349,36 +375,74 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
                         </button>
 
                         <span className="text-[10px] text-neutral-400 font-medium">
-                          BSE · NSE · Annual Report
+                          {msg.citations && msg.citations.length > 0
+                            ? `${msg.citations.length} Live Sources · Market Intelligence`
+                            : 'BSE · NSE · Annual Report'}
                         </span>
                       </div>
 
                       {/* Expandable Verified Sources Panel */}
                       {expandedSources[msg.id] && (
                         <div className="mt-2 p-2.5 rounded-lg bg-neutral-50 border border-neutral-200/80 text-[11px] space-y-2 animate-in fade-in duration-150">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <div className="font-semibold text-neutral-800">BSE Filing (LODR Reg 30 / 33)</div>
-                              <div className="text-[10px] text-neutral-500">Security Code: {company.bseCode} · Audited Statements</div>
-                            </div>
-                            <span className="text-[10px] font-mono text-neutral-400 shrink-0">Official Source</span>
-                          </div>
+                          {msg.citations && msg.citations.length > 0 ? (
+                            msg.citations.map((c, cIdx) => (
+                              <div
+                                key={cIdx}
+                                className={`flex items-start justify-between gap-2 ${
+                                  cIdx > 0 ? 'border-t border-neutral-200/60 pt-1.5' : ''
+                                }`}
+                              >
+                                <div className="min-w-0 pr-2">
+                                  <div className="font-semibold text-neutral-800 truncate">
+                                    {c.title || c.domain}
+                                  </div>
+                                  <div className="text-[10px] text-neutral-500 truncate">
+                                    Source: {c.source || c.domain}
+                                  </div>
+                                </div>
+                                {c.url ? (
+                                  <a
+                                    href={c.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] font-mono text-neutral-600 hover:text-neutral-900 shrink-0 underline decoration-neutral-300 transition-colors"
+                                  >
+                                    {c.domain}
+                                  </a>
+                                ) : (
+                                  <span className="text-[10px] font-mono text-neutral-400 shrink-0">
+                                    {c.domain}
+                                  </span>
+                                )}
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div className="flex items-start justify-between gap-2">
+                                <div>
+                                  <div className="font-semibold text-neutral-800">BSE Filing (LODR Reg 30 / 33)</div>
+                                  <div className="text-[10px] text-neutral-500">Security Code: {company.bseCode} · Audited Statements</div>
+                                </div>
+                                <span className="text-[10px] font-mono text-neutral-400 shrink-0">Official Source</span>
+                              </div>
 
-                          <div className="flex items-start justify-between gap-2 border-t border-neutral-200/60 pt-1.5">
-                            <div>
-                              <div className="font-semibold text-neutral-800">NSE Corporate Announcement</div>
-                              <div className="text-[10px] text-neutral-500">Symbol: {company.ticker} · Statutory Compliance</div>
-                            </div>
-                            <span className="text-[10px] font-mono text-neutral-400 shrink-0">Official Source</span>
-                          </div>
+                              <div className="flex items-start justify-between gap-2 border-t border-neutral-200/60 pt-1.5">
+                                <div>
+                                  <div className="font-semibold text-neutral-800">NSE Corporate Announcement</div>
+                                  <div className="text-[10px] text-neutral-500">Symbol: {company.ticker} · Statutory Compliance</div>
+                                </div>
+                                <span className="text-[10px] font-mono text-neutral-400 shrink-0">Official Source</span>
+                              </div>
 
-                          <div className="flex items-start justify-between gap-2 border-t border-neutral-200/60 pt-1.5">
-                            <div>
-                              <div className="font-semibold text-neutral-800">FY2025 Integrated Annual Report</div>
-                              <div className="text-[10px] text-neutral-500">Statutory Auditor Report & Segment Notes</div>
-                            </div>
-                            <span className="text-[10px] font-mono text-neutral-400 shrink-0">Primary Report</span>
-                          </div>
+                              <div className="flex items-start justify-between gap-2 border-t border-neutral-200/60 pt-1.5">
+                                <div>
+                                  <div className="font-semibold text-neutral-800">FY2025 Integrated Annual Report</div>
+                                  <div className="text-[10px] text-neutral-500">Statutory Auditor Report & Segment Notes</div>
+                                </div>
+                                <span className="text-[10px] font-mono text-neutral-400 shrink-0">Primary Report</span>
+                              </div>
+                            </>
+                          )}
 
                           {onOpenEvidenceTab && (
                             <button
@@ -500,6 +564,12 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
           <Send className="w-4 h-4" />
         </button>
       </form>
+
+      {/* Persistent Supabase Memory Drawer */}
+      <VeraMemoryDrawer
+        isOpen={isMemoryOpen}
+        onClose={() => setIsMemoryOpen(false)}
+      />
     </div>
   );
 };

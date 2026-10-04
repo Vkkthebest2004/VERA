@@ -8,15 +8,16 @@ import { IngestionStudio } from '@/components/IngestionStudio';
 import { VeraAssistantDrawer, AssistantMode } from '@/components/VeraAssistantDrawer';
 import { VeraConversationalVisualizer } from '@/components/visualization/VeraConversationalVisualizer';
 import { VeraBentoShowcase } from '@/components/VeraBentoShowcase';
+import { VeraLandingPage } from '@/components/VeraLandingPage';
 import { VeraFooter } from '@/components/VeraFooter';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const [currentView, setCurrentView] = useState<'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento'>('company');
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('AWL');
-  const [watchlistIds, setWatchlistIds] = useState<string[]>(['AWL', 'ALLETEC', 'RELIANCE', 'TATAPOWER']);
+  const [currentView, setCurrentView] = useState<'landing' | 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento'>('landing');
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('RELIANCE');
+  const [watchlistIds, setWatchlistIds] = useState<string[]>(['RELIANCE', 'TATAPOWER', 'AWL', 'ALLETEC']);
   
   // SEPARATED DRAWER STATE:
   // Mode: 'chat' (Conversational Financial Copilot) OR 'evidence' (Statutory Fact-Checker & Rumor Auditor)
@@ -59,21 +60,37 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfd] text-neutral-900 selection:bg-neutral-900 selection:text-white relative">
-      {/* 1. Screener-style Top Navbar with Separated AI Chat & Evidence Tracker Buttons */}
-      <VeraNavbar
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        selectedCompanyId={selectedCompanyId}
-        onSelectCompany={setSelectedCompanyId}
-        onOpenChat={handleOpenChat}
-        onOpenEvidence={handleOpenEvidence}
-        isAiSidebarOpen={isAiDrawerOpen}
-        activeDrawerMode={isAiDrawerOpen ? aiDrawerMode : null}
-        watchlistCount={watchlistIds.length}
-      />
+      {/* 1. Screener-style Top Navbar with Separated AI Chat & Evidence Tracker Buttons (hidden on search-first landing page) */}
+      {currentView !== 'landing' && (
+        <VeraNavbar
+          currentView={currentView}
+          onViewChange={setCurrentView}
+          selectedCompanyId={selectedCompanyId}
+          onSelectCompany={setSelectedCompanyId}
+          onOpenChat={handleOpenChat}
+          onOpenEvidence={handleOpenEvidence}
+          isAiSidebarOpen={isAiDrawerOpen}
+          activeDrawerMode={isAiDrawerOpen ? aiDrawerMode : null}
+          watchlistCount={watchlistIds.length}
+        />
+      )}
 
       {/* 2. Main Page Views */}
-      <div className="pb-20">
+      <div className={currentView === 'landing' ? '' : 'pb-20'}>
+        {currentView === 'landing' && (
+          <VeraLandingPage
+            onLaunchTerminal={(companyId) => {
+              if (companyId) setSelectedCompanyId(companyId);
+              setCurrentView('company');
+            }}
+            onOpenVisualizer={() => setCurrentView('visualizer')}
+            onOpenWatchlist={() => setCurrentView('watchlist')}
+            onOpenIngestion={() => setCurrentView('raw_ingestion')}
+            onOpenChat={handleOpenChat}
+            onOpenEvidence={handleOpenEvidence}
+          />
+        )}
+
         {currentView === 'visualizer' && (
           <VeraConversationalVisualizer />
         )}
@@ -180,13 +197,15 @@ export default function Home() {
       />
 
       {/* 4. Comprehensive Monochrome Platform Footer */}
-      <VeraFooter
-        onNavigateToVisualizer={() => setCurrentView('visualizer')}
-        onOpenChat={handleOpenChat}
-        onOpenEvidence={handleOpenEvidence}
-        onOpenIngestion={() => setCurrentView('raw_ingestion')}
-        onViewChange={setCurrentView}
-      />
+      {currentView !== 'landing' && (
+        <VeraFooter
+          onNavigateToVisualizer={() => setCurrentView('visualizer')}
+          onOpenChat={handleOpenChat}
+          onOpenEvidence={handleOpenEvidence}
+          onOpenIngestion={() => setCurrentView('raw_ingestion')}
+          onViewChange={setCurrentView}
+        />
+      )}
     </main>
   );
 }

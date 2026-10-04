@@ -106,8 +106,9 @@ def test_api_analyze_text():
 
 def test_audio_transcription_and_analysis():
     import os
-    if os.path.exists("test_voicenote.wav"):
-        with open("test_voicenote.wav", "rb") as f:
+    audio_path = "tests/fixtures/test_voicenote.wav" if os.path.exists("tests/fixtures/test_voicenote.wav") else "test_voicenote.wav"
+    if os.path.exists(audio_path):
+        with open(audio_path, "rb") as f:
             response = client.post(
                 "/api/v1/ingestion/analyze-file",
                 files={"file": ("test_voicenote.wav", f, "audio/wav")},

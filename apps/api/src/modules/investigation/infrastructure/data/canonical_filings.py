@@ -64,7 +64,47 @@ CANONICAL_FILINGS: List[Dict[str, Any]] = [
         ),
         "actual_value_crores": 350,
         "actual_stake_pct": 51,
-        "keywords": ["ed-a-mamma", "acquisition", "stake", "51%", "350", "retail", "rrvl"],
+        "keywords": ["ed-a-mamma", "acquisition", "stake", "51%"],
+    },
+    {
+        "ticker": "RELIANCE",
+        "company_name": "Reliance Industries Limited",
+        "document_title": "Reliance Retail (BSE: 500325) — Reg 30 Filing: European Luxury Retail Strategic JV",
+        "filing_type": "REG_30_DISCLOSURE",
+        "source_name": "BSE India & NSE Corporate Announcements",
+        "source_tier": SourceTier.TIER_1_REGULATORY,
+        "filing_date": "2024-04-12",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ril_announcement_luxury_jv.pdf",
+        "page_number": 2,
+        "paragraph_number": 3,
+        "exact_quote": (
+            "Reliance Retail Ventures Limited (RRVL) has entered into a strategic joint venture with European luxury "
+            "fashion conglomerates to expand premium retail operations across India. The total equity commitment under "
+            "the definitive agreement is ₹3,500 Crore. Both parties will establish flagship experiential destination stores."
+        ),
+        "actual_value_crores": 3500,
+        "keywords": ["luxury", "joint venture", "retail", "rrvl", "jv", "fashion", "brand", "exclusive"],
+    },
+    {
+        "ticker": "RELIANCE",
+        "company_name": "Reliance Industries Limited",
+        "document_title": "Reliance Industries (BSE: 500325) — Audited Financial Results for Q1 FY26 (Form 33)",
+        "filing_type": "AUDITED_QUARTERLY_REPORT",
+        "source_name": "BSE India & NSE Corporate Financial Disclosures",
+        "source_tier": SourceTier.TIER_1_REGULATORY,
+        "filing_date": "2026-07-22",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ril_q1_fy26_audited_financials.pdf",
+        "page_number": 5,
+        "paragraph_number": 2,
+        "exact_quote": (
+            "The Board of Directors approved the Audited Consolidated Financial Results for Q1 FY26. "
+            "Consolidated Net Profit (PAT) stood at ₹23,196 Crore, registering a 12.6% YoY growth over the prior period. "
+            "Consolidated Revenue from Operations was ₹3,09,468 Crore, driven by strong operational performance across Jio and Retail. "
+            "No collapse in operating margins or earnings occurred."
+        ),
+        "actual_value_crores": 23196,
+        "actual_growth_pct": 12.6,
+        "keywords": ["pat", "profit", "results", "earnings", "collapse", "q1", "margin", "decline", "crash", "loss"],
     },
     {
         "ticker": "TATAMOTORS",

@@ -8,12 +8,14 @@ import { CrawlerAnimationScreen } from './CrawlerAnimationScreen';
 import { Paperclip, ArrowRight, X, FileText, Loader2, Sparkles, HelpCircle } from 'lucide-react';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
-const SAMPLE_CLAIM = `🔥🚨 FORWARDED MANY TIMES 🚨🔥
-Tata Power signed secret ₹12,500 Crore mega solar contract with Government of India! 
-Big operators loading heavily before 9:15 AM tomorrow! Guaranteed upper circuit 20%! 
-Target price ₹550 in 1 week! Don't miss this multibagger rocket jackpot 🚀💰💸!!`;
+const SAMPLE_RELIANCE_CLAIM = `🔥🚨 VIRAL WHATSAPP FORWARD 🚨🔥
+Reliance Retail signed a secret ₹50,000 Crore mega luxury retail buyout agreement with European luxury brands! 
+Promoters and big operators aggressively accumulating before market open! 
+Guaranteed 20% upper circuit tomorrow! Target ₹1,800 next week 🚀💰💸!`;
 
-const SAMPLE_GOOGLE_CLOUD = `Google Cloud CEO Thomas Kurian announced a $15B investment to set up an AI hub in Andhra Pradesh with 50,000 jobs.`;
+const SAMPLE_RELIANCE_VERIFIED = `Reliance Retail Ventures acquired a 51% majority stake in Ed-a-Mamma for ₹350 Crore.`;
+const SAMPLE_RELIANCE_CONTRADICTED = `Reliance Industries Q1 net profit collapsed by 45% to ₹5,000 Crore amid massive refining margin crash!`;
+const SAMPLE_RELIANCE_ARAMCO = `Reliance Industries signed secret ₹2,50,000 Crore crude oil concession with Saudi Aramco! Guaranteed 25% upper circuit tomorrow!`;
 
 export const IngestionStudio: React.FC = () => {
   const [inputText, setInputText] = useState<string>('');
@@ -100,8 +102,8 @@ export const IngestionStudio: React.FC = () => {
           <VeraActionToolbar
             size="sm"
             onUpload={() => fileInputRef.current?.click()}
-            onArchive={() => handleAnalyze('List latest BSE & NSE Regulation 30 filings and corporate actions')}
-            onScan={() => handleAnalyze(SAMPLE_CLAIM)}
+            onArchive={() => handleAnalyze('List latest Reliance Industries BSE & NSE Regulation 30 filings')}
+            onScan={() => handleAnalyze(SAMPLE_RELIANCE_CLAIM)}
           />
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight">
@@ -210,22 +212,28 @@ export const IngestionStudio: React.FC = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => loadExample(SAMPLE_CLAIM)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-400 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs"
+              onClick={() => loadExample(SAMPLE_RELIANCE_CLAIM)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs font-medium"
             >
-              ⚡ Tata Power ₹12,500 Cr Solar Deal
+              ⚠️ Reliance ₹50,000 Cr Luxury Deal (Exaggerated)
             </button>
             <button
-              onClick={() => loadExample(SAMPLE_GOOGLE_CLOUD)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-400 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs"
+              onClick={() => loadExample(SAMPLE_RELIANCE_VERIFIED)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs font-medium"
             >
-              🌐 Google Cloud $15B Andhra AI Hub
+              🏛️ Reliance Ed-a-Mamma 51% Stake (Verified True)
             </button>
             <button
-              onClick={() => loadExample('Suzlon Energy reports ₹850 Cr quarterly profit with +300% YoY growth')}
-              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-400 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs"
+              onClick={() => loadExample(SAMPLE_RELIANCE_CONTRADICTED)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs font-medium"
             >
-              📊 Suzlon Q3 ₹850 Cr Profit Claim
+              📉 Reliance Q1 Profit Crash to ₹5,000 Cr (Contradicted)
+            </button>
+            <button
+              onClick={() => loadExample(SAMPLE_RELIANCE_ARAMCO)}
+              className="text-xs px-3 py-1.5 rounded-lg bg-white border border-neutral-200 hover:border-neutral-900 text-neutral-800 hover:text-neutral-950 transition cursor-pointer text-left shadow-2xs font-medium"
+            >
+              🚨 Reliance Secret ₹2.5L Cr Aramco Deal (Unsubstantiated)
             </button>
           </div>
         </div>

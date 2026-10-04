@@ -107,11 +107,11 @@ export const VeraConversationalVisualizer: React.FC = () => {
                         : 'text-neutral-600 hover:text-neutral-900'
                     }`}
                   >
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        id === 'RELIANCE' ? 'bg-neutral-900' : 'bg-neutral-600'
-                      }`}
-                    />
+                    {id === 'RELIANCE' ? (
+                      <img src="/reliance_icon.svg" alt="Reliance" className="w-3.5 h-3.5 object-contain shrink-0" />
+                    ) : (
+                      <img src="/tatapower_logo.svg" alt="Tata Power" className="w-4 h-3 object-contain shrink-0" />
+                    )}
                     <span>{c.name}</span>
                     <span className="font-mono text-neutral-500 font-normal">₹{c.currentPrice}</span>
                   </button>

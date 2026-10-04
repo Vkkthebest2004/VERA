@@ -34,10 +34,10 @@ export const VeraBentoShowcase: React.FC<VeraBentoShowcaseProps> = ({
   const veraFeatures = [
     {
       Icon: Sparkles,
-      name: 'Artha — Financial Copilot',
+      name: 'Artha — Financial Intelligence Copilot',
       description:
         'Custom-trained Qwen 3.4B reasoning engine analyzing balance sheets, valuation multiples, and quarterly trends in natural language.',
-      href: '#artha',
+      href: '#artha-chat',
       cta: 'Explore Artha',
       background: (
         <img

@@ -20,8 +20,8 @@ import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 interface VeraNavbarProps {
-  currentView: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento';
-  onViewChange: (view: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento') => void;
+  currentView: 'landing' | 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento';
+  onViewChange: (view: 'landing' | 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento') => void;
   selectedCompanyId: string;
   onSelectCompany: (companyId: string) => void;
   onToggleAiSidebar?: () => void;
@@ -71,39 +71,51 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
     <header className="sticky top-0 z-40 bg-white border-b border-neutral-200 text-neutral-800 text-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         {/* Left: Brand Logo & Navigation Links */}
-        <div className="flex items-center gap-6 md:gap-8">
+        <div className="flex items-center gap-7">
           {/* VERA Brand Logo */}
           <button
-            onClick={() => onViewChange('company')}
-            className="flex items-center gap-1.5 focus:outline-hidden group cursor-pointer"
+            onClick={() => onViewChange('landing')}
+            className="flex items-center gap-2.5 focus:outline-hidden group cursor-pointer shrink-0"
           >
-            <span className="text-2xl font-bold tracking-tight text-neutral-950 transition-colors">
-              vera<span className="text-neutral-400 font-medium">.ai</span>
+            <img
+              src="/vera_icon.svg"
+              alt="VERA Logo"
+              className="w-7 h-7 object-contain transition-transform group-hover:scale-105"
+            />
+            <span className="text-xl font-bold tracking-tight text-neutral-950 font-sans">
+              VERA
             </span>
-            <div className="flex items-end gap-[3px] h-5 mb-0.5">
-              <span className="w-1.5 h-3.5 bg-neutral-900 rounded-[1px]" />
-              <span className="w-1.5 h-5 bg-neutral-900 rounded-[1px]" />
-            </div>
           </button>
 
-          {/* Primary Nav Menu: FEED, SCREENS, TOOLS */}
-          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700">
+          {/* Primary Nav Menu: OVERVIEW, TERMINAL, SCREENS, VISUALIZER, TOOLS */}
+          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700 h-14">
             <button
-              onClick={() => onViewChange('company')}
-              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
-                currentView === 'company'
-                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
+              onClick={() => onViewChange('landing')}
+              className={`h-full flex items-center hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold cursor-pointer ${
+                currentView === 'landing'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900'
                   : 'text-neutral-600'
               }`}
             >
-              FEED
+              OVERVIEW
+            </button>
+
+            <button
+              onClick={() => onViewChange('company')}
+              className={`h-full flex items-center hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold cursor-pointer ${
+                currentView === 'company'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900'
+                  : 'text-neutral-600'
+              }`}
+            >
+              TERMINAL
             </button>
 
             <button
               onClick={() => onViewChange('watchlist')}
-              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
+              className={`h-full flex items-center hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold cursor-pointer ${
                 currentView === 'watchlist'
-                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900'
                   : 'text-neutral-600'
               }`}
             >
@@ -112,9 +124,9 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
 
             <button
               onClick={() => onViewChange('visualizer')}
-              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold flex items-center gap-1.5 ${
+              className={`h-full flex items-center hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold gap-1.5 cursor-pointer ${
                 currentView === 'visualizer'
-                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900'
                   : 'text-neutral-600 hover:text-neutral-950'
               }`}
             >
@@ -143,8 +155,8 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   >
                     <MessageSquare className="w-4 h-4 text-neutral-900 shrink-0" />
                     <div>
-                      <div className="font-semibold text-neutral-900">✦ Artha</div>
-                      <div className="text-[10px] text-neutral-500">Financial Intelligence Copilot</div>
+                      <div className="font-semibold text-neutral-900">✦ Artha Copilot</div>
+                      <div className="text-[10px] text-neutral-500">Autonomous Financial Intelligence</div>
                     </div>
                   </button>
                   <button
@@ -231,15 +243,26 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                       }}
                       className="w-full px-3 py-2 text-left hover:bg-neutral-50 flex items-center justify-between text-xs transition-colors border-b border-neutral-100 last:border-0"
                     >
-                      <div>
-                        <div className="font-semibold text-neutral-900 flex items-center gap-1.5">
-                          <span>{company.name}</span>
-                          <span className="text-[10px] text-neutral-500 font-mono bg-neutral-100 px-1 py-0.5 rounded">
-                            {company.ticker}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-neutral-500 truncate max-w-[200px]">
-                          {company.exchange}
+                      <div className="flex items-center gap-2.5">
+                        {company.logoUrl ? (
+                          <div className="w-7 h-7 rounded-md bg-white border border-neutral-200 p-0.5 flex items-center justify-center shrink-0 shadow-2xs">
+                            <img src={company.logoUrl} alt={company.name} className="w-full h-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-7 h-7 rounded-md bg-neutral-900 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                            {company.ticker[0]}
+                          </div>
+                        )}
+                        <div>
+                          <div className="font-semibold text-neutral-900 flex items-center gap-1.5">
+                            <span>{company.name}</span>
+                            <span className="text-[10px] text-neutral-500 font-mono bg-neutral-100 px-1 py-0.5 rounded">
+                              {company.ticker}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-neutral-500 truncate max-w-[180px]">
+                            {company.exchange}
+                          </div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -279,7 +302,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-50 animate-in fade-in">
                 <div className="px-3 py-2 border-b border-neutral-100">
                   <p className="text-xs font-bold text-neutral-900">Vaibhav Kesarwani</p>
-                  <p className="text-[11px] text-neutral-500 truncate">vaibhav@vera.ai</p>
+                  <p className="text-[11px] text-neutral-500 truncate">vaibhav@vera.in</p>
                 </div>
                 <button
                   onClick={() => {
@@ -300,7 +323,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-neutral-900" />
-                  <span>✦ Artha</span>
+                  <span>✦ Artha Copilot</span>
                 </button>
                 <button
                   onClick={() => {

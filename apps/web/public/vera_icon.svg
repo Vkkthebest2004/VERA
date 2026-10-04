@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="75 90 355 255" role="img" aria-label="VERA Fintech Icon">
+  <defs>
+    <linearGradient id="veraFinanceIcon" x1="105" y1="115" x2="420" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#08284B"/>
+      <stop offset="0.48" stop-color="#075B78"/>
+      <stop offset="1" stop-color="#16C784"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#veraFinanceIcon)" d="M82 116H145C157 116 167 122 174 134L244 250C248 257 253 260 259 260C265 260 270 257 274 250L343 134C350 122 360 116 372 116H425L315 306C303 327 284 340 259 340C234 340 215 327 203 306L82 116Z"/>
+  <path fill="#087A7B" d="M296 238V185C296 179 300 175 306 175H319C325 175 329 179 329 185V222Z"/>
+  <path fill="#0A9B82" d="M333 218V145C333 139 337 135 343 135H356C362 135 366 139 366 145V193Z"/>
+  <path fill="#16C784" d="M370 190V105C370 99 374 95 380 95H393C399 95 403 99 403 105V158Z"/>
+  <path d="M282 278C316 264 347 243 375 218C390 205 403 191 414 174" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+</svg>

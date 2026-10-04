@@ -240,11 +240,21 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               {/* Logo Badge */}
-              <div
-                className="w-9 h-9 rounded-full bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-xs"
-              >
-                {company.ticker[0]}
-              </div>
+              {company.logoUrl ? (
+                <div className="h-12 min-w-[48px] px-3 py-1.5 rounded-xl bg-white border border-neutral-200/90 flex items-center justify-center shadow-xs overflow-hidden shrink-0">
+                  <img
+                    src={company.logoUrl}
+                    alt={`${company.name} logo`}
+                    className="h-8 max-w-[130px] w-auto object-contain"
+                  />
+                </div>
+              ) : (
+                <div
+                  className="w-12 h-12 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0"
+                >
+                  {company.ticker[0]}
+                </div>
+              )}
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900 font-sans">

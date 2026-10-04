@@ -19,6 +19,11 @@ KNOWN_ENTITIES = {
     "TCS": {"ticker": "TCS", "type": "COMPANY"},
     "RELIANCE": {"ticker": "RELIANCE", "type": "COMPANY"},
     "RELIANCE INDUSTRIES": {"ticker": "RELIANCE", "type": "COMPANY"},
+    "RELIANCE RETAIL": {"ticker": "RELIANCE", "type": "COMPANY"},
+    "RELIANCE RETAIL VENTURES": {"ticker": "RELIANCE", "type": "COMPANY"},
+    "JIO": {"ticker": "RELIANCE", "type": "COMPANY"},
+    "JIO PLATFORMS": {"ticker": "RELIANCE", "type": "COMPANY"},
+    "RIL": {"ticker": "RELIANCE", "type": "COMPANY"},
     "SUZLON": {"ticker": "SUZLON", "type": "COMPANY"},
     "SUZLON ENERGY": {"ticker": "SUZLON", "type": "COMPANY"},
     "INFOSYS": {"ticker": "INFY", "type": "COMPANY"},
@@ -401,6 +406,37 @@ class FinancialInformationDehypingService:
                     )
                 )
                 
+        # Check if the text is an exploratory question or general company inquiry
+        lower_full = text.lower().strip()
+        is_inquiry = any(lower_full.startswith(w) for w in [
+            "explain", "tell me", "what is", "what does", "who is", "how does", "how is",
+            "kya hai", "kaise", "overview of", "describe", "analyze", "help me understand"
+        ]) or any(w in lower_full for w in ["explain me about", "tell me about", "kya karti hai", "kaise kamati hai", "kaisi company"])
+
+        has_deal_keyword = any(k in lower_full for k in [
+            "12,500", "12500", "2,50,000", "250000", "crude concession", "guaranteed", "secret deal",
+            "whatsapp tip", "telegram tip", "insider info", "fake news", "scam"
+        ])
+
+        # If it's an informational query without a specific scam/deal leak, categorize as inquiry
+        if is_inquiry and not has_deal_keyword and not assertions and len(text) > 5:
+            clean_stmt = re.sub(r"\[EXACT TEXT EXTRACTED.*?\]:?", "", text, flags=re.DOTALL)
+            clean_stmt = re.sub(r"\[MULTIMODAL.*?\]:?", "", clean_stmt, flags=re.DOTALL)
+            clean_stmt = re.sub(r"\[[A-Za-z0-9_-]+\]", "", clean_stmt)
+            clean_stmt = re.sub(r"[🚀🔥💰🤑📈💣💥⚡🚨👑🎯💸💎!*#]+", "", clean_stmt)
+            clean_stmt = re.sub(r"\s+", " ", clean_stmt).strip()
+            assertions.append(
+                ExtractedAssertion(
+                    assertion_id=f"ast_{uuid.uuid4().hex[:6]}",
+                    statement=clean_stmt[:140],
+                    category="INFORMATIONAL_INQUIRY",
+                    verifiable=False,
+                    confidence_score=0.95,
+                    verification_target="Corporate Profile & Fundamental Disclosures",
+                )
+            )
+            return assertions
+
         # If no assertions detected via heuristic lines, formulate at least one structured assertion
         if not assertions and len(text) > 10:
             clean_stmt = re.sub(r"\[EXACT TEXT EXTRACTED.*?\]:?", "", text, flags=re.DOTALL)

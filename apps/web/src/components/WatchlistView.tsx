@@ -177,9 +177,20 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                     onClick={() => onSelectCompany(c.id)}
                   >
                     <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-bold text-sm text-neutral-900 group-hover:underline">{c.name}</h4>
-                        <span className="text-[11px] font-mono text-neutral-500">{c.ticker} • {c.exchange}</span>
+                      <div className="flex items-center gap-2.5">
+                        {c.logoUrl ? (
+                          <div className="w-8 h-8 rounded-lg bg-white border border-neutral-200 p-1 flex items-center justify-center shrink-0 shadow-2xs">
+                            <img src={c.logoUrl} alt={c.name} className="w-full h-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-8 h-8 rounded-lg bg-neutral-900 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                            {c.ticker[0]}
+                          </div>
+                        )}
+                        <div>
+                          <h4 className="font-bold text-sm text-neutral-900 group-hover:underline">{c.name}</h4>
+                          <span className="text-[11px] font-mono text-neutral-500">{c.ticker} • {c.exchange}</span>
+                        </div>
                       </div>
                       <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-neutral-100 border border-neutral-300 text-neutral-950">
                         ₹{c.price.toLocaleString('en-IN')}
@@ -243,10 +254,21 @@ export const WatchlistView: React.FC<WatchlistViewProps> = ({
                         <td className="py-3 px-3">
                           <button
                             onClick={() => onSelectCompany(c.id)}
-                            className="text-left font-bold text-neutral-900 group-hover:underline transition-colors block cursor-pointer"
+                            className="text-left font-bold text-neutral-900 group-hover:underline transition-colors flex items-center gap-2.5 cursor-pointer"
                           >
-                            <div>{c.name}</div>
-                            <div className="text-[10px] text-neutral-400 font-mono">{c.ticker}</div>
+                            {c.logoUrl ? (
+                              <div className="w-7 h-7 rounded-lg bg-white border border-neutral-200 p-0.5 flex items-center justify-center shrink-0 shadow-2xs">
+                                <img src={c.logoUrl} alt={c.name} className="w-full h-full object-contain" />
+                              </div>
+                            ) : (
+                              <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                                {c.ticker[0]}
+                              </div>
+                            )}
+                            <div>
+                              <div>{c.name}</div>
+                              <div className="text-[10px] text-neutral-400 font-mono">{c.ticker}</div>
+                            </div>
                           </button>
                         </td>
                         <td className="py-3 px-3 font-bold text-neutral-900 font-mono">

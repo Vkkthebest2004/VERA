@@ -30,6 +30,14 @@ export const VeraAssistantDrawer: React.FC<VeraAssistantDrawerProps> = ({
   initialClaim,
   onNavigateToVisualizer,
 }) => {
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -49,15 +57,17 @@ export const VeraAssistantDrawer: React.FC<VeraAssistantDrawerProps> = ({
           {/* Top Bar: Brand & Close */}
           <div className="px-5 pt-3.5 pb-2.5 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-5 h-5 rounded bg-neutral-900 flex items-center justify-center text-white font-mono font-bold text-[11px]">
-                V
-              </div>
+              <img
+                src="/vera_icon.svg"
+                alt="VERA"
+                className="w-5 h-5 object-contain"
+              />
               <div>
                 <h2 className="font-bold text-sm text-neutral-950 tracking-tight leading-none">
                   VERA
                 </h2>
                 <p className="text-[10px] text-neutral-500 font-medium tracking-wide mt-0.5">
-                  Financial Intelligence
+                  Statutory Financial Intelligence
                 </p>
               </div>
             </div>

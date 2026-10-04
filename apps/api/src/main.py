@@ -4,6 +4,9 @@ from .modules.ingestion.presentation.router import router as ingestion_router
 from .modules.investigation.presentation.router import router as investigation_router
 from .modules.research.presentation.router import router as research_router
 from .modules.chat.router import router as chat_router
+from .modules.memory.presentation.router import router as memory_router
+from .modules.memory.presentation.conversation_router import router as conversation_router
+from .modules.auth.router import router as auth_router
 
 app = FastAPI(
     title="VERA — Financial Verification Platform API",
@@ -25,6 +28,9 @@ app.include_router(ingestion_router)
 app.include_router(investigation_router)
 app.include_router(research_router)
 app.include_router(chat_router)
+app.include_router(memory_router)
+app.include_router(conversation_router)
+app.include_router(auth_router)
 
 
 @app.get("/health")

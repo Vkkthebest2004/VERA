@@ -9,12 +9,26 @@ import {
   User,
   ChevronRight,
   Activity,
+  Brain,
+  PlusCircle,
 } from 'lucide-react';
 import { VeraMessageRenderer } from './VeraMessageRenderer';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
+import { VeraMemoryDrawer } from './VeraMemoryDrawer';
 
 export const VeraChatPanel: React.FC = () => {
-  const { messages, isTyping, activeSuggestions, sendMessage, clearMessages } = useChatStore();
+  const {
+    messages,
+    isTyping,
+    activeSuggestions,
+    userMemories,
+    isMemoryDrawerOpen,
+    sendMessage,
+    clearMessages,
+    startNewConversation,
+    setMemoryDrawerOpen,
+    loadUserMemories,
+  } = useChatStore();
   const {
     activeChartId,
     timeRange,
@@ -49,13 +63,15 @@ export const VeraChatPanel: React.FC = () => {
       ────────────────────────────────────────────────────────────── */}
       <div className="p-3 border-b border-neutral-200 bg-neutral-50/80 flex items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center font-bold text-[11px] font-mono shadow-xs">
-            V
-          </div>
+          <img
+            src="/vera_icon.svg"
+            alt="VERA"
+            className="w-7 h-7 object-contain"
+          />
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-xs text-neutral-900">Artha</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 ml-0.5" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" />
             </div>
             <p className="text-[10px] text-neutral-500">
               Controlling <strong className="text-neutral-700">{record.name}</strong> visualizer
@@ -64,6 +80,27 @@ export const VeraChatPanel: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMemoryDrawerOpen(true)}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-800 transition-colors cursor-pointer border border-neutral-200"
+            title="View persistent Supabase investor memories"
+          >
+            <Brain className="w-3.5 h-3.5 text-purple-600" />
+            <span>Memory</span>
+            {userMemories.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-purple-600 text-white text-[9px] font-bold">
+                {userMemories.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={startNewConversation}
+            className="flex items-center gap-1 text-neutral-500 hover:text-neutral-800 text-[11px] font-medium px-1.5 py-1 rounded transition-colors cursor-pointer"
+            title="Start new conversation session"
+          >
+            <PlusCircle className="w-3.5 h-3.5" />
+            <span>New</span>
+          </button>
           <VeraActionToolbar
             size="sm"
             onUploadClick={() => {
@@ -120,13 +157,13 @@ export const VeraChatPanel: React.FC = () => {
             >
               {/* Avatar */}
               <div
-                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-[11px] font-bold ${
+                className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-[11px] font-bold overflow-hidden ${
                   isUser
                     ? 'bg-neutral-900 text-white'
-                    : 'bg-neutral-900 text-white font-mono'
+                    : 'bg-white border border-neutral-200 p-0.5'
                 }`}
               >
-                {isUser ? <User className="w-3.5 h-3.5" /> : <span>V</span>}
+                {isUser ? <User className="w-3.5 h-3.5" /> : <img src="/vera_icon.svg" alt="VERA" className="w-full h-full object-contain" />}
               </div>
 
               {/* Message Bubble */}
@@ -217,6 +254,12 @@ export const VeraChatPanel: React.FC = () => {
           <Send className="w-4 h-4" />
         </button>
       </form>
+
+      {/* Persistent Supabase Memory Drawer */}
+      <VeraMemoryDrawer
+        isOpen={isMemoryDrawerOpen}
+        onClose={() => setMemoryDrawerOpen(false)}
+      />
     </div>
   );
 };

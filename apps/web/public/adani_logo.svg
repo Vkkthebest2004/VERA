@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70" width="240" height="70">
+  <!-- Adani Tricolor arcs -->
+  <path d="M10 46C10 26 26 12 46 12C32 20 24 32 24 46Z" fill="#1B5EAC"/>
+  <path d="M24 46C24 30 36 20 52 20C40 26 34 36 34 46Z" fill="#7A2A82"/>
+  <path d="M34 46C34 36 42 28 56 28C46 32 42 38 42 46Z" fill="#E56A26"/>
+  <!-- Adani Wilmar Text -->
+  <text x="64" y="36" font-family="system-ui, -apple-system, sans-serif" font-size="21" font-weight="700" fill="#111827" letter-spacing="0.5">adani</text>
+  <text x="64" y="52" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#6B7280" letter-spacing="1">WILMAR</text>
+</svg>

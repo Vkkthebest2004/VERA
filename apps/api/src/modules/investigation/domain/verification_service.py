@@ -279,6 +279,19 @@ class EvidenceInvestigationService:
         passages: List[EvidencePassage],
         dossier: FactCheckDossier,
     ) -> Tuple[VerificationStatus, str, Optional[NumericalReconciliation], Optional[str], Optional[str], Optional[str], Optional[str]]:
+        entity_name = dossier.entities[0].name if dossier.entities else "The Company"
+
+        if getattr(assertion, "category", "") == "INFORMATIONAL_INQUIRY":
+            return (
+                VerificationStatus.SUPPORTED,
+                f"Informational inquiry regarding {entity_name}. Grounded in corporate business profile and statutory disclosures.",
+                None,
+                None,
+                f"{entity_name} is an active listed corporate enterprise. Official financial disclosures and business fundamentals establish its operations.",
+                "SEBI continuous corporate disclosure framework (SEBI LODR Regulations, 2015).",
+                f"The company regularly files audited financial results and compliance disclosures on BSE and NSE in accordance with SEBI LODR Regulations.",
+            )
+
         if not passages:
             # Crucial Rule: Absence of evidence is not automatically false
             if assertion.category == "PRICE_TARGET":
@@ -539,22 +552,7 @@ class EvidenceInvestigationService:
         has_supported = any(s == VerificationStatus.SUPPORTED for s in statuses)
         has_insufficient = any(s in (VerificationStatus.INSUFFICIENT_EVIDENCE, VerificationStatus.UNVERIFIED) for s in statuses)
 
-        # 1. Any partial support with large numerical inflation
-        if any(r.is_mismatch for r in reconciliations):
-            r = reconciliations[0]
-            the_reality = f"The underlying contract or project exists in company records, but official exchange filings confirm the true value is {r.official_value}, not {r.claimed_value}."
-            basis_of_denial = f"SEBI LODR Regulation 30 Disclosure Accuracy: The reported figure represents a {r.discrepancy_factor} discrepancy over certified filings. Inflated claims deceive public investors."
-            timeline_reality = f"During that quarter, the company filed an official regulatory disclosure confirming an order of {r.official_value}. No {r.claimed_value} contract exists in corporate archives."
-            return (
-                OverallVerdict.MISLEADING_OR_EXAGGERATED,
-                "Misleading: Kernel of Truth with Major Metric Inflation",
-                "Official exchange filings confirm that the underlying corporate event occurred, but the financial figures (value/growth) were drastically exaggerated in social forwards to create artificial FOMO.",
-                the_reality,
-                basis_of_denial,
-                timeline_reality,
-            )
-
-        # 2. Contradiction
+        # 1. Contradiction: Audited filings directly refute/contradict the claimed metrics
         if VerificationStatus.CONTRADICTED in statuses:
             if reconciliations:
                 r = reconciliations[0]
@@ -574,7 +572,38 @@ class EvidenceInvestigationService:
                 timeline_reality,
             )
 
-        # 3. All supported (with at least one verifiable match and no unverified claims)
+        # 2. Any partial support with large numerical inflation
+        if any(r.is_mismatch for r in reconciliations):
+            r = reconciliations[0]
+            the_reality = f"The underlying contract or project exists in company records, but official exchange filings confirm the true value is {r.official_value}, not {r.claimed_value}."
+            basis_of_denial = f"SEBI LODR Regulation 30 Disclosure Accuracy: The reported figure represents a {r.discrepancy_factor} discrepancy over certified filings. Inflated claims deceive public investors."
+            timeline_reality = f"During that quarter, the company filed an official regulatory disclosure confirming an order of {r.official_value}. No {r.claimed_value} contract exists in corporate archives."
+            return (
+                OverallVerdict.MISLEADING_OR_EXAGGERATED,
+                "Misleading: Kernel of Truth with Major Metric Inflation",
+                "Official exchange filings confirm that the underlying corporate event occurred, but the financial figures (value/growth) were drastically exaggerated in social forwards to create artificial FOMO.",
+                the_reality,
+                basis_of_denial,
+                timeline_reality,
+            )
+
+        # 3. Informational inquiry / Company overview
+        is_informational = all(getattr(a, "category", "") == "INFORMATIONAL_INQUIRY" for a in dossier.assertions) if dossier.assertions else False
+        if is_informational:
+            entity_name = dossier.entities[0].name if dossier.entities else "The Company"
+            the_reality = f"{entity_name} is an active corporate enterprise listed and monitored on Indian stock exchanges. Operations, financial statements, and business segments are officially documented in continuous regulatory disclosures."
+            basis_of_denial = "N/A — General corporate profile and fundamental inquiry, not a price-sensitive market rumor."
+            timeline_reality = f"The company regularly files audited financial results and compliance reports with BSE and NSE in accordance with SEBI LODR Regulations."
+            return (
+                OverallVerdict.CONFIRMED_TRUE,
+                f"Verified Corporate Profile & Financial Overview: {entity_name}",
+                f"{entity_name}'s corporate disclosures and statutory filings provide authentic operational and financial metrics.",
+                the_reality,
+                basis_of_denial,
+                timeline_reality,
+            )
+
+        # 4. All supported (with at least one verifiable match and no unverified claims)
         if has_supported and not has_insufficient:
             the_reality = "All atomic factual assertions are directly substantiated by official BSE/NSE disclosures and statutory filings."
             basis_of_denial = "N/A — Claim is fully substantiated by authentic exchange filings submitted under SEBI LODR Regulation 30."
@@ -588,7 +617,7 @@ class EvidenceInvestigationService:
                 timeline_reality,
             )
 
-        # 4. Insufficient evidence / Unsubstantiated speculation
+        # 5. Insufficient evidence / Unsubstantiated speculation
         the_reality = "No official company disclosure, exchange filing on BSE/NSE, or accredited financial news confirmation exists for this claim."
         basis_of_denial = "SEBI LODR Regulation 30 Continuous Mandatory Disclosure Window (24 hours). Listed entities must disclose all material events within 24 hours. The complete absence of an exchange filing legally classifies this as unverified speculation."
         timeline_reality = "During the queried timeline, the company's only filings on BSE/NSE archives were routine compliance filings (such as shareholding patterns under Reg 31, secretarial audit certificates, or quarterly governance reports); no material partnership, acquisition, or multi-thousand crore order was ever submitted or approved."
@@ -606,6 +635,23 @@ class EvidenceInvestigationService:
         dossier: FactCheckDossier,
         verdict: OverallVerdict,
     ) -> InvestorProtectionGuidance:
+        is_informational = all(getattr(a, "category", "") == "INFORMATIONAL_INQUIRY" for a in dossier.assertions) if dossier.assertions else False
+        if is_informational:
+            return InvestorProtectionGuidance(
+                risk_level="INFORMATIONAL",
+                summary_warning="Educational and business overview grounded in official stock exchange filings. Always conduct balanced fundamental analysis before investing.",
+                applicable_regulations=[
+                    "SEBI (Listing Obligations and Disclosure Requirements) Regulations, 2015",
+                    "SEBI Investor Education and Protection Framework",
+                ],
+                recommended_actions=[
+                    "Review recent quarterly financial statements (Form 33) on BSE/NSE",
+                    "Track Operating Cash Flow vs Net Profit over multi-year cycles",
+                    "Examine segment revenue distribution and competitive moat",
+                ],
+                official_redressal_url="https://scores.sebi.gov.in",
+                intermediary_check_url="https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognisedFpi=yes&intmId=13",
+            )
         if verdict in (OverallVerdict.MISLEADING_OR_EXAGGERATED, OverallVerdict.DEBUNKED_FAKE):
             return InvestorProtectionGuidance(
                 risk_level="HIGH_RISK",

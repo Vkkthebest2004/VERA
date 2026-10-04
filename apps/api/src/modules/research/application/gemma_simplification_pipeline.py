@@ -98,7 +98,24 @@ class GemmaSimplificationPipeline:
         if cache_key in self._cache:
             return self._cache[cache_key]
 
-        # Always build the high-precision decision-first response
+        clean_claim = self._clean_claim_text(claim_summary, raw_content)
+
+        # 1. Try dynamic local LLM synthesis first for genuine non-canned analysis
+        llm_response = self._synthesize_llm_response(
+            clean_claim=clean_claim,
+            overall_verdict=overall_verdict,
+            verdict_headline=verdict_headline,
+            the_reality=the_reality,
+            basis_of_denial=basis_of_denial,
+            timeline_reality=timeline_reality,
+            reconciliations=reconciliations,
+            evidence_trail=evidence_trail,
+        )
+        if llm_response:
+            self._cache[cache_key] = llm_response
+            return llm_response
+
+        # 2. High-precision deterministic fallback if Ollama is unreachable
         response = self._build_deterministic_chatgpt_response(
             claim_summary=claim_summary,
             raw_content=raw_content,
@@ -116,6 +133,58 @@ class GemmaSimplificationPipeline:
         )
         self._cache[cache_key] = response
         return response
+
+    def _synthesize_llm_response(
+        self,
+        clean_claim: str,
+        overall_verdict: str,
+        verdict_headline: str,
+        the_reality: str,
+        basis_of_denial: str,
+        timeline_reality: str,
+        reconciliations: List[Any],
+        evidence_trail: List[Any],
+    ) -> Optional[str]:
+        prompt = (
+            "You are VERA's Financial Intelligence and Verification Assistant. "
+            "Write a concise, high-clarity, decision-first audit report for the following query or claim.\n\n"
+            f"Query/Claim: {clean_claim}\n"
+            f"Headline: {verdict_headline}\n"
+            f"Status / Verdict: {overall_verdict}\n"
+            f"The Reality: {the_reality}\n"
+            f"Regulatory / Compliance Context: {basis_of_denial}\n"
+            f"Timeline Context: {timeline_reality}\n\n"
+            "Format your output cleanly with bold headers:\n"
+            "**VERDICT:** [One clear sentence stating the status]\n"
+            "**THE REALITY:** [What the verified corporate records or disclosures establish]\n"
+            "**WHY IT MATTERS:** [Practical impact on investors and why rumors or misconceptions mislead]\n"
+            "**EVIDENCE:** [Primary regulatory filings, exchange disclosures, or audit trail]\n"
+            "**VERA SAYS:** [Prudent, non-hype investor guidance]\n\n"
+            "Keep the response professional, articulate, and completely grounded in the provided facts."
+        )
+        models_to_try = ["qwen-vera:4b", "qwen2.5:3b", self.model_name]
+        for m in models_to_try:
+            try:
+                with httpx.Client(timeout=3.5) as client:
+                    resp = client.post(
+                        self.ollama_url,
+                        json={
+                            "model": m,
+                            "prompt": prompt,
+                            "stream": False,
+                            "options": {
+                                "temperature": 0.2,
+                                "num_predict": 400,
+                            }
+                        }
+                    )
+                    if resp.status_code == 200:
+                        txt = resp.json().get("response", "").strip()
+                        if txt and len(txt) > 80:
+                            return txt
+            except Exception:
+                continue
+        return None
 
     def _clean_claim_text(self, claim_summary: str, raw_content: str) -> str:
         """Extract a clean, concise, human-readable claim without OCR or viral noise."""

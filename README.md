@@ -33,33 +33,25 @@ $$\text{SearXNG MetaSearch} \longrightarrow \text{Crawl4AI Scraping} \longrighta
 
 ## 📁 Modular Directory Structure
 
+> For an in-depth breakdown of every folder, file responsibility, and architectural layer, see the master [**`PROJECT_STRUCTURE.md`**](file:///Users/vaibhavkrishnakesarwani/Desktop/VERA/PROJECT_STRUCTURE.md).
+
 ```text
 VERA/
 ├── apps/
-│   ├── api/                           # FastAPI backend
-│   │   └── src/
-│   │       ├── main.py                # API root router
-│   │       └── modules/
-│   │           ├── ingestion/         # Intake, file parsing & OCR
-│   │           │   ├── domain/        # Entities & de-hyping engine
-│   │           │   └── infrastructure/
-│   │           │       └── extractors/# Dedicated PDF, Image, Audio extractors
-│   │           ├── research/          # Autonomous web crawler & SearXNG
-│   │           │   ├── domain/        # Normalization, decomposition, credibility
-│   │           │   └── infrastructure/
-│   │           │       └── crawler/   # SSRF guard, browser client, fixtures, service
-│   │           └── investigation/     # Verification service & decision cards
-│   │               └── infrastructure/
-│   │                   └── data/      # Canonical filing registries
-│   └── web/                           # Next.js 16 (Day Mode Black & White UI)
-│       └── src/
-│           ├── app/                   # App router & layouts
-│           └── components/            # VeraChatResponse, IngestionStudio, CrawlerAnimationScreen
-├── infrastructure/
-│   └── searxng/                       # SearXNG configuration
-├── tests/                             # Unit & 15-case verification stress test suites
-├── docker-compose.yml                 # SearXNG, Redis, Postgres/pgvector, MinIO
-└── Makefile
+│   ├── api/                           # FastAPI backend (chat, ingestion, research, investigation)
+│   ├── web/                           # Next.js 16 frontend (analytical workstation, chat, charts)
+│   └── worker/                        # Celery background worker service
+├── assets/                            # Static brand logos and UI design reference assets
+├── data/                              # Canonical financial profiles and structured company dossiers
+├── docs/                              # Architecture specs, capability vaults, and progress logs
+├── infrastructure/                    # SearXNG, Postgres (pgvector), Docker, and Nginx configs
+├── packages/                          # Shared prompts, python common utilities, and shared types
+├── scripts/                           # Native Apple Vision OCR binary, eval, & profiling scripts
+├── tests/                             # Integration, unit, fixtures, and verification test suites
+├── training/                          # Ollama Modelfile, Qwen fine-tuning, & synthetic datasets
+├── docker-compose.yml                 # Local SearXNG, Redis, Postgres, MinIO container stack
+├── Makefile                           # Development lifecycle shortcuts
+└── PROJECT_STRUCTURE.md               # Master directory and folder guide
 ```
 
 ---

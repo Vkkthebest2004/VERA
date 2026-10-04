@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 70" width="240" height="70">
+  <!-- TATA Diamond / Ribbon Mark -->
+  <path d="M22 14L38 14L46 54L34 54L31 38L22 38L22 28L30 28L25 18L10 18L10 54L0 54L0 14Z" fill="#005696"/>
+  <!-- TATA POWER Text -->
+  <text x="54" y="34" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#005696" letter-spacing="1.5">TATA</text>
+  <text x="54" y="52" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#009A44" letter-spacing="2">POWER</text>
+</svg>

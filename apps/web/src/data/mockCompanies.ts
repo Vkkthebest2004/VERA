@@ -27,6 +27,7 @@ export interface CompanyData {
   closeDate: string;
   website: string;
   logoBg: string;
+  logoUrl?: string;
   marketCapCr: number;
   pe: number;
   high52: number;
@@ -66,7 +67,7 @@ const RELIANCE: CompanyData = {
   id: 'RELIANCE', ticker: 'RELIANCE', name: 'Reliance Industries Ltd',
   exchange: 'NSE: RELIANCE | BSE: 500325', bseCode: '500325', nseSymbol: 'RELIANCE',
   price: 1168, changePercent: -1.63, changeAmount: -19.35, closeDate: '01 Oct - close price',
-  website: 'ril.com', logoBg: 'bg-neutral-900',
+  website: 'ril.com', logoBg: 'bg-neutral-900', logoUrl: '/reliance_logo.svg',
   marketCapCr: 1580194, pe: 21.2, high52: 1612, low52: 1161, bookValue: 668,
   dividendYield: 0.51, roce: 10.3, roe: 8.91, faceValue: 10.0,
   about: "Reliance was founded by Dhirubhai Ambani and is now promoted and managed by his elder son, Mukesh Dhirubhai Ambani. Ambani's family has about 50% shareholding in the conglomerate.",
@@ -185,9 +186,26 @@ const RELIANCE: CompanyData = {
     { category: 'Public', quarters: [{ period: 'Sep 2024', pct: 13.00 }, { period: 'Dec 2024', pct: 12.78 }, { period: 'Mar 2025', pct: 12.74 }, { period: 'Jun 2025', pct: 12.09 }, { period: 'Sep 2025', pct: 12.16 }, { period: 'Dec 2025', pct: 11.83 }, { period: 'Mar 2026', pct: 10.99 }, { period: 'Jun 2026', pct: 10.22 }] },
   ],
   sampleClaims: [
-    { label: 'Ed-a-Mamma 51% Stake Acquisition', claim: 'Reliance Retail Ventures acquired a 51% majority stake in Ed-a-Mamma for ₹350 Crore.', type: 'TRUE' },
-    { label: 'Fabricated Secret Oil Concession Rumor', claim: 'Reliance Industries signed secret ₹2,50,000 Crore crude oil concession with Saudi Aramco! Guaranteed 25% upper circuit tomorrow!', type: 'UNSUBSTANTIATED' },
-    { label: 'Jio 475M+ Subscribers', claim: 'Jio Platforms now serves over 475 million wireless subscribers across India.', type: 'TRUE' },
+    {
+      label: 'Ed-a-Mamma 51% Stake Acquisition (₹350 Cr)',
+      claim: 'Reliance Retail Ventures acquired a 51% majority stake in Ed-a-Mamma for ₹350 Crore.',
+      type: 'TRUE',
+    },
+    {
+      label: 'Reliance Retail ₹50,000 Cr Luxury Deal (14.3x Inflated)',
+      claim: 'Reliance Retail signed an exclusive luxury retail partnership valued at ₹50,000 Crore with European brands.',
+      type: 'EXAGGERATED',
+    },
+    {
+      label: 'Q1 Net Profit Crash to ₹5,000 Cr (-45% Collapse)',
+      claim: 'Reliance Industries Q1 net profit collapsed by 45% to ₹5,000 Crore amid massive refining margin crash!',
+      type: 'CONTRADICTED',
+    },
+    {
+      label: 'Secret ₹2,50,000 Cr Aramco Oil Concession Rumor',
+      claim: 'Reliance Industries signed secret ₹2,50,000 Crore crude oil concession with Saudi Aramco! Guaranteed 25% upper circuit tomorrow!',
+      type: 'UNSUBSTANTIATED',
+    },
   ],
 };
 
@@ -198,7 +216,7 @@ const TATAPOWER: CompanyData = {
   id: 'TATAPOWER', ticker: 'TATAPOWER', name: 'Tata Power Company Ltd',
   exchange: 'NSE: TATAPOWER | BSE: 500400', bseCode: '500400', nseSymbol: 'TATAPOWER',
   price: 350, changePercent: -0.87, changeAmount: -3.05, closeDate: '01 Oct - close price',
-  website: 'tatapower.com', logoBg: 'bg-neutral-800',
+  website: 'tatapower.com', logoBg: 'bg-neutral-800', logoUrl: '/tatapower_logo.svg',
   marketCapCr: 111885, pe: 28.6, high52: 465, low52: 342, bookValue: 124,
   dividendYield: 0.71, roce: 10.5, roe: 10.2, faceValue: 1.0,
   about: "Tata Power Company Ltd is primarily involved in the business of the generation, transmission and distribution of electricity. It aims to produce electricity completely through renewable sources. It also manufactures solar roofs and plans to build 1 lakh ev charging stations by 2025. The company is India's largest vertically-integrated power company.",
@@ -330,7 +348,7 @@ const AWL: CompanyData = {
   id: 'AWL', ticker: 'AWL', name: 'AWL Agri Business Ltd',
   exchange: 'NSE: AWL | BSE: 543458', bseCode: '543458', nseSymbol: 'AWL',
   price: 175, changePercent: -1.27, changeAmount: -2.25, closeDate: '01 Oct - close price',
-  website: 'adaniwilmar.com', logoBg: 'bg-neutral-900',
+  website: 'adaniwilmar.com', logoBg: 'bg-neutral-900', logoUrl: '/adani_logo.svg',
   marketCapCr: 22800, pe: 19.4, high52: 283, low52: 171, bookValue: 80.3,
   dividendYield: 0.57, roce: 18.3, roe: 10.7, faceValue: 1.0,
   about: "Incorporated in 1999, Adani Wilmar Ltd deals in edible oil and food and other FMCG products. Adani has exited the joint venture in FY24 to focus on other segments. AWL Agri Business is the new identity continuing market leadership in edible oils and packaged staples.",
@@ -460,7 +478,7 @@ const ALLETEC: CompanyData = {
   id: 'ALLETEC', ticker: 'ALLETEC', name: 'All E Technologies Ltd',
   exchange: 'NSE - SME: ALLETEC', bseCode: '—', nseSymbol: 'ALLETEC',
   price: 123, changePercent: 0.37, changeAmount: 0.45, closeDate: '01 Oct - close price',
-  website: 'alletec.com', logoBg: 'bg-neutral-700',
+  website: 'alletec.com', logoBg: 'bg-neutral-700', logoUrl: '/alletec_logo.svg',
   marketCapCr: 248, pe: 9.74, high52: 277, low52: 116, bookValue: 83.6,
   dividendYield: 1.22, roce: 22.1, roe: 17.0, faceValue: 10.0,
   about: "Incorporated in 2000, All E Technologies Ltd provides technology based business solutions to various companies[1]",
