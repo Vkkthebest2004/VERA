@@ -84,7 +84,20 @@ graph TD
 
 ### Pillar I: VERA Core Terminal & Equity Intelligence
 
-#### 1. Screener-Grade Financial Terminal (`CompanyView.tsx`)
+#### 1. Search-First Front Page & Mission Statement (`VeraLandingPage.tsx`)
+* **Mission Statement Badge:** Prominently displays the institutional mission:  
+  `"Making financial information simple, transparent, verified, and easy to understand"`  
+  with an emerald pulse indicator and minimalist high-contrast styling.
+* **Instant Equity Search & Autocomplete:** A central, reactive search engine providing real-time ticker resolution across BSE and NSE listed entities with live trading prices, 52-week ranges, market capitalizations, and audited badges.
+* **Curated Conglomerate Directory:** Quick-access direct links to benchmark Indian market leaders across Conglomerates, Clean Utilities, FMCG, and IT Services.
+
+#### 2. 20 Official Indian Languages Democratization Engine (`languageStore.ts` & `LanguageSelector.tsx`)
+* **Constitutional Language Coverage:** Direct localization support for **20 Eighth Schedule Indian languages**:
+  * *Hindi (`हिन्दी`), Bengali (`বাংলা`), Telugu (`తెలుగు`), Marathi (`मराठी`), Tamil (`தமிழ்`), Urdu (`اردو`), Gujarati (`ગુજરાતી`), Kannada (`ಕನ್ನಡ`), Malayalam (`മലയാളം`), Odia (`ଓଡ଼ିଆ`), Punjabi (`ਪੰਜਾਬੀ`), Assamese (`অসমীয়া`), Maithili (`मैथिली`), Santali (`ᱥᱟᱱᱛᱟᱲᱤ`), Kashmiri (`کٲشُر`), Nepali (`नेपाली`), Konkani (`कोंकणी`), Sindhi (`سنڌي`), Dogri (`डोगरी`), Sanskrit (`संस्कृतम्`).*
+* **Full-Stack Localization:** Translates search interfaces, navigation headers, DuPont capital efficiency ratios, and conversational research with Artha Copilot into native Indian scripts with zero latency.
+* **Glassmorphism Selector Modal:** Features search filtering across native script names, English aliases, and quick-toggle action pills.
+
+#### 3. Screener-Grade Financial Terminal (`CompanyView.tsx`)
 * **Live Corporate Header:** Features authentic corporate vector logos (e.g., Reliance Industries gold torch crown, Tata Power, Adani Wilmar, All E Tech), current price, daily delta, stock exchange tickers (`NSE`, `BSE`), market capitalization, and direct links to statutory investor relations websites.
 * **Instant Fundamental Ratio Grid:** Displays critical ratios computed across standard financial periods:
   * Market Cap (₹ Cr.)
@@ -105,7 +118,7 @@ graph TD
   * `Archive`: Jump straight into historical SEBI Regulation 30 archives.
   * `Scan`: Run a multi-dimensional diagnostic scan comparing peer metrics.
 
-#### 2. Interactive Conversational Visualizer (`VeraConversationalVisualizer.tsx`)
+#### 4. Interactive Conversational Visualizer (`VeraConversationalVisualizer.tsx`)
 * **Multi-Dimensional Canvas:** Replaces static charts with an interactive graphical exploration surface supporting 15 analytical visual modes:
   1. `CompanyGrowthChart`: Multi-line trajectory of Revenue vs. EBITDA vs. PAT.
   2. `ProfitCashFlowChart`: Operating Cash Flow (OCF) vs. Net Profit conversion.
@@ -125,13 +138,13 @@ graph TD
 * **Global Financial Time Machine:** An interactive slider enabling investors to drag across 10 audited fiscal years (FY16 to FY26) to observe how balance sheets and ratios morphed across investment cycles.
 * **Direct DSL Command Control:** The visualizer canvas can be directly manipulated via conversational natural-language commands from Artha (e.g., *"Show Profit vs Cash Flow"*, *"Compare Reliance with ONGC and BPCL"*, *"Make this simpler"*).
 
-#### 3. Core Watchlist & Screens (`WatchlistView.tsx`)
+#### 5. Core Watchlist & Screens (`WatchlistView.tsx`)
 * **Multi-View Modes:** Supports toggle between dense Table View and card-based Grid View.
 * **Tracking System:** Preloaded with benchmark Indian conglomerates across diverse sectors (Oil & Telecom, Renewable Energy, FMCG/Agri, IT Services).
 * **Live Sorting & Metric Comparison:** Sort by P/E, Market Capitalization, Daily Momentum, or ROCE.
 * **One-Click Audit Trigger:** Every company row contains an `Audit` button that immediately triggers a statutory disclosure review for that ticker.
 
-#### 4. Raw Media Ingestion Studio (`IngestionStudio.tsx`)
+#### 6. Raw Media Ingestion Studio (`IngestionStudio.tsx`)
 * **Multi-Modal Document Extraction:**
   * PDF annual reports and quarterly results press releases.
   * Image OCR of tabular financial statements and management commentary.
