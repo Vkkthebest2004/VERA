@@ -13,6 +13,7 @@ from .entities import (
 )
 from ..infrastructure.filings_repository import AuthoritativeFilingsRepository
 from ...research.application.gemma_simplification_pipeline import GemmaSimplificationPipeline
+from ...research.application.qwen_reasoning_pipeline import QwenReasoningPipeline
 
 
 class EvidenceInvestigationService:
@@ -21,6 +22,7 @@ class EvidenceInvestigationService:
     def __init__(self, repository: Optional[AuthoritativeFilingsRepository] = None):
         self.repository = repository or AuthoritativeFilingsRepository()
         self.gemma_pipeline = GemmaSimplificationPipeline()
+        self.qwen_pipeline = QwenReasoningPipeline()
 
     def investigate(self, dossier: FactCheckDossier) -> InvestigationDossier:
         assertion_investigations: List[AssertionInvestigation] = []

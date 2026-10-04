@@ -13,16 +13,20 @@ import {
   ShieldCheck,
   Menu,
   X,
+  MessageSquare,
 } from 'lucide-react';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 
 interface VeraNavbarProps {
-  currentView: 'company' | 'watchlist' | 'raw_ingestion';
-  onViewChange: (view: 'company' | 'watchlist' | 'raw_ingestion') => void;
+  currentView: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion';
+  onViewChange: (view: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion') => void;
   selectedCompanyId: string;
   onSelectCompany: (companyId: string) => void;
-  onToggleAiSidebar: () => void;
+  onToggleAiSidebar?: () => void;
+  onOpenChat?: () => void;
+  onOpenEvidence?: () => void;
   isAiSidebarOpen: boolean;
+  activeDrawerMode?: 'chat' | 'evidence' | null;
   watchlistCount: number;
 }
 
@@ -32,7 +36,10 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
   selectedCompanyId,
   onSelectCompany,
   onToggleAiSidebar,
+  onOpenChat,
+  onOpenEvidence,
   isAiSidebarOpen,
+  activeDrawerMode,
   watchlistCount,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,33 +70,22 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         {/* Left: Brand Logo & Navigation Links */}
         <div className="flex items-center gap-6 md:gap-8">
-          {/* VERA Logo with Screener-style two green bars */}
+          {/* VERA Brand Logo */}
           <button
             onClick={() => onViewChange('company')}
-            className="flex items-center gap-1.5 focus:outline-hidden group"
+            className="flex items-center gap-1.5 focus:outline-hidden group cursor-pointer"
           >
-            <span className="text-xl font-bold tracking-tight text-neutral-900 group-hover:text-emerald-700 transition-colors">
-              vera<span className="text-emerald-600">.</span>
+            <span className="text-2xl font-bold tracking-tight text-neutral-900 group-hover:text-emerald-700 transition-colors">
+              vera<span className="text-emerald-600">.ai</span>
             </span>
-            <div className="flex items-end gap-[2px] h-4 mb-0.5">
-              <span className="w-1.5 h-2.5 bg-emerald-600 rounded-[1px]" />
-              <span className="w-1.5 h-4 bg-emerald-600 rounded-[1px]" />
+            <div className="flex items-end gap-[3px] h-5 mb-0.5">
+              <span className="w-1.5 h-3.5 bg-emerald-600 rounded-[1px]" />
+              <span className="w-1.5 h-5 bg-emerald-600 rounded-[1px]" />
             </div>
           </button>
 
-          {/* Primary Nav Menu (Matching Screener top bar: FEED, SCREENS, TOOLS) */}
+          {/* Primary Nav Menu: FEED, SCREENS, TOOLS */}
           <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700">
-            <button
-              onClick={() => onViewChange('watchlist')}
-              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
-                currentView === 'watchlist'
-                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
-                  : 'text-neutral-600'
-              }`}
-            >
-              FEED
-            </button>
-
             <button
               onClick={() => onViewChange('company')}
               className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
@@ -98,7 +94,30 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   : 'text-neutral-600'
               }`}
             >
+              FEED
+            </button>
+
+            <button
+              onClick={() => onViewChange('watchlist')}
+              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold ${
+                currentView === 'watchlist'
+                  ? 'text-neutral-950 font-bold border-b-2 border-neutral-900 pb-[17px] mt-[17px]'
+                  : 'text-neutral-600'
+              }`}
+            >
               SCREENS
+            </button>
+
+            <button
+              onClick={() => onViewChange('visualizer')}
+              className={`hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold flex items-center gap-1.5 ${
+                currentView === 'visualizer'
+                  ? 'text-purple-700 font-bold border-b-2 border-purple-600 pb-[17px] mt-[17px]'
+                  : 'text-neutral-700 hover:text-purple-700'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+              <span>VISUALIZER</span>
             </button>
 
             <div className="relative">
@@ -111,26 +130,48 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               </button>
 
               {isToolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-neutral-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-neutral-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <button
+                    onClick={() => {
+                      if (onOpenChat) onOpenChat();
+                      else if (onToggleAiSidebar) onToggleAiSidebar();
+                      setIsToolsOpen(false);
+                    }}
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-purple-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <MessageSquare className="w-4 h-4 text-purple-600 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-neutral-900">✦ Artha</div>
+                      <div className="text-[10px] text-neutral-500">Financial Intelligence Copilot</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (onOpenEvidence) onOpenEvidence();
+                      else if (onToggleAiSidebar) onToggleAiSidebar();
+                      setIsToolsOpen(false);
+                    }}
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-emerald-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-neutral-900">Evidence & Filings</div>
+                      <div className="text-[10px] text-neutral-500">Statutory filings & regulatory records</div>
+                    </div>
+                  </button>
+                  <div className="my-1 border-t border-neutral-100" />
                   <button
                     onClick={() => {
                       onViewChange('raw_ingestion');
                       setIsToolsOpen(false);
                     }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-50 flex items-center gap-2"
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-50 flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Raw Media Ingestion Studio</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      onToggleAiSidebar();
-                      setIsToolsOpen(false);
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-50 flex items-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span>Open VERA Evidence AI Bot</span>
+                    <FileSpreadsheet className="w-4 h-4 text-blue-600 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-neutral-900">Raw Media Ingestion Studio</div>
+                      <div className="text-[10px] text-neutral-500">Extract tables, PDFs & filings</div>
+                    </div>
                   </button>
                 </div>
               )}
@@ -208,21 +249,19 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
             )}
           </div>
 
-          {/* User Profile Pill */}
+          {/* User Profile Pill matching Screener.in */}
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-neutral-100 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors border border-transparent hover:border-neutral-200"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-300 hover:bg-neutral-50 text-neutral-800 text-xs font-semibold uppercase tracking-wider transition-colors shadow-2xs cursor-pointer"
             >
-              <div className="w-5 h-5 rounded-full bg-neutral-200 text-neutral-700 flex items-center justify-center font-bold text-[10px]">
-                V
-              </div>
-              <span className="hidden sm:inline">VAIBHAV</span>
-              <ChevronDown className="w-3.5 h-3.5 text-neutral-500" />
+              <User className="w-3.5 h-3.5 text-neutral-600" />
+              <span>VAIBHAV</span>
+              <ChevronDown className="w-3 h-3 text-neutral-500" />
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-50 animate-in fade-in">
+              <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-50 animate-in fade-in">
                 <div className="px-3 py-2 border-b border-neutral-100">
                   <p className="text-xs font-bold text-neutral-900">Vaibhav Kesarwani</p>
                   <p className="text-[11px] text-neutral-500 truncate">vaibhav@vera.ai</p>
@@ -232,40 +271,78 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                     onViewChange('watchlist');
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-50 flex items-center gap-2"
+                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-50 flex items-center gap-2 cursor-pointer"
                 >
                   <Bookmark className="w-3.5 h-3.5 text-neutral-500" />
                   <span>My Watchlist ({watchlistCount})</span>
                 </button>
                 <button
                   onClick={() => {
-                    onToggleAiSidebar();
+                    if (onOpenChat) onOpenChat();
+                    else if (onToggleAiSidebar) onToggleAiSidebar();
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-50 flex items-center gap-2"
+                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-purple-50 flex items-center gap-2 cursor-pointer"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                  <span>VERA AI Evidence Bot</span>
+                  <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
+                  <span>✦ Artha</span>
+                </button>
+                <button
+                  onClick={() => {
+                    if (onOpenEvidence) onOpenEvidence();
+                    else if (onToggleAiSidebar) onToggleAiSidebar();
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Evidence</span>
                 </button>
               </div>
             )}
           </div>
 
-          {/* THE AI EVIDENCE BOT BUTTON — Prominent Purple Pill matching Screener's '+ AI' */}
-          <button
-            onClick={onToggleAiSidebar}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
-              isAiSidebarOpen
-                ? 'bg-purple-800 text-white ring-2 ring-purple-300 shadow-md'
-                : 'bg-purple-600 hover:bg-purple-700 text-white'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-purple-200 animate-pulse" />
-            <span>AI Bot</span>
-            <span className="hidden lg:inline text-[10px] bg-purple-500/50 px-1 py-0.5 rounded font-mono">
-              VERA
-            </span>
-          </button>
+          {/* ─────────────────────────────────────────────────────────────
+              SEPARATED DUAL OPTIONS:
+              1. ✦ Artha (Financial Copilot)
+              2. 🛡️ Statutory Evidence Tracker
+          ────────────────────────────────────────────────────────────── */}
+          <div className="flex items-center gap-1.5">
+            {/* OPTION 1: Artha */}
+            <button
+              onClick={() => {
+                if (onOpenChat) onOpenChat();
+                else if (onToggleAiSidebar) onToggleAiSidebar();
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+                isAiSidebarOpen && activeDrawerMode === 'chat'
+                  ? 'bg-purple-800 text-white ring-2 ring-purple-300 shadow-md'
+                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+              }`}
+              title="Chat with Artha"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-200" />
+              <span>✦ Artha</span>
+            </button>
+
+            {/* OPTION 2: Statutory Evidence Tracker */}
+            <button
+              onClick={() => {
+                if (onOpenEvidence) onOpenEvidence();
+                else if (onToggleAiSidebar) onToggleAiSidebar();
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+                isAiSidebarOpen && activeDrawerMode === 'evidence'
+                  ? 'bg-emerald-800 text-white ring-2 ring-emerald-300 shadow-md'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}
+              title="Audit Viral Rumors & Verify SEBI LODR 30 Filings"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-100" />
+              <span className="hidden sm:inline">Evidence Tracker</span>
+              <span className="sm:hidden">Evidence</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>

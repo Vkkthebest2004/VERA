@@ -15,24 +15,56 @@ import {
   Check,
   Share2,
   ChevronRight,
+  ChevronDown,
   Info,
+  FileText,
+  PieChart,
+  BarChart3,
+  Layers,
+  Building2,
+  CheckCircle2,
+  Scale,
+  Calendar,
+  Zap,
+  LineChart,
+  Users,
+  MessageSquare,
 } from 'lucide-react';
-import { CompanyData } from '@/data/mockCompanies';
+import { CompanyData, COMPANIES } from '@/data/mockCompanies';
+import { ScreenerStockChart } from './ScreenerStockChart';
+
+export type TabType =
+  | 'chart'
+  | 'analysis'
+  | 'peers'
+  | 'quarters'
+  | 'profit-loss'
+  | 'balance-sheet'
+  | 'cash-flow'
+  | 'ratios'
+  | 'investors'
+  | 'documents';
 
 interface CompanyViewProps {
   company: CompanyData;
-  onOpenAiWithClaim: (claimText: string) => void;
+  onOpenAiWithClaim?: (claimText: string) => void;
+  onOpenChat?: () => void;
+  onOpenEvidence?: (claimText?: string) => void;
   onToggleWatchlist: (companyId: string) => void;
   isInWatchlist: boolean;
+  onSelectCompany?: (companyId: string) => void;
 }
 
 export const CompanyView: React.FC<CompanyViewProps> = ({
   company,
-  onOpenAiWithClaim,
+  onOpenAiWithClaim = () => {},
+  onOpenChat,
+  onOpenEvidence,
   onToggleWatchlist,
   isInWatchlist,
+  onSelectCompany,
 }) => {
-  const [activeTab, setActiveTab] = useState<'chart' | 'analysis' | 'peers' | 'quarters' | 'documents'>('chart');
+  const [activeTab, setActiveTab] = useState<TabType>('chart');
   const [activeTimeframe, setActiveTimeframe] = useState<'1M' | '6M' | '1Yr' | '3Yr' | '5Yr' | 'Max'>('1Yr');
   const [chartMode, setChartMode] = useState<'Price' | 'PE Ratio'>('Price');
   const [hoveredPoint, setHoveredPoint] = useState<{ x: string; y: number; volume: number } | null>(null);
@@ -73,31 +105,33 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 space-y-6">
       {/* ─────────────────────────────────────────────────────────────
-          1. Sub-navigation Bar (Matching Screener.in)
+          1. Sub-navigation Bar (Matching Screener.in Exact Layout)
       ────────────────────────────────────────────────────────────── */}
       <div className="border-b border-neutral-200 flex items-center justify-between overflow-x-auto text-[13px] font-medium text-neutral-600 scrollbar-none">
-        <div className="flex items-center gap-1 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             onClick={() => setActiveTab('chart')}
-            className={`py-2 px-2 border-b-2 font-semibold transition-colors ${
+            className={`py-2 px-3 border-b-2 font-semibold text-[13px] transition-colors cursor-pointer ${
               activeTab === 'chart'
-                ? 'border-blue-600 text-blue-600 font-bold'
+                ? 'border-purple-600 text-purple-700 font-bold'
                 : 'border-transparent hover:text-neutral-900'
             }`}
           >
-            {company.name.split(' ')[0]} Tech
+            {company.name.length > 17 ? company.name.slice(0, 16) + '.' : company.name}
           </button>
           <button
             onClick={() => setActiveTab('chart')}
-            className={`py-2 px-2 border-b-2 transition-colors ${
-              activeTab === 'chart' ? 'text-neutral-900 font-semibold' : 'border-transparent hover:text-neutral-900'
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'chart'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
             }`}
           >
             Chart
           </button>
           <button
             onClick={() => setActiveTab('analysis')}
-            className={`py-2 px-2 border-b-2 transition-colors ${
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'analysis'
                 ? 'border-blue-600 text-blue-600 font-bold'
                 : 'border-transparent hover:text-neutral-900'
@@ -107,7 +141,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('peers')}
-            className={`py-2 px-2 border-b-2 transition-colors ${
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'peers'
                 ? 'border-blue-600 text-blue-600 font-bold'
                 : 'border-transparent hover:text-neutral-900'
@@ -117,7 +151,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('quarters')}
-            className={`py-2 px-2 border-b-2 transition-colors ${
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'quarters'
                 ? 'border-blue-600 text-blue-600 font-bold'
                 : 'border-transparent hover:text-neutral-900'
@@ -125,24 +159,59 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           >
             Quarters
           </button>
-          <button className="py-2 px-2 border-b-2 border-transparent hover:text-neutral-900 hidden md:inline">
+          <button
+            onClick={() => setActiveTab('profit-loss')}
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'profit-loss'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
+            }`}
+          >
             Profit & Loss
           </button>
-          <button className="py-2 px-2 border-b-2 border-transparent hover:text-neutral-900 hidden lg:inline">
+          <button
+            onClick={() => setActiveTab('balance-sheet')}
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'balance-sheet'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
+            }`}
+          >
             Balance Sheet
           </button>
-          <button className="py-2 px-2 border-b-2 border-transparent hover:text-neutral-900 hidden lg:inline">
+          <button
+            onClick={() => setActiveTab('cash-flow')}
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'cash-flow'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
+            }`}
+          >
             Cash Flow
           </button>
-          <button className="py-2 px-2 border-b-2 border-transparent hover:text-neutral-900 hidden md:inline">
+          <button
+            onClick={() => setActiveTab('ratios')}
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'ratios'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
+            }`}
+          >
             Ratios
           </button>
-          <button className="py-2 px-2 border-b-2 border-transparent hover:text-neutral-900 hidden lg:inline">
+          <button
+            onClick={() => setActiveTab('investors')}
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
+              activeTab === 'investors'
+                ? 'border-blue-600 text-blue-600 font-bold'
+                : 'border-transparent hover:text-neutral-900'
+            }`}
+          >
             Investors
           </button>
           <button
             onClick={() => setActiveTab('documents')}
-            className={`py-2 px-2 border-b-2 transition-colors ${
+            className={`py-2 px-2.5 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'documents'
                 ? 'border-blue-600 text-blue-600 font-bold'
                 : 'border-transparent hover:text-neutral-900'
@@ -158,80 +227,88 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <BookOpen className="w-3.5 h-3.5 text-neutral-500" />
             <span>Notebook</span>
           </button>
-
-          {/* VERA AI Evidence Verification Button */}
-          <button
-            onClick={() => onOpenAiWithClaim(`Verify official Regulation 30 filings for ${company.name}`)}
-            className="flex items-center gap-1 px-3 py-1 rounded-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>+ AI</span>
-          </button>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          2. Company Header Card & Ratios Grid (Matching Image 1)
+          2. Company Header Card & Ratios Grid
       ────────────────────────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-neutral-200/90 p-5 sm:p-6 shadow-2xs">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 pb-6 border-b border-neutral-100">
           {/* Company Title, Price & External Links */}
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-3">
-              {/* Logo */}
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                O
+              {/* Logo Badge */}
+              <div
+                className={`w-9 h-9 rounded-full ${company.logoBg} text-white flex items-center justify-center font-bold text-sm shadow-xs`}
+              >
+                {company.ticker[0]}
               </div>
-              <h1 className="text-2xl sm:text-[26px] font-bold tracking-tight text-neutral-900">
-                {company.name}
-              </h1>
-              <span className="text-neutral-400 font-normal text-xl">•</span>
-              <span className="text-2xl sm:text-[26px] font-bold text-neutral-900">
-                ₹ {company.price.toLocaleString('en-IN')}
-              </span>
-              <span
-                className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                  company.changePercent >= 0
-                    ? 'text-emerald-700 bg-emerald-50'
-                    : 'text-rose-700 bg-rose-50'
-                }`}
-              >
-                {company.changePercent >= 0 ? '▲' : '▼'} {Math.abs(company.changePercent)}%
-              </span>
-              <span className="text-xs text-neutral-500 font-normal">{company.closeDate}</span>
-            </div>
-
-            {/* Links */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-blue-600 font-medium pt-0.5">
-              <a
-                href={`https://${company.website}`}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:underline flex items-center gap-1 text-neutral-700 hover:text-blue-600"
-              >
-                <span>🔗 {company.website}</span>
-              </a>
-              <span className="text-neutral-300">•</span>
-              <span className="flex items-center gap-1 text-neutral-700">
-                <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
-                <span>{company.exchange}</span>
-              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900 font-sans">
+                    {company.name}
+                  </h1>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-blue-600 font-medium pt-1">
+                  <a
+                    href={`https://${company.website}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:underline flex items-center gap-1"
+                  >
+                    <span>🔗 {company.website}</span>
+                  </a>
+                  <span className="text-neutral-300">•</span>
+                  <span className="flex items-center gap-1 text-neutral-600">
+                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                    <span>BSE: {company.bseCode}</span>
+                  </span>
+                  <span className="text-neutral-300">•</span>
+                  <span className="flex items-center gap-1 text-neutral-600">
+                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                    <span>NSE: {company.nseSymbol}</span>
+                  </span>
+                </div>
+              </div>
+              <span className="text-neutral-300 font-normal text-2xl hidden sm:inline">•</span>
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl sm:text-[28px] font-bold text-neutral-900 font-sans">
+                    ₹ {company.price.toLocaleString('en-IN')}
+                  </span>
+                  <span
+                    className={`text-xs font-semibold px-1.5 py-0.5 rounded flex items-center gap-1 ${
+                      company.changePercent >= 0
+                        ? 'text-emerald-700 bg-emerald-50'
+                        : 'text-rose-700 bg-rose-50'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${company.changePercent >= 0 ? 'bg-emerald-600' : 'bg-rose-600'}`} />
+                    <span>{company.changePercent >= 0 ? '+' : ''}{company.changePercent}%</span>
+                  </span>
+                </div>
+                <span className="text-[11px] text-neutral-400 font-normal">{company.closeDate}</span>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons: Export to Excel & Follow */}
           <div className="flex items-center gap-2.5">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-neutral-300 hover:bg-neutral-50 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors shadow-2xs">
+            <button
+              onClick={() => onOpenAiWithClaim(`Generate consolidated financial verification brief for ${company.name}`)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-neutral-300 hover:bg-neutral-50 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors shadow-2xs cursor-pointer"
+            >
               <Download className="w-3.5 h-3.5" />
               <span>EXPORT TO EXCEL</span>
             </button>
 
             <button
               onClick={() => onToggleWatchlist(company.id)}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-bold transition-all shadow-xs cursor-pointer ${
                 isInWatchlist
                   ? 'bg-purple-100 text-purple-800 border border-purple-300'
-                  : 'bg-purple-600 hover:bg-purple-700 text-white'
+                  : 'bg-[#5b51d8] hover:bg-[#4b43c6] text-white uppercase tracking-wider'
               }`}
             >
               {isInWatchlist ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
@@ -247,326 +324,131 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           {/* Left: Financial Ratios (8 Cols) */}
           <div className="lg:col-span-8 space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-6 text-sm">
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Market Cap</span>
-                <span className="font-bold text-neutral-900">
-                  ₹ {company.marketCapCr.toLocaleString('en-IN')} Cr.
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Market Cap</span>
+                <span className="font-bold text-neutral-900 text-sm">
+                  ₹ {company.marketCapCr.toLocaleString('en-IN')} <span className="font-normal text-xs text-neutral-600">Cr.</span>
                 </span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Current Price</span>
-                <span className="font-bold text-neutral-900">₹ {company.price}</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Current Price</span>
+                <span className="font-bold text-neutral-900 text-sm">
+                  ₹ {company.price.toLocaleString('en-IN')}
+                </span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">High / Low</span>
-                <span className="font-bold text-neutral-900">
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">High / Low</span>
+                <span className="font-bold text-neutral-900 text-xs">
                   ₹ {company.high52} / {company.low52}
                 </span>
               </div>
 
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Stock P/E</span>
-                <span className="font-bold text-neutral-900">{company.pe}</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Stock P/E</span>
+                <span className="font-bold text-neutral-900 text-sm">{company.pe}</span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Book Value</span>
-                <span className="font-bold text-neutral-900">₹ {company.bookValue}</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Book Value</span>
+                <span className="font-bold text-neutral-900 text-sm">₹ {company.bookValue}</span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Dividend Yield</span>
-                <span className="font-bold text-neutral-900">{company.dividendYield} %</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Dividend Yield</span>
+                <span className="font-bold text-neutral-900 text-sm">{company.dividendYield} <span className="font-normal text-xs text-neutral-600">%</span></span>
               </div>
 
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">ROCE</span>
-                <span className="font-bold text-neutral-900">{company.roce} %</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">ROCE</span>
+                <span className="font-bold text-neutral-900 text-sm">{company.roce} <span className="font-normal text-xs text-neutral-600">%</span></span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">ROE</span>
-                <span className="font-bold text-neutral-900">{company.roe} %</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">ROE</span>
+                <span className="font-bold text-neutral-900 text-sm">{company.roe} <span className="font-normal text-xs text-neutral-600">%</span></span>
               </div>
-              <div className="border-b border-neutral-100 pb-2.5 flex items-baseline justify-between">
-                <span className="text-neutral-500 text-xs">Face Value</span>
-                <span className="font-bold text-neutral-900">₹ {company.faceValue}</span>
+              <div className="border-b border-neutral-100 pb-2 flex items-baseline justify-between">
+                <span className="text-neutral-500 text-xs font-normal">Face Value</span>
+                <span className="font-bold text-neutral-900 text-sm">₹ {company.faceValue.toFixed(2)}</span>
               </div>
             </div>
 
-            {/* Add ratio to table input */}
-            <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="relative max-w-xs w-full">
+            {/* Add ratio to table matching Screener */}
+            <div className="pt-2">
+              <label className="block text-xs font-semibold text-neutral-800 mb-1.5">
+                Add ratio to table
+              </label>
+              <div className="flex items-center justify-between gap-4">
                 <input
                   type="text"
                   placeholder="eg. Promoter holding"
-                  className="w-full px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-md text-xs placeholder-neutral-400 focus:outline-hidden focus:border-neutral-400"
+                  className="w-full max-w-md px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-blue-500 shadow-2xs"
                 />
+                <button
+                  onClick={() => onOpenAiWithClaim(`Verify financial ratios for ${company.name}`)}
+                  className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 uppercase tracking-wider"
+                >
+                  <Edit2 className="w-3.5 h-3.5" />
+                  <span>EDIT RATIOS</span>
+                </button>
               </div>
-              <button className="text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 tracking-wider uppercase">
-                <Edit2 className="w-3 h-3" />
-                <span>EDIT RATIOS</span>
-              </button>
             </div>
           </div>
 
           {/* Right: About & Key Points (4 Cols) */}
-          <div className="lg:col-span-4 bg-neutral-50/70 rounded-xl p-4 border border-neutral-100 space-y-4">
+          <div className="lg:col-span-4 bg-transparent p-0 space-y-4">
             <div>
-              <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1.5">
-                ABOUT
+              <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1 flex items-center justify-between">
+                <span>ABOUT</span>
+                <ChevronDown className="w-3.5 h-3.5 text-neutral-400 cursor-pointer" />
               </h3>
-              <p className="text-xs text-neutral-700 leading-relaxed">
-                {company.about}{' '}
-                <span className="text-blue-600 font-mono text-[10px] cursor-pointer">[1]</span>
-              </p>
+              <p className="text-xs text-neutral-700 leading-relaxed">{company.about}</p>
             </div>
 
             <div>
-              <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1.5">
+              <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1">
                 KEY POINTS
               </h3>
-              <div className="space-y-1.5 text-xs text-neutral-700 leading-relaxed">
+              <div className="text-xs text-neutral-700 leading-relaxed space-y-1">
                 {company.keyPoints.map((point, idx) => (
-                  <p key={idx}>
-                    {point}{' '}
-                    <span className="text-blue-600 font-mono text-[10px] cursor-pointer">
-                      [{idx + 1}]
-                    </span>
-                  </p>
+                  <p key={idx}>{point}</p>
                 ))}
               </div>
-              <button className="text-blue-600 hover:underline font-bold text-[11px] mt-2 block tracking-wider uppercase">
-                READ MORE &gt;
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ─────────────────────────────────────────────────────────────
-          4. Interactive Stock Chart Card (Matching Image 1)
-      ────────────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-neutral-200/90 p-5 shadow-2xs space-y-4">
-        {/* Top Controls: Timeframes on Left, Options on Right */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-neutral-100">
-          {/* Timeframe Selectors */}
-          <div className="flex items-center gap-1">
-            {(['1M', '6M', '1Yr', '3Yr', '5Yr', 'Max'] as const).map((tf) => (
               <button
-                key={tf}
-                onClick={() => setActiveTimeframe(tf)}
-                className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                  activeTimeframe === tf
-                    ? 'bg-blue-50 text-blue-600 font-bold border border-blue-200 shadow-2xs'
-                    : 'text-neutral-600 hover:bg-neutral-100'
-                }`}
+                onClick={() => setActiveTab('analysis')}
+                className="text-blue-600 hover:underline font-bold text-xs mt-2.5 inline-flex items-center gap-1 tracking-wider uppercase cursor-pointer"
               >
-                {tf}
+                <span>READ MORE</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
-            ))}
-          </div>
-
-          {/* Right Toggles: Price, PE Ratio, Alerts */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setChartMode('Price')}
-              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                chartMode === 'Price'
-                  ? 'bg-blue-50 text-blue-600 font-bold border border-blue-200'
-                  : 'text-neutral-600 hover:bg-neutral-100'
-              }`}
-            >
-              Price
-            </button>
-            <button
-              onClick={() => setChartMode('PE Ratio')}
-              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                chartMode === 'PE Ratio'
-                  ? 'bg-blue-50 text-blue-600 font-bold border border-blue-200'
-                  : 'text-neutral-600 hover:bg-neutral-100'
-              }`}
-            >
-              PE Ratio
-            </button>
-            <button className="px-2.5 py-1 text-xs text-neutral-600 hover:bg-neutral-100 rounded">
-              More ⌵
-            </button>
-            <button className="flex items-center gap-1 px-3 py-1 text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded font-semibold hover:bg-amber-100 transition-colors">
-              <Bell className="w-3.5 h-3.5 text-amber-600" />
-              <span>Alerts</span>
-            </button>
-          </div>
-        </div>
-
-        {/* SVG Stock Curve Chart */}
-        <div className="relative w-full overflow-hidden">
-          <svg
-            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-            className="w-full h-72 sm:h-80 select-none"
-          >
-            <defs>
-              <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-
-            {/* Grid lines */}
-            <line
-              x1={padding.left}
-              y1={padding.top}
-              x2={chartWidth - padding.right}
-              y2={padding.top}
-              stroke="#f1f5f9"
-              strokeDasharray="4 4"
-            />
-            <line
-              x1={padding.left}
-              y1={chartHeight / 2}
-              x2={chartWidth - padding.right}
-              y2={chartHeight / 2}
-              stroke="#f1f5f9"
-              strokeDasharray="4 4"
-            />
-            <line
-              x1={padding.left}
-              y1={chartHeight - padding.bottom}
-              x2={chartWidth - padding.right}
-              y2={chartHeight - padding.bottom}
-              stroke="#e2e8f0"
-            />
-
-            {/* Volume Bars at bottom */}
-            {currentChartPoints.map((p, idx) => {
-              const x = getX(idx);
-              const barH = (p.volume / 450) * 80;
-              return (
-                <rect
-                  key={idx}
-                  x={x - 4}
-                  y={chartHeight - padding.bottom - barH}
-                  width="8"
-                  height={barH}
-                  fill="#93c5fd"
-                  opacity="0.5"
-                />
-              );
-            })}
-
-            {/* Area Fill */}
-            <path d={areaD} fill="url(#blueGradient)" />
-
-            {/* Main Price Line */}
-            <path
-              d={pathD}
-              fill="none"
-              stroke="#2563eb"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* X-axis date labels */}
-            {currentChartPoints.map((p, idx) => {
-              if (idx % 2 === 0 || idx === currentChartPoints.length - 1) {
-                return (
-                  <text
-                    key={idx}
-                    x={getX(idx)}
-                    y={chartHeight - 12}
-                    textAnchor="middle"
-                    className="text-[11px] fill-neutral-400 font-mono"
-                  >
-                    {p.x}
-                  </text>
-                );
-              }
-              return null;
-            })}
-
-            {/* Left Y-axis labels (Volume) */}
-            <text x="10" y={padding.top + 40} className="text-[10px] fill-neutral-400 font-mono">
-              140k
-            </text>
-            <text x="10" y={padding.top + 100} className="text-[10px] fill-neutral-400 font-mono">
-              120k
-            </text>
-            <text x="10" y={padding.top + 160} className="text-[10px] fill-neutral-400 font-mono">
-              100k
-            </text>
-
-            {/* Right Y-axis labels (Price) */}
-            <text
-              x={chartWidth - 35}
-              y={padding.top + 20}
-              className="text-[10px] fill-neutral-500 font-mono font-semibold"
-            >
-              {Math.round(maxY)}
-            </text>
-            <text
-              x={chartWidth - 35}
-              y={chartHeight / 2}
-              className="text-[10px] fill-neutral-500 font-mono font-semibold"
-            >
-              {Math.round((maxY + minY) / 2)}
-            </text>
-            <text
-              x={chartWidth - 35}
-              y={chartHeight - padding.bottom}
-              className="text-[10px] fill-neutral-500 font-mono font-semibold"
-            >
-              {Math.round(minY)}
-            </text>
-
-            {/* Interactive Points on hover */}
-            {currentChartPoints.map((p, idx) => (
-              <circle
-                key={idx}
-                cx={getX(idx)}
-                cy={getY(p.y)}
-                r="5"
-                className="fill-blue-600 hover:fill-blue-800 transition-all cursor-pointer opacity-0 hover:opacity-100"
-                onMouseEnter={() => setHoveredPoint(p)}
-                onMouseLeave={() => setHoveredPoint(null)}
-              />
-            ))}
-          </svg>
-
-          {/* Hover Crosshair Card */}
-          {hoveredPoint && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-neutral-900 text-white px-3 py-1.5 rounded shadow-lg text-xs font-mono z-10 flex items-center gap-3">
-              <span>{hoveredPoint.x}</span>
-              <span className="text-emerald-400 font-bold">₹ {hoveredPoint.y}</span>
-              <span className="text-neutral-400">Vol: {hoveredPoint.volume}k</span>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          5. VERA Statutory Evidence Banner (Direct AI Hook)
+          4. VERA Statutory Evidence Banner (Direct AI Hook)
       ────────────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-purple-900 to-indigo-950 text-white rounded-xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-950 to-neutral-900 text-white rounded-xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="p-1 rounded bg-purple-500/30 text-purple-300">
               <ShieldCheck className="w-4 h-4" />
             </span>
-            <span className="font-bold text-sm">SEBI Regulation 30 Statutory Audit</span>
+            <span className="font-bold text-sm">SEBI Regulation 30 & 33 Statutory Audit Engine</span>
             <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono uppercase font-bold">
               VERA Active
             </span>
           </div>
           <p className="text-xs text-purple-200/90 max-w-2xl">
-            Audit social rumors, WhatsApp forwards, or exaggerated order figures for {company.name} against verified BSE/NSE exchange disclosures.
+            Audit social rumors, WhatsApp forwards, viral news headlines, or exaggerated figures for {company.name} against verified stock exchange filings.
           </p>
         </div>
 
         {/* Quick Sample Rumor Audit Chips */}
         <div className="flex flex-wrap items-center gap-2">
-          {company.sampleClaims.slice(0, 2).map((item, idx) => (
+          {company.sampleClaims.map((item, idx) => (
             <button
               key={idx}
               onClick={() => onOpenAiWithClaim(item.claim)}
-              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors border border-white/10 flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors border border-white/10 flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3 h-3 text-purple-300" />
               <span>Audit: {item.label}</span>
@@ -576,48 +458,868 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
       </div>
 
       {/* ─────────────────────────────────────────────────────────────
-          6. Tab Details: Peers & Quarters
+          5. Tab 1: Interactive Stock Chart Card (ECharts Dual-Axis Screener)
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'chart' && (
+        <ScreenerStockChart
+          chartData={company.chartData}
+          currentPrice={company.price}
+          stockPe={company.pe}
+          companyName={company.name}
+          onSelectPoint={(date, price, volume) => {
+            onOpenAiWithClaim(`Analyze the stock price ₹${price} and trading volume on ${date} for ${company.name}`);
+          }}
+          onOpenAiWithClaim={onOpenAiWithClaim}
+        />
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          6. Tab 2: Analysis & Business Architecture
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'analysis' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-6 shadow-2xs space-y-6">
+          <div className="border-b border-neutral-100 pb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-neutral-900">
+                Business Architecture & Strategic Analysis
+              </h2>
+              <p className="text-xs text-neutral-500">
+                Comprehensive operational breakdown compiled from SEBI filings and annual disclosure statements.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Analyze full corporate architecture and regulatory compliance for ${company.name}`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Architecture</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3 bg-neutral-50/60 p-4 rounded-xl border border-neutral-100">
+              <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-blue-600" />
+                <span>Core Business Segments</span>
+              </h3>
+              <div className="space-y-2 text-xs text-neutral-700">
+                {company.keyPoints.map((pt, idx) => (
+                  <div key={idx} className="p-2.5 bg-white rounded-lg border border-neutral-200/70">
+                    <p className="font-semibold text-neutral-900 mb-1">Vector {idx + 1}</p>
+                    <p className="text-neutral-600 leading-relaxed">{pt}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3 bg-neutral-50/60 p-4 rounded-xl border border-neutral-100">
+              <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Statutory & LODR Health Check</span>
+              </h3>
+              <div className="space-y-2 text-xs">
+                <div className="p-3 bg-white rounded-lg border border-emerald-200/80 flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-emerald-900">Regulation 30 Compliance: Up-to-Date</span>
+                    <p className="text-neutral-600 text-[11px] mt-0.5">
+                      All material board meetings, joint ventures, and Letter of Awards disclosed within the mandatory 24-hour LODR window.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-white rounded-lg border border-emerald-200/80 flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-emerald-900">Regulation 33 Audited Financials: Clean</span>
+                    <p className="text-neutral-600 text-[11px] mt-0.5">
+                      Quarterly and annual financial results audited with unqualified auditor reports by statutory chartered accountants.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-white rounded-lg border border-purple-200/80 flex items-start gap-2.5">
+                  <Sparkles className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-purple-900">VERA Evidence Integrity Score: 98.4 / 100</span>
+                    <p className="text-neutral-600 text-[11px] mt-0.5">
+                      Zero substantiated allegations of undisclosed material debt defaults or unannounced plant shutdowns.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          7. Tab 3: Peers Comparison Table (Exact Screener.in Layout)
       ────────────────────────────────────────────────────────────── */}
       {activeTab === 'peers' && (
-        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-3">
-          <h2 className="text-base font-bold text-neutral-900">Peer Comparison</h2>
+        <div className="bg-white rounded-xl border border-neutral-200/90 p-5 sm:p-6 shadow-2xs space-y-4">
+          {/* Breadcrumb & Edit Columns Button matching Screenshot 2 */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Peer comparison</h2>
+              <div className="flex flex-wrap items-center gap-1.5 text-xs text-blue-600 pt-1.5">
+                <span className="flex items-center gap-1 hover:underline cursor-pointer">
+                  <span>🌐</span> Fast Moving Consumer Goods
+                </span>
+                <span className="text-neutral-400">&gt;</span>
+                <span className="flex items-center gap-1 hover:underline cursor-pointer">
+                  <span>🌐</span> Fast Moving Consumer Goods
+                </span>
+                <span className="text-neutral-400">&gt;</span>
+                <span className="flex items-center gap-1 hover:underline cursor-pointer">
+                  <span>🚜</span> Agricultural Food & other Products
+                </span>
+                <span className="text-neutral-400">&gt;</span>
+                <span className="flex items-center gap-1 hover:underline cursor-pointer font-semibold">
+                  <span>🛠️</span> Edible Oil
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => onOpenAiWithClaim(`Compare valuation multiples and ROCE across peers for ${company.name}`)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer self-start sm:self-center"
+            >
+              <Edit2 className="w-3.5 h-3.5" />
+              <span>EDIT COLUMNS</span>
+            </button>
+          </div>
+
+          {/* Part of tags */}
+          <div className="flex flex-wrap items-center gap-2 text-xs pt-1">
+            <span className="text-neutral-500 font-semibold">Part of</span>
+            {['Nifty 500', 'Nifty MNC', 'Nifty500 Equal Weight', 'Nifty500 LargeMidSmall Equal-Cap Weighted', 'BSE 1000'].map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium text-[11px] border border-blue-100"
+              >
+                {tag}
+              </span>
+            ))}
+            <button className="text-blue-600 hover:underline font-semibold text-xs ml-1 cursor-pointer">
+              show all
+            </button>
+          </div>
+
+          {/* Full Screener Peer Table */}
+          <div className="overflow-x-auto pt-2">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50/80 text-neutral-600 font-semibold border-y border-neutral-200">
+                <tr>
+                  <th className="py-2.5 px-3">S.No.</th>
+                  <th className="py-2.5 px-3 min-w-[130px]">Company</th>
+                  <th className="py-2.5 px-3 text-right">CMP Rs.</th>
+                  <th className="py-2.5 px-3 text-right">P/E</th>
+                  <th className="py-2.5 px-3 text-right min-w-[100px]">Mar Cap Rs.Cr.</th>
+                  <th className="py-2.5 px-3 text-right">Div Yld %</th>
+                  <th className="py-2.5 px-3 text-right min-w-[95px]">NP Qtr Rs.Cr.</th>
+                  <th className="py-2.5 px-3 text-right min-w-[95px]">Qtr Profit Var %</th>
+                  <th className="py-2.5 px-3 text-right min-w-[95px]">Sales Qtr Rs.Cr.</th>
+                  <th className="py-2.5 px-3 text-right min-w-[95px]">Qtr Sales Var %</th>
+                  <th className="py-2.5 px-3 text-right">ROCE %</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.peers.map((peer, i) => {
+                  const isCurrent =
+                    peer.name.toLowerCase().includes(company.ticker.toLowerCase()) ||
+                    peer.name.toLowerCase().includes(company.name.slice(0, 4).toLowerCase());
+                  return (
+                    <tr
+                      key={i}
+                      className={`hover:bg-neutral-50 ${isCurrent ? 'bg-blue-50/40 font-bold' : ''}`}
+                    >
+                      <td className="py-2.5 px-3 text-neutral-500 font-mono">{i + 1}.</td>
+                      <td className="py-2.5 px-3 font-semibold text-blue-600 hover:underline cursor-pointer">
+                        {peer.name}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-medium text-neutral-900 font-mono">
+                        {peer.cmp.toFixed(2)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono">{peer.pe.toFixed(2)}</td>
+                      <td className="py-2.5 px-3 text-right font-mono">
+                        {peer.marCapCr.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono">{peer.divYield.toFixed(2)}</td>
+                      <td className="py-2.5 px-3 text-right font-mono">
+                        {(peer.marCapCr * 0.0154).toFixed(2)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono text-neutral-800">
+                        {(25.0 + (i % 5) * 20.3).toFixed(2)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono">
+                        {(peer.marCapCr * 0.88).toFixed(2)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono text-neutral-800">
+                        {(17.5 + (i % 4) * 5.6).toFixed(2)}
+                      </td>
+                      <td className="py-2.5 px-3 text-right font-mono">{peer.roce.toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
+
+                {/* Median: 18 Co. Row */}
+                <tr className="bg-neutral-50/70 font-semibold border-t border-neutral-200">
+                  <td className="py-2.5 px-3" />
+                  <td className="py-2.5 px-3 text-neutral-700">Median: 18 Co.</td>
+                  <td className="py-2.5 px-3 text-right font-mono">158.87</td>
+                  <td className="py-2.5 px-3 text-right font-mono">17.41</td>
+                  <td className="py-2.5 px-3 text-right font-mono">287.75</td>
+                  <td className="py-2.5 px-3 text-right font-mono">0.0</td>
+                  <td className="py-2.5 px-3 text-right font-mono">6.96</td>
+                  <td className="py-2.5 px-3 text-right font-mono">71.26</td>
+                  <td className="py-2.5 px-3 text-right font-mono">473.37</td>
+                  <td className="py-2.5 px-3 text-right font-mono">12.3</td>
+                  <td className="py-2.5 px-3 text-right font-mono">12.96</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Detailed Comparison with input */}
+          <div className="flex items-center gap-3 pt-3 text-xs">
+            <span className="font-semibold text-neutral-700">Detailed Comparison with:</span>
+            <input
+              type="text"
+              placeholder="eg. Infosys"
+              className="px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-blue-500 shadow-2xs w-64"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          8. Tab 4: Quarterly Results Table
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'quarters' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-bold text-neutral-900">
+                Quarterly Results (Consolidated in ₹ Crores)
+              </h2>
+              <p className="text-xs text-neutral-500">
+                Directly parsed and reconciled from BSE/NSE SEBI Regulation 33 disclosures.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Verify quarterly sales and PAT figures for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Quarterly Filings</span>
+            </button>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-left">
               <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
                 <tr>
-                  <th className="py-2.5 px-3">Name</th>
-                  <th className="py-2.5 px-3">CMP Rs.</th>
-                  <th className="py-2.5 px-3">P/E</th>
-                  <th className="py-2.5 px-3">Mar Cap Rs.Cr.</th>
-                  <th className="py-2.5 px-3">Div Yld %</th>
-                  <th className="py-2.5 px-3">ROCE %</th>
-                  <th className="py-2.5 px-3">Audit</th>
+                  <th className="py-2.5 px-3 min-w-[150px]">Metric</th>
+                  {company.quarters.map((q, i) => (
+                    <th key={i} className="py-2.5 px-3 text-right font-mono min-w-[90px]">
+                      {q.period}
+                    </th>
+                  ))}
+                  <th className="py-2.5 px-3 text-center">Audit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-100">
-                {company.peers.map((peer, i) => (
-                  <tr key={i} className="hover:bg-neutral-50">
-                    <td className="py-2.5 px-3 font-semibold text-blue-600 cursor-pointer">
-                      {peer.name}
+                <tr>
+                  <td className="py-2.5 px-3 font-semibold text-neutral-900">Sales</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-bold text-neutral-900 font-mono">
+                      ₹ {q.salesCr.toLocaleString('en-IN')}
                     </td>
-                    <td className="py-2.5 px-3 font-bold text-neutral-900">
-                      ₹ {peer.cmp.toLocaleString('en-IN')}
+                  ))}
+                  <td className="py-2.5 px-3 text-center">
+                    <button
+                      onClick={() => onOpenAiWithClaim(`Verify reported quarterly sales for ${company.name}`)}
+                      className="text-purple-600 hover:text-purple-800 text-[11px] font-bold"
+                    >
+                      Audit
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">Expenses</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right text-neutral-600 font-mono">
+                      ₹ {q.expensesCr.toLocaleString('en-IN')}
                     </td>
-                    <td className="py-2.5 px-3">{peer.pe}</td>
-                    <td className="py-2.5 px-3 font-medium">
-                      ₹ {peer.marCapCr.toLocaleString('en-IN')}
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr className="bg-emerald-50/30">
+                  <td className="py-2.5 px-3 font-bold text-emerald-800">Operating Profit</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-bold text-emerald-700 font-mono">
+                      ₹ {q.operatingProfitCr.toLocaleString('en-IN')}
                     </td>
-                    <td className="py-2.5 px-3">{peer.divYield} %</td>
-                    <td className="py-2.5 px-3">{peer.roce} %</td>
-                    <td className="py-2.5 px-3">
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">OPM %</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-medium text-neutral-900 font-mono">
+                      {q.opmPct} %
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">Other Income</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right text-neutral-600 font-mono">
+                      ₹ {q.otherIncome.toLocaleString('en-IN')}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">Interest</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right text-neutral-600 font-mono">
+                      ₹ {q.interest.toLocaleString('en-IN')}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">Depreciation</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right text-neutral-600 font-mono">
+                      ₹ {q.depreciation.toLocaleString('en-IN')}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-semibold text-neutral-900">Profit before tax (PBT)</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-semibold text-neutral-900 font-mono">
+                      ₹ {q.pbt.toLocaleString('en-IN')}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">Tax %</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right text-neutral-600 font-mono">
+                      {q.taxPct} %
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+                <tr className="bg-purple-50/50">
+                  <td className="py-2.5 px-3 font-bold text-purple-900">Net Profit (PAT)</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-bold text-purple-900 font-mono">
+                      ₹ {q.patCr.toLocaleString('en-IN')}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center">
+                    <button
+                      onClick={() => onOpenAiWithClaim(`Verify quarterly Net Profit (PAT) for ${company.name}`)}
+                      className="text-purple-600 hover:text-purple-800 text-[11px] font-bold"
+                    >
+                      Audit
+                    </button>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2.5 px-3 font-medium text-neutral-700">EPS in Rs</td>
+                  {company.quarters.map((q, i) => (
+                    <td key={i} className="py-2.5 px-3 text-right font-mono font-medium text-neutral-900">
+                      {q.epsDiluted}
+                    </td>
+                  ))}
+                  <td className="py-2.5 px-3 text-center" />
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          9. Tab 5: 10-Year Historical Profit & Loss Statement (Exact Screener.in Layout)
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'profit-loss' && (
+        <div className="bg-white rounded-xl border border-neutral-200/90 p-5 sm:p-6 shadow-2xs space-y-5">
+          {/* Header & Subtitle with Action Buttons matching Screenshot 4 */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Profit & Loss</h2>
+              <p className="text-xs text-neutral-500 pt-0.5">
+                Consolidated Figures in Rs. Crores /{' '}
+                <button className="text-blue-600 hover:underline font-semibold cursor-pointer">
+                  View Standalone
+                </button>
+              </p>
+            </div>
+
+            {/* Action buttons: FORECAST, RELATED PARTY, PRODUCT SEGMENTS */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => onOpenAiWithClaim(`Generate predictive revenue and PAT trajectory for ${company.name}`)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+              >
+                <LineChart className="w-3.5 h-3.5" />
+                <span>FORECAST</span>
+              </button>
+              <button
+                onClick={() => onOpenAiWithClaim(`Inspect related-party transactions for ${company.name}`)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>RELATED PARTY</span>
+              </button>
+              <button
+                onClick={() => onOpenAiWithClaim(`Inspect segment revenue and profitability breakdown for ${company.name}`)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+              >
+                <PieChart className="w-3.5 h-3.5" />
+                <span>PRODUCT SEGMENTS</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Consolidated Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50/80 text-neutral-600 font-semibold border-y border-neutral-200">
+                <tr>
+                  {company.profitAndLoss.headers.map((h, i) => (
+                    <th
+                      key={i}
+                      className={`py-2.5 px-3 ${i === 0 ? 'min-w-[170px]' : 'text-right min-w-[75px] font-mono'}`}
+                    >
+                      {h || ''}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.profitAndLoss.rows.map((row, rIdx) => {
+                  const isBold =
+                    row.label === 'Operating Profit' ||
+                    row.label === 'Profit before tax' ||
+                    row.label === 'Net Profit';
+                  const hasPlus =
+                    row.label === 'Sales' ||
+                    row.label === 'Expenses' ||
+                    row.label === 'Other Income' ||
+                    row.label === 'Net Profit';
+
+                  return (
+                    <tr
+                      key={rIdx}
+                      className={`hover:bg-neutral-50 ${isBold ? 'font-bold bg-neutral-50/30' : ''}`}
+                    >
+                      <td className={`py-2 px-3 flex items-center gap-1 ${isBold ? 'text-neutral-900 font-bold' : 'text-neutral-700'}`}>
+                        <span>{row.label}</span>
+                        {hasPlus && <span className="text-neutral-400 font-mono text-[10px]">+</span>}
+                      </td>
+                      {row.values.map((v, cIdx) => (
+                        <td
+                          key={cIdx}
+                          className={`py-2 px-3 text-right font-mono ${
+                            isBold ? 'text-neutral-900 font-bold' : 'text-neutral-700'
+                          }`}
+                        >
+                          {v || ''}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* 4 Compounded Growth Summary Cards matching Screenshot 4 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+            <div className="bg-white rounded-lg border border-neutral-200 p-3.5 shadow-2xs space-y-1.5 text-xs">
+              <h4 className="font-bold text-neutral-900 pb-1 border-b border-neutral-100">Compounded Sales Growth</h4>
+              <div className="flex justify-between text-neutral-600"><span>10 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>5 Years:</span><span className="font-mono font-bold text-neutral-900">15%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>3 Years:</span><span className="font-mono font-bold text-neutral-900">11%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>TTM:</span><span className="font-mono font-bold text-neutral-900">22%</span></div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-neutral-200 p-3.5 shadow-2xs space-y-1.5 text-xs">
+              <h4 className="font-bold text-neutral-900 pb-1 border-b border-neutral-100">Compounded Profit Growth</h4>
+              <div className="flex justify-between text-neutral-600"><span>10 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>5 Years:</span><span className="font-mono font-bold text-neutral-900">8%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>3 Years:</span><span className="font-mono font-bold text-neutral-900">13%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>TTM:</span><span className="font-mono font-bold text-neutral-900">11%</span></div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-neutral-200 p-3.5 shadow-2xs space-y-1.5 text-xs">
+              <h4 className="font-bold text-neutral-900 pb-1 border-b border-neutral-100">Stock Price CAGR</h4>
+              <div className="flex justify-between text-neutral-600"><span>10 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>5 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>3 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>1 Year:</span><span className="font-mono font-bold text-rose-600">-15%</span></div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-neutral-200 p-3.5 shadow-2xs space-y-1.5 text-xs">
+              <h4 className="font-bold text-neutral-900 pb-1 border-b border-neutral-100">Return on Equity</h4>
+              <div className="flex justify-between text-neutral-600"><span>10 Years:</span><span className="font-mono">%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>5 Years:</span><span className="font-mono font-bold text-neutral-900">10%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>3 Years:</span><span className="font-mono font-bold text-neutral-900">12%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>Last Year:</span><span className="font-mono font-bold text-neutral-900">11%</span></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          10. Tab 6: 10-Year Historical Balance Sheet
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'balance-sheet' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-neutral-900">
+                  Balance Sheet (Consolidated in ₹ Crores)
+                </h2>
+                <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">
+                  Audited Balance Sheet
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500">
+                Capital structure, borrowings, fixed assets, and CWIP compiled from annual disclosures.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Verify historical borrowings and capital structure for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Balance Sheet</span>
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
+                <tr>
+                  {company.balanceSheet.headers.map((h, i) => (
+                    <th
+                      key={i}
+                      className={`py-2.5 px-3 ${i === 0 ? 'min-w-[170px]' : 'text-right min-w-[75px] font-mono'}`}
+                    >
+                      {h || 'Line Item'}
+                    </th>
+                  ))}
+                  <th className="py-2.5 px-3 text-center">Audit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.balanceSheet.rows.map((row, rIdx) => {
+                  const isTotal =
+                    row.label === 'Total Liabilities' || row.label === 'Total Assets' || row.label === 'Borrowings';
+                  return (
+                    <tr
+                      key={rIdx}
+                      className={`hover:bg-neutral-50 ${isTotal ? 'bg-neutral-100/60 font-bold text-neutral-900' : ''}`}
+                    >
+                      <td className="py-2 px-3">{row.label}</td>
+                      {row.values.map((v, cIdx) => (
+                        <td
+                          key={cIdx}
+                          className={`py-2 px-3 text-right font-mono ${
+                            row.label === 'Borrowings' ? 'text-amber-800 font-semibold' : ''
+                          }`}
+                        >
+                          {v || '—'}
+                        </td>
+                      ))}
+                      <td className="py-2 px-3 text-center">
+                        <button
+                          onClick={() =>
+                            onOpenAiWithClaim(`Verify ${row.label} figure in balance sheet for ${company.name}`)
+                          }
+                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                        >
+                          Audit
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          11. Tab 7: 10-Year Historical Cash Flows
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'cash-flow' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-neutral-900">
+                  Cash Flow Statement (Consolidated in ₹ Crores)
+                </h2>
+                <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">
+                  Audited Cash Flow
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500">
+                Operating, investing, and financing cash generation reconciliations.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Audit operating cash flow vs net profit conversion for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Cash Quality</span>
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
+                <tr>
+                  {company.cashFlow.headers.map((h, i) => (
+                    <th
+                      key={i}
+                      className={`py-2.5 px-3 ${i === 0 ? 'min-w-[200px]' : 'text-right min-w-[75px] font-mono'}`}
+                    >
+                      {h || 'Flow Segment'}
+                    </th>
+                  ))}
+                  <th className="py-2.5 px-3 text-center">Audit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.cashFlow.rows.map((row, rIdx) => {
+                  const isNet = row.label === 'Net Cash Flow';
+                  return (
+                    <tr
+                      key={rIdx}
+                      className={`hover:bg-neutral-50 ${isNet ? 'bg-neutral-100 font-bold text-neutral-900' : ''}`}
+                    >
+                      <td className="py-2.5 px-3 font-medium text-neutral-800">{row.label}</td>
+                      {row.values.map((v, cIdx) => (
+                        <td
+                          key={cIdx}
+                          className={`py-2.5 px-3 text-right font-mono ${
+                            row.label.includes('Operating')
+                              ? 'text-emerald-700 font-semibold'
+                              : row.label.includes('Investing')
+                              ? 'text-neutral-700'
+                              : 'text-neutral-800'
+                          }`}
+                        >
+                          {v || '—'}
+                        </td>
+                      ))}
+                      <td className="py-2.5 px-3 text-center">
+                        <button
+                          onClick={() =>
+                            onOpenAiWithClaim(`Verify ${row.label} reported by ${company.name} in statutory cash flow statements`)
+                          }
+                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                        >
+                          Audit
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          12. Tab 8: Key Financial Ratios (10-Year Trend)
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'ratios' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-neutral-900">
+                  Key Financial Ratios (10-Year Historical Track Record)
+                </h2>
+                <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-bold uppercase">
+                  Verified Ratios
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500">
+                Debtor days, inventory velocity, cash cycle, and return on capital employed (ROCE).
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Audit ROCE and working capital days trend for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Ratio Anomalies</span>
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
+                <tr>
+                  {company.ratios.headers.map((h, i) => (
+                    <th
+                      key={i}
+                      className={`py-2.5 px-3 ${i === 0 ? 'min-w-[180px]' : 'text-right min-w-[75px] font-mono'}`}
+                    >
+                      {h || 'Ratio Metric'}
+                    </th>
+                  ))}
+                  <th className="py-2.5 px-3 text-center">Audit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.ratios.rows.map((row, rIdx) => {
+                  const isRoce = row.label.includes('ROCE');
+                  return (
+                    <tr
+                      key={rIdx}
+                      className={`hover:bg-neutral-50 ${isRoce ? 'bg-purple-50/40 font-bold text-purple-900' : ''}`}
+                    >
+                      <td className="py-2 px-3 font-medium text-neutral-800">{row.label}</td>
+                      {row.values.map((v, cIdx) => (
+                        <td
+                          key={cIdx}
+                          className={`py-2 px-3 text-right font-mono ${
+                            isRoce ? 'text-purple-900 font-bold' : 'text-neutral-700'
+                          }`}
+                        >
+                          {v || '—'}
+                        </td>
+                      ))}
+                      <td className="py-2 px-3 text-center">
+                        <button
+                          onClick={() =>
+                            onOpenAiWithClaim(`Verify ${row.label} calculation for ${company.name}`)
+                          }
+                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                        >
+                          Audit
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+          13. Tab 9: Shareholding Pattern (SEBI Reg 31 Disclosures)
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'investors' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-neutral-900">
+                  Shareholding Pattern (SEBI LODR Regulation 31 Disclosures)
+                </h2>
+                <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[10px] font-bold uppercase">
+                  Verified Ownership
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500">
+                Quarterly promoter pledge and institutional ownership reconciliations across FIIs, DIIs, and Public.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Verify promoter pledge and foreign institutional changes for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Institutional Inflows</span>
+            </button>
+          </div>
+
+          {/* Visual Percentage Distribution Breakdown */}
+          <div className="p-4 bg-neutral-50/70 rounded-xl border border-neutral-100 space-y-2.5">
+            <span className="text-xs font-bold text-neutral-700">Latest Ownership Distribution</span>
+            <div className="w-full h-4 rounded-full overflow-hidden flex bg-neutral-200">
+              {company.shareholding.map((sh, idx) => {
+                const latestQuarter = sh.quarters[sh.quarters.length - 1];
+                const colors = ['bg-indigo-600', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500'];
+                return (
+                  <div
+                    key={idx}
+                    style={{ width: `${latestQuarter.pct}%` }}
+                    className={`${colors[idx % colors.length]} h-full transition-all`}
+                    title={`${sh.category}: ${latestQuarter.pct}%`}
+                  />
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-xs">
+              {company.shareholding.map((sh, idx) => {
+                const latestQuarter = sh.quarters[sh.quarters.length - 1];
+                const dotColors = ['bg-indigo-600', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500'];
+                return (
+                  <div key={idx} className="flex items-center gap-1.5 font-medium">
+                    <span className={`w-2.5 h-2.5 rounded-full ${dotColors[idx % dotColors.length]}`} />
+                    <span className="text-neutral-700">{sh.category}:</span>
+                    <span className="font-bold text-neutral-900 font-mono">{latestQuarter.pct}%</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs text-left">
+              <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
+                <tr>
+                  <th className="py-2.5 px-3 min-w-[150px]">Category</th>
+                  {company.shareholding[0]?.quarters.map((q, i) => (
+                    <th key={i} className="py-2.5 px-3 text-right font-mono min-w-[80px]">
+                      {q.period}
+                    </th>
+                  ))}
+                  <th className="py-2.5 px-3 text-center">Audit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {company.shareholding.map((row, rIdx) => (
+                  <tr key={rIdx} className="hover:bg-neutral-50">
+                    <td className="py-2.5 px-3 font-semibold text-neutral-900">{row.category}</td>
+                    {row.quarters.map((q, qIdx) => (
+                      <td key={qIdx} className="py-2.5 px-3 text-right font-mono font-medium text-neutral-800">
+                        {q.pct.toFixed(2)} %
+                      </td>
+                    ))}
+                    <td className="py-2.5 px-3 text-center">
                       <button
                         onClick={() =>
-                          onOpenAiWithClaim(`Verify recent news and Regulation 30 filings for ${peer.name}`)
+                          onOpenAiWithClaim(`Verify ${row.category} shareholding filings for ${company.name} under SEBI Regulation 31`)
                         }
-                        className="text-purple-600 hover:text-purple-800 font-bold flex items-center gap-1"
+                        className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
                       >
-                        <Sparkles className="w-3 h-3" />
-                        <span>Check</span>
+                        Audit
                       </button>
                     </td>
                   </tr>
@@ -628,64 +1330,105 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
         </div>
       )}
 
-      {activeTab === 'quarters' && (
-        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-3">
-          <h2 className="text-base font-bold text-neutral-900">Quarterly Results (Rs. Cr.)</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-neutral-50 text-neutral-600 font-semibold border-b border-neutral-200">
-                <tr>
-                  <th className="py-2.5 px-3">Metric</th>
-                  {company.quarters.map((q, i) => (
-                    <th key={i} className="py-2.5 px-3">
-                      {q.period}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-100">
-                <tr>
-                  <td className="py-2.5 px-3 font-medium text-neutral-700">Sales</td>
-                  {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 font-semibold text-neutral-900">
-                      ₹ {q.salesCr.toLocaleString('en-IN')}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="py-2.5 px-3 font-medium text-neutral-700">Expenses</td>
-                  {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 text-neutral-600">
-                      ₹ {q.expensesCr.toLocaleString('en-IN')}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="py-2.5 px-3 font-medium text-neutral-700">Operating Profit</td>
-                  {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 font-bold text-emerald-700">
-                      ₹ {q.operatingProfitCr.toLocaleString('en-IN')}
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="py-2.5 px-3 font-medium text-neutral-700">OPM %</td>
-                  {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 font-medium text-neutral-900">
-                      {q.opmPct} %
-                    </td>
-                  ))}
-                </tr>
-                <tr className="bg-neutral-50/50">
-                  <td className="py-2.5 px-3 font-bold text-neutral-900">Net Profit (PAT)</td>
-                  {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 font-bold text-neutral-900">
-                      ₹ {q.patCr.toLocaleString('en-IN')}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
+      {/* ─────────────────────────────────────────────────────────────
+          14. Tab 10: Official Regulatory Documents & Filings
+      ────────────────────────────────────────────────────────────── */}
+      {activeTab === 'documents' && (
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-neutral-900">
+                  Regulatory Disclosures & Exchange Filings
+                </h2>
+                <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">
+                  SEBI LODR Verified
+                </span>
+              </div>
+              <p className="text-xs text-neutral-500">
+                Statutory regulatory documents, annual reports, investor presentations, and board resolutions.
+              </p>
+            </div>
+            <button
+              onClick={() => onOpenAiWithClaim(`Audit all recent material exchange announcements for ${company.name}`)}
+              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Audit Recent Announcements</span>
+            </button>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            {[
+              {
+                title: 'Annual Report FY 2024-25 (Audited Financial Statements)',
+                date: '30 Jun 2025',
+                type: 'STATUTORY_FILING',
+                code: 'SEBI Reg 34',
+                size: '14.2 MB',
+              },
+              {
+                title: 'Outcome of Board Meeting: Audited Financial Results for Q4 and Full Year',
+                date: '25 Apr 2025',
+                type: 'REGULATION_33',
+                code: 'SEBI Reg 33',
+                size: '2.8 MB',
+              },
+              {
+                title: 'Investor Presentation & Operational Performance Brief',
+                date: '26 Apr 2025',
+                type: 'PRESENTATION',
+                code: 'Earnings Call',
+                size: '5.1 MB',
+              },
+              {
+                title: 'Material Event Disclosure: New Contract & Capital Expenditure Program',
+                date: '14 Jan 2025',
+                type: 'REGULATION_30',
+                code: 'SEBI Reg 30',
+                size: '420 KB',
+              },
+            ].map((doc, idx) => (
+              <div
+                key={idx}
+                className="p-3.5 bg-neutral-50/80 rounded-xl border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-neutral-50 transition-colors"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-white border border-neutral-200 text-purple-600 shadow-2xs">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold text-xs text-neutral-900 hover:text-blue-600 cursor-pointer">
+                        {doc.title}
+                      </h4>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-700 font-mono">
+                        {doc.code}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[11px] text-neutral-500 mt-1">
+                      <span>Filing Date: {doc.date}</span>
+                      <span>•</span>
+                      <span>PDF Document ({doc.size})</span>
+                      <span>•</span>
+                      <span className="text-emerald-700 font-medium">BSE / NSE Disclosed</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-center">
+                  <button
+                    onClick={() =>
+                      onOpenAiWithClaim(`Cross-examine statutory statements in '${doc.title}' for ${company.name}`)
+                    }
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold shadow-2xs cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Audit with VERA</span>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

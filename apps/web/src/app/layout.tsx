@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Core Watchlist feed - VERA',
+  title: 'VERA - Financial Intelligence & Statutory Evidence Platform',
   description: 'Evidence-first financial information verification platform',
 };
 

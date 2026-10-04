@@ -5,18 +5,23 @@ import { VeraNavbar } from '@/components/VeraNavbar';
 import { CompanyView } from '@/components/CompanyView';
 import { WatchlistView } from '@/components/WatchlistView';
 import { IngestionStudio } from '@/components/IngestionStudio';
-import { VeraEvidenceSidebar } from '@/components/VeraEvidenceSidebar';
+import { VeraAssistantDrawer, AssistantMode } from '@/components/VeraAssistantDrawer';
+import { VeraConversationalVisualizer } from '@/components/visualization/VeraConversationalVisualizer';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
-import { Sparkles, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const [currentView, setCurrentView] = useState<'company' | 'watchlist' | 'raw_ingestion'>('watchlist');
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('ALLETEC');
-  const [watchlistIds, setWatchlistIds] = useState<string[]>([]);
-  const [isAiSidebarOpen, setIsAiSidebarOpen] = useState<boolean>(false);
+  const [currentView, setCurrentView] = useState<'visualizer' | 'company' | 'watchlist' | 'raw_ingestion'>('company');
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('AWL');
+  const [watchlistIds, setWatchlistIds] = useState<string[]>(['AWL', 'ALLETEC', 'RELIANCE', 'TATAPOWER']);
+  
+  // SEPARATED DRAWER STATE:
+  // Mode: 'chat' (Conversational Financial Copilot) OR 'evidence' (Statutory Fact-Checker & Rumor Auditor)
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState<boolean>(false);
+  const [aiDrawerMode, setAiDrawerMode] = useState<AssistantMode>('chat');
   const [activeClaimForSidebar, setActiveClaimForSidebar] = useState<string>('');
 
-  const currentCompany: CompanyData = COMPANIES[selectedCompanyId] || COMPANIES['ALLETEC'];
+  const currentCompany: CompanyData = COMPANIES[selectedCompanyId] || COMPANIES['AWL'] || COMPANIES['RELIANCE'];
 
   // Watchlist Handlers
   const handleToggleWatchlist = (companyId: string) => {
@@ -35,33 +40,50 @@ export default function Home() {
     setWatchlistIds((prev) => prev.filter((id) => id !== companyId));
   };
 
-  // Open AI Sidebar with a specific pre-filled claim
-  const handleOpenAiWithClaim = (claimText: string) => {
-    setActiveClaimForSidebar(claimText);
-    setIsAiSidebarOpen(true);
+  // Dedicated Open Handlers
+  const handleOpenChat = () => {
+    setAiDrawerMode('chat');
+    setIsAiDrawerOpen(true);
+  };
+
+  const handleOpenEvidence = (claimText?: string) => {
+    if (claimText) {
+      setActiveClaimForSidebar(claimText);
+    }
+    setAiDrawerMode('evidence');
+    setIsAiDrawerOpen(true);
   };
 
   return (
     <main className="min-h-screen bg-[#fcfcfd] text-neutral-900 selection:bg-purple-900 selection:text-white relative">
-      {/* 1. Screener-style Top Navbar */}
+      {/* 1. Screener-style Top Navbar with Separated AI Chat & Evidence Tracker Buttons */}
       <VeraNavbar
         currentView={currentView}
         onViewChange={setCurrentView}
         selectedCompanyId={selectedCompanyId}
         onSelectCompany={setSelectedCompanyId}
-        onToggleAiSidebar={() => setIsAiSidebarOpen(!isAiSidebarOpen)}
-        isAiSidebarOpen={isAiSidebarOpen}
+        onOpenChat={handleOpenChat}
+        onOpenEvidence={handleOpenEvidence}
+        isAiSidebarOpen={isAiDrawerOpen}
+        activeDrawerMode={isAiDrawerOpen ? aiDrawerMode : null}
         watchlistCount={watchlistIds.length}
       />
 
       {/* 2. Main Page Views */}
-      <div className="pb-16">
+      <div className="pb-20">
+        {currentView === 'visualizer' && (
+          <VeraConversationalVisualizer />
+        )}
+
         {currentView === 'company' && (
           <CompanyView
             company={currentCompany}
-            onOpenAiWithClaim={handleOpenAiWithClaim}
+            onOpenChat={handleOpenChat}
+            onOpenEvidence={handleOpenEvidence}
+            onOpenAiWithClaim={handleOpenEvidence}
             onToggleWatchlist={handleToggleWatchlist}
             isInWatchlist={watchlistIds.includes(currentCompany.id)}
+            onSelectCompany={setSelectedCompanyId}
           />
         )}
 
@@ -74,7 +96,7 @@ export default function Home() {
               setSelectedCompanyId(id);
               setCurrentView('company');
             }}
-            onOpenAiWithClaim={handleOpenAiWithClaim}
+            onOpenAiWithClaim={handleOpenEvidence}
           />
         )}
 
@@ -99,25 +121,16 @@ export default function Home() {
         )}
       </div>
 
-      {/* 3. The AI Evidence Checking Drawer / Sidebar */}
-      <VeraEvidenceSidebar
-        isOpen={isAiSidebarOpen}
-        onClose={() => setIsAiSidebarOpen(false)}
+      {/* 3. The Separated VERA Assistant Drawer (Conversational Chat + Evidence Tracker) */}
+      <VeraAssistantDrawer
+        isOpen={isAiDrawerOpen}
+        onClose={() => setIsAiDrawerOpen(false)}
         selectedCompany={currentCompany}
+        activeMode={aiDrawerMode}
+        onModeChange={setAiDrawerMode}
         initialClaim={activeClaimForSidebar}
+        onNavigateToVisualizer={() => setCurrentView('visualizer')}
       />
-
-      {/* 4. Floating Quick AI Button in bottom-right corner */}
-      {!isAiSidebarOpen && (
-        <button
-          onClick={() => setIsAiSidebarOpen(true)}
-          className="fixed bottom-6 right-6 z-30 px-4 py-2.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-2 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105 cursor-pointer border border-purple-400/30"
-          title="Open VERA Evidence Fact-Check Bot"
-        >
-          <Sparkles className="w-4 h-4 text-purple-200 animate-pulse" />
-          <span>VERA Evidence Bot</span>
-        </button>
-      )}
     </main>
   );
 }
