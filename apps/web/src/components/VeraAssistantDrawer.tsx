@@ -7,6 +7,7 @@ import {
 import { CompanyData } from '@/data/mockCompanies';
 import { VeraConversationalChat } from '@/components/chat/VeraConversationalChat';
 import { VeraEvidenceTracker } from '@/components/VeraEvidenceTracker';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 export type AssistantMode = 'chat' | 'evidence';
 
@@ -61,13 +62,24 @@ export const VeraAssistantDrawer: React.FC<VeraAssistantDrawerProps> = ({
               </div>
             </div>
 
-            <button
-              onClick={onClose}
-              className="p-1 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
-              title="Close panel"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <VeraActionToolbar
+                size="sm"
+                onUpload={() => {
+                  onClose();
+                  if (onNavigateToVisualizer) onNavigateToVisualizer();
+                }}
+                onArchive={() => onModeChange('evidence')}
+                onScan={() => onModeChange('chat')}
+              />
+              <button
+                onClick={onClose}
+                className="p-1 rounded-md text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
+                title="Close panel"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Navigation Tabs */}
@@ -76,7 +88,7 @@ export const VeraAssistantDrawer: React.FC<VeraAssistantDrawerProps> = ({
               onClick={() => onModeChange('chat')}
               className={`py-2.5 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeMode === 'chat'
-                  ? 'border-purple-600 text-neutral-950 font-bold'
+                  ? 'border-neutral-900 text-neutral-950 font-bold'
                   : 'border-transparent text-neutral-500 hover:text-neutral-800'
               }`}
             >
@@ -87,7 +99,7 @@ export const VeraAssistantDrawer: React.FC<VeraAssistantDrawerProps> = ({
               onClick={() => onModeChange('evidence')}
               className={`py-2.5 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeMode === 'evidence'
-                  ? 'border-purple-600 text-neutral-950 font-bold'
+                  ? 'border-neutral-900 text-neutral-950 font-bold'
                   : 'border-transparent text-neutral-500 hover:text-neutral-800'
               }`}
             >

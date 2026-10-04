@@ -125,7 +125,7 @@ export const MarginTrendChart: React.FC = () => {
       <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
         <span>
           Latest EBITDA Margin:{' '}
-          <strong className="text-emerald-700 font-mono">
+          <strong className="text-neutral-900 font-mono">
             {((filteredHistory[filteredHistory.length - 1]?.ebitdaCr / (filteredHistory[filteredHistory.length - 1]?.revenueCr || 1)) * 100).toFixed(1)}%
           </strong>
         </span>

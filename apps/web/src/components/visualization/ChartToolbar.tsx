@@ -16,6 +16,7 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { useChatStore } from '@/state/chatStore';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 export const CHART_MODES = [
   { id: 'growth-timeline', label: '1. Revenue + EBITDA + PAT Trend', icon: '📈' },
@@ -64,7 +65,7 @@ export const ChartToolbar: React.FC = () => {
           <select
             value={activeChartId}
             onChange={(e) => setActiveChart(e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-neutral-300 bg-white font-semibold text-xs text-neutral-900 focus:outline-hidden focus:ring-2 focus:ring-purple-200 cursor-pointer shadow-2xs"
+            className="px-3 py-1.5 rounded-xl border border-neutral-300 bg-white font-semibold text-xs text-neutral-900 focus:outline-hidden focus:ring-2 focus:ring-neutral-400 cursor-pointer shadow-2xs"
           >
             {CHART_MODES.map((m) => (
               <option key={m.id} value={m.id}>
@@ -74,7 +75,7 @@ export const ChartToolbar: React.FC = () => {
           </select>
         </div>
 
-        {/* Action Controls: Time Horizon, Chart Type, Explain, Simplify */}
+        {/* Action Controls: Time Horizon, Chart Type, Explain, Simplify, VeraActionToolbar */}
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {/* Quick Time Horizon Pills */}
           <div className="flex items-center rounded-lg border border-neutral-200 p-0.5 bg-neutral-50 text-xs">
@@ -131,7 +132,7 @@ export const ChartToolbar: React.FC = () => {
             onClick={() => setSimplified(!isSimplified)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
               isSimplified
-                ? 'bg-emerald-600 text-white font-bold ring-2 ring-emerald-300'
+                ? 'bg-neutral-900 text-white font-bold ring-2 ring-neutral-400'
                 : 'bg-neutral-100 hover:bg-neutral-200/70 text-neutral-700 border border-neutral-300'
             }`}
             title="Translates complex accounting terms into plain-language concepts for retail investors"
@@ -143,16 +144,30 @@ export const ChartToolbar: React.FC = () => {
           {/* "Explain This Graph" Button */}
           <button
             onClick={() => openExplanation()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-purple-200" />
+            <Sparkles className="w-3.5 h-3.5 text-neutral-200" />
             <span>Explain This</span>
           </button>
+
+          {/* VeraActionToolbar Segmented Group */}
+          <VeraActionToolbar
+            size="sm"
+            onUploadClick={() => {
+              sendMessage(`Auditing disclosures for ${record.name} in ${activeChartId}`);
+            }}
+            onArchiveClick={() => {
+              sendMessage(`Show regulatory filings explaining recent movements in ${record.name}`);
+            }}
+            onScanClick={() => {
+              openExplanation();
+            }}
+          />
 
           {/* Reset Chart */}
           <button
             onClick={() => resetChart()}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
             title="Reset to default view"
           >
             <RotateCcw className="w-3.5 h-3.5" />

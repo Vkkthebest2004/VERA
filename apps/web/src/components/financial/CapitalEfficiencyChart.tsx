@@ -120,21 +120,21 @@ export const CapitalEfficiencyChart: React.FC = () => {
   return (
     <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-2xs space-y-4">
       {/* Retail Investor Plain-Language Card */}
-      <div className="p-3.5 bg-indigo-50/70 rounded-xl border border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div>
-          <span className="font-bold text-indigo-900 block text-xs">
+          <span className="font-bold text-neutral-900 block text-xs">
             Retail Investor Translation:
           </span>
-          <p className="text-indigo-800 text-[11px] mt-0.5">
+          <p className="text-neutral-700 text-[11px] mt-0.5">
             For every ₹100 of total capital deployed in factories, towers, and inventory, {record.name}{' '}
             generated <strong className="underline">₹{latestROCE.toFixed(2)}</strong> of operating profit in {periods[periods.length - 1]}.
           </p>
         </div>
         <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-          <span className="px-2.5 py-1 rounded bg-white font-mono font-bold text-indigo-900 shadow-2xs border border-indigo-200">
+          <span className="px-2.5 py-1 rounded bg-white font-mono font-bold text-neutral-900 shadow-2xs border border-neutral-300">
             ROCE: {latestROCE}%
           </span>
-          <span className="px-2.5 py-1 rounded bg-white font-mono font-bold text-emerald-800 shadow-2xs border border-emerald-200">
+          <span className="px-2.5 py-1 rounded bg-white font-mono font-bold text-neutral-900 shadow-2xs border border-neutral-300">
             ROE: {latestROE}%
           </span>
         </div>

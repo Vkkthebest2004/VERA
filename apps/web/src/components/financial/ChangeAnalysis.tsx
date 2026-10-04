@@ -30,7 +30,7 @@ export const ChangeAnalysis: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-100 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1 rounded bg-purple-100 text-purple-700">
+            <span className="p-1 rounded bg-neutral-900 text-white">
               <Sparkles className="w-4 h-4" />
             </span>
             <h2 className="text-base font-bold text-neutral-900">
@@ -72,8 +72,8 @@ export const ChangeAnalysis: React.FC = () => {
       </div>
 
       {/* Summary Highlight Card */}
-      <div className="p-4 bg-gradient-to-r from-purple-50 via-indigo-50/60 to-white rounded-xl border border-purple-100 text-xs">
-        <span className="text-[11px] font-bold text-purple-800 uppercase tracking-wider block mb-1">
+      <div className="p-4 bg-neutral-50 rounded-xl border border-neutral-200 text-xs">
+        <span className="text-[11px] font-bold text-neutral-900 uppercase tracking-wider block mb-1">
           EXECUTIVE VARIANCE SUMMARY
         </span>
         <p className="text-neutral-800 font-medium text-sm leading-relaxed">
@@ -95,8 +95,8 @@ export const ChangeAnalysis: React.FC = () => {
                 <span
                   className={`flex items-center gap-0.5 px-2 py-0.5 rounded-full font-mono font-bold text-xs ${
                     item.isPositiveForCompany
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-rose-100 text-rose-800'
+                      ? 'bg-neutral-900 text-white'
+                      : 'bg-neutral-200 text-neutral-800'
                   }`}
                 >
                   {isUp ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
@@ -132,9 +132,9 @@ export const ChangeAnalysis: React.FC = () => {
               `Explain the key operational drivers behind the financial variances between ${fromPeriod} and ${toPeriod} for ${record.name}`
             )
           }
-          className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 font-bold text-xs shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer"
+          className="px-4 py-2 rounded-lg bg-white hover:bg-neutral-100 text-neutral-900 font-bold text-xs shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer"
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3.5 h-3.5 text-neutral-900" />
           <span>Ask VERA to Explain Variance</span>
         </button>
       </div>

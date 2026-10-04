@@ -52,7 +52,7 @@ export const ValuationChart: React.FC = () => {
           if (!Array.isArray(params)) return '';
           const p = params[0];
           return `<div class="font-bold text-xs mb-1 pb-1 border-b border-neutral-700">${p.name} Valuation</div>
-            <div class="text-xs py-0.5">P/E Multiple: <strong class="font-mono text-amber-300">${p.value}x</strong></div>
+            <div class="text-xs py-0.5">P/E Multiple: <strong class="font-mono text-white">${p.value}x</strong></div>
             <div class="text-xs py-0.5 text-neutral-400">10-Yr Median: <strong class="font-mono">${medianPE}x</strong></div>`;
         },
       },
@@ -111,9 +111,9 @@ export const ValuationChart: React.FC = () => {
           <p className="text-[11px] text-neutral-600 mt-0.5">
             Current P/E of <strong className="font-mono text-neutral-900">{latestPE}x</strong> is{' '}
             {latestPE > medianPE ? (
-              <span className="text-amber-800 font-semibold">above its historical median of {medianPE}x</span>
+              <span className="text-neutral-900 font-semibold">above its historical median of {medianPE}x</span>
             ) : (
-              <span className="text-emerald-800 font-semibold">below its historical median of {medianPE}x</span>
+              <span className="text-neutral-900 font-semibold">below its historical median of {medianPE}x</span>
             )}. VERA never provides price targets or trading signals.
           </p>
         </div>

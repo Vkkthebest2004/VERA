@@ -6,6 +6,7 @@ import { investigateClaim, investigateFile } from '@/lib/api';
 import { VeraChatResponse } from './VeraChatResponse';
 import { CrawlerAnimationScreen } from './CrawlerAnimationScreen';
 import { Paperclip, ArrowRight, X, FileText, Loader2, Sparkles, HelpCircle } from 'lucide-react';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 const SAMPLE_CLAIM = `🔥🚨 FORWARDED MANY TIMES 🚨🔥
 Tata Power signed secret ₹12,500 Crore mega solar contract with Government of India! 
@@ -89,11 +90,19 @@ export const IngestionStudio: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-8">
-      {/* Platform Title */}
-      <div className="text-center space-y-2.5">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-300 text-neutral-800 text-xs font-semibold">
-          <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
-          <span>Unified Web Crawler & AI Verification</span>
+      {/* Platform Title & User's Action Segment Toolbar */}
+      <div className="flex flex-col items-center text-center space-y-4">
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 border border-neutral-300 text-neutral-800 text-xs font-semibold">
+            <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
+            <span>Unified Web Crawler & AI Verification</span>
+          </div>
+          <VeraActionToolbar
+            size="sm"
+            onUpload={() => fileInputRef.current?.click()}
+            onArchive={() => handleAnalyze('List latest BSE & NSE Regulation 30 filings and corporate actions')}
+            onScan={() => handleAnalyze(SAMPLE_CLAIM)}
+          />
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight">
           Verify What&apos;s True Across Every Source

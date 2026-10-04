@@ -21,6 +21,7 @@ import { ChartToolbar } from './ChartToolbar';
 import { GlobalTimeSlider } from './GlobalTimeSlider';
 import { ExplanationModal } from './ExplanationModal';
 import { VeraChatPanel } from '../chat/VeraChatPanel';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 import {
   ShieldCheck,
   Sparkles,
@@ -102,17 +103,17 @@ export const VeraConversationalVisualizer: React.FC = () => {
                     onClick={() => selectCompany(id)}
                     className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-white text-neutral-900 shadow-xs border border-neutral-300 ring-2 ring-purple-100'
+                        ? 'bg-white text-neutral-900 shadow-xs border border-neutral-300 ring-2 ring-neutral-300'
                         : 'text-neutral-600 hover:text-neutral-900'
                     }`}
                   >
                     <span
                       className={`w-2.5 h-2.5 rounded-full ${
-                        id === 'RELIANCE' ? 'bg-indigo-600' : 'bg-amber-600'
+                        id === 'RELIANCE' ? 'bg-neutral-900' : 'bg-neutral-600'
                       }`}
                     />
                     <span>{c.name}</span>
-                    <span className="font-mono text-neutral-400 font-normal">₹{c.currentPrice}</span>
+                    <span className="font-mono text-neutral-500 font-normal">₹{c.currentPrice}</span>
                   </button>
                 );
               })}
@@ -123,10 +124,18 @@ export const VeraConversationalVisualizer: React.FC = () => {
             </div>
           </div>
 
-          {/* Regulatory Transparency Badge */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-900 text-xs font-semibold border border-purple-100/80">
-            <ShieldCheck className="w-4 h-4 text-purple-700" />
-            <span>Educational & Analytical Visualizer • SEBI LODR Audited Records</span>
+          {/* User's 3-Button Action Segment Toolbar + Transparency Badge */}
+          <div className="flex flex-wrap items-center gap-3">
+            <VeraActionToolbar
+              size="sm"
+              onUpload={() => {}}
+              onArchive={() => {}}
+              onScan={() => {}}
+            />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-100 text-neutral-900 text-xs font-semibold border border-neutral-200">
+              <ShieldCheck className="w-4 h-4 text-neutral-800" />
+              <span>Educational & Analytical Visualizer • SEBI LODR Audited Records</span>
+            </div>
           </div>
         </div>
 
@@ -154,7 +163,7 @@ export const VeraConversationalVisualizer: React.FC = () => {
             <span className="text-neutral-500 text-[10px] uppercase font-bold tracking-wider block mb-0.5">
               Net Profit (PAT)
             </span>
-            <span className="text-sm font-bold text-purple-700 font-mono">
+            <span className="text-sm font-bold text-neutral-950 font-mono">
               ₹{latestFinancials.patCr.toLocaleString('en-IN')} Cr
             </span>
           </div>
@@ -163,7 +172,7 @@ export const VeraConversationalVisualizer: React.FC = () => {
             <span className="text-neutral-500 text-[10px] uppercase font-bold tracking-wider block mb-0.5">
               Operating Cash Flow
             </span>
-            <span className="text-sm font-bold text-sky-700 font-mono">
+            <span className="text-sm font-bold text-neutral-900 font-mono">
               ₹{latestFinancials.ocfCr.toLocaleString('en-IN')} Cr
             </span>
           </div>
@@ -172,7 +181,7 @@ export const VeraConversationalVisualizer: React.FC = () => {
             <span className="text-neutral-500 text-[10px] uppercase font-bold tracking-wider block mb-0.5">
               ROCE (Capital Return)
             </span>
-            <span className="text-sm font-bold text-emerald-700 font-mono">
+            <span className="text-sm font-bold text-neutral-950 font-mono">
               {(( (latestFinancials.ebitdaCr - latestFinancials.depreciationCr) / (latestFinancials.equityCr + latestFinancials.reservesCr + latestFinancials.totalDebtCr) ) * 100).toFixed(1)}%
             </span>
           </div>

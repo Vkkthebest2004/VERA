@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { EChartWrapper } from '../visualization/EChartWrapper';
 import { useVisualizationStore } from '@/state/visualizationStore';
 import { detectProfitCashDivergence } from '@/lib/financial/financialMath';
-import { AlertTriangle, CheckCircle2, Info, Sparkles } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info, Sparkles, ShieldCheck } from 'lucide-react';
 import { EChartsOption } from 'echarts';
 
 export const ProfitCashFlowChart: React.FC = () => {
@@ -56,14 +56,14 @@ export const ProfitCashFlowChart: React.FC = () => {
 
           return `<div class="font-bold text-xs mb-1.5 pb-1 border-b border-neutral-700">${pName} Quality Audit</div>
             <div class="flex items-center justify-between gap-4 text-xs py-0.5">
-              <span class="text-purple-300">Reported Net Profit (PAT):</span>
+              <span class="text-neutral-300">Reported Net Profit (PAT):</span>
               <span class="font-mono font-bold">₹${Number(pat).toLocaleString('en-IN')} Cr</span>
             </div>
             <div class="flex items-center justify-between gap-4 text-xs py-0.5">
-              <span class="text-sky-300">Operating Cash Flow (OCF):</span>
+              <span class="text-neutral-400">Operating Cash Flow (OCF):</span>
               <span class="font-mono font-bold">₹${Number(ocf).toLocaleString('en-IN')} Cr</span>
             </div>
-            <div class="flex items-center justify-between gap-4 text-xs py-1 mt-1 border-t border-neutral-800 text-amber-300 font-medium">
+            <div class="flex items-center justify-between gap-4 text-xs py-1 mt-1 border-t border-neutral-800 text-white font-medium">
               <span>Cash Conversion Quality:</span>
               <span class="font-mono font-bold">${ratio}% of PAT</span>
             </div>
@@ -121,22 +121,10 @@ export const ProfitCashFlowChart: React.FC = () => {
       {/* Divergence Banner */}
       {divergence && (
         <div
-          className={`p-3.5 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs ${
-            divergence.divergenceSeverity === 'CRITICAL'
-              ? 'bg-rose-50/80 border-rose-200 text-rose-900'
-              : divergence.divergenceSeverity === 'MODERATE'
-              ? 'bg-amber-50/80 border-amber-200 text-amber-900'
-              : 'bg-emerald-50/80 border-emerald-200 text-emerald-900'
-          }`}
+          className="p-3.5 rounded-xl border border-neutral-300 bg-neutral-50 text-neutral-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
         >
           <div className="flex items-start gap-2.5">
-            {divergence.divergenceSeverity === 'CRITICAL' ? (
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-            ) : divergence.divergenceSeverity === 'MODERATE' ? (
-              <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            ) : (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-            )}
+            <ShieldCheck className="w-4 h-4 text-neutral-900 shrink-0 mt-0.5" />
             <div>
               <span className="font-bold">{divergence.explanation}</span>
               <p className="text-[11px] mt-0.5 opacity-90">{divergence.retailTakeaway}</p>

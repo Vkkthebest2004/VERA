@@ -16,6 +16,7 @@ import {
   Search,
 } from 'lucide-react';
 import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 interface VeraBentoShowcaseProps {
   onNavigateToVisualizer?: () => void;
@@ -119,19 +120,29 @@ export const VeraBentoShowcase: React.FC<VeraBentoShowcaseProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-      <div className="space-y-1 border-b border-neutral-200 pb-5">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-neutral-900" />
-          <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 font-semibold">
-            Architectural Overview
-          </span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-neutral-200 pb-5">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-neutral-900" />
+            <span className="text-xs font-mono uppercase tracking-widest text-neutral-500 font-semibold">
+              Architectural Overview
+            </span>
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-950">
+            VERA Intelligence & Statutory Evidence Engine
+          </h2>
+          <p className="text-xs text-neutral-500 max-w-2xl leading-relaxed">
+            Designed with a monochrome, high-contrast Bento Grid system. Direct access to conversational financial reasoning, exchange verification, and multimodal document intelligence.
+          </p>
         </div>
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-950">
-          VERA Intelligence & Statutory Evidence Engine
-        </h2>
-        <p className="text-xs text-neutral-500 max-w-2xl leading-relaxed">
-          Designed with a monochrome, high-contrast Bento Grid system. Direct access to conversational financial reasoning, exchange verification, and multimodal document intelligence.
-        </p>
+        <div className="shrink-0">
+          <VeraActionToolbar
+            size="md"
+            onUploadClick={onOpenIngestion}
+            onArchiveClick={onOpenEvidence}
+            onScanClick={onNavigateToVisualizer}
+          />
+        </div>
       </div>
 
       <BentoGrid className="lg:grid-rows-3">

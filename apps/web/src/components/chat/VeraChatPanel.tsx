@@ -11,6 +11,7 @@ import {
   Activity,
 } from 'lucide-react';
 import { VeraMessageRenderer } from './VeraMessageRenderer';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 export const VeraChatPanel: React.FC = () => {
   const { messages, isTyping, activeSuggestions, sendMessage, clearMessages } = useChatStore();
@@ -54,7 +55,7 @@ export const VeraChatPanel: React.FC = () => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-xs text-neutral-900">Artha</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" />
+              <span className="w-1.5 h-1.5 rounded-full bg-neutral-900 ml-0.5" />
             </div>
             <p className="text-[10px] text-neutral-500">
               Controlling <strong className="text-neutral-700">{record.name}</strong> visualizer
@@ -62,13 +63,27 @@ export const VeraChatPanel: React.FC = () => {
           </div>
         </div>
 
-        <button
-          onClick={clearMessages}
-          className="text-neutral-400 hover:text-neutral-700 text-[10px] font-medium transition-colors"
-          title="Clear chat history"
-        >
-          Clear
-        </button>
+        <div className="flex items-center gap-2">
+          <VeraActionToolbar
+            size="sm"
+            onUploadClick={() => {
+              sendMessage(`Analyze uploaded financial statements for ${record.name}`);
+            }}
+            onArchiveClick={() => {
+              sendMessage(`Show regulatory filings and board resolutions for ${record.name}`);
+            }}
+            onScanClick={() => {
+              sendMessage(`Run an audit verification on ${record.name} ratios and debt structure`);
+            }}
+          />
+          <button
+            onClick={clearMessages}
+            className="text-neutral-400 hover:text-neutral-700 text-[10px] font-medium transition-colors cursor-pointer"
+            title="Clear chat history"
+          >
+            Clear
+          </button>
+        </div>
       </div>
 
       {/* Live Graph Context Snapshot Pill */}
@@ -192,12 +207,12 @@ export const VeraChatPanel: React.FC = () => {
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Ask or command chart (e.g. "Show PAT vs Cash Flow")...`}
-          className="flex-1 px-3.5 py-2 rounded-lg border border-neutral-300 text-xs placeholder:text-neutral-400 focus:outline-hidden focus:border-purple-600 focus:ring-1 focus:ring-purple-600 font-normal"
+          className="flex-1 px-3.5 py-2 rounded-lg border border-neutral-300 text-xs placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 font-normal"
         />
         <button
           type="submit"
           disabled={!inputText.trim() || isTyping}
-          className="p-2 rounded-lg bg-purple-600 hover:bg-purple-700 disabled:opacity-40 text-white transition-all shadow-xs cursor-pointer"
+          className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-40 text-white transition-all shadow-xs cursor-pointer"
         >
           <Send className="w-4 h-4" />
         </button>

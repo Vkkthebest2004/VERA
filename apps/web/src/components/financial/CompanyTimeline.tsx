@@ -16,21 +16,21 @@ export const CompanyTimeline: React.FC = () => {
     switch (status) {
       case 'SUPPORTED':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-emerald-600" />
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-neutral-900 text-white border border-neutral-900 flex items-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-white" />
             <span>SUPPORTED</span>
           </span>
         );
       case 'PARTIALLY_SUPPORTED':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1">
-            <AlertCircle className="w-3 h-3 text-amber-600" />
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-neutral-200 text-neutral-800 border border-neutral-400 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3 text-neutral-700" />
             <span>PARTIALLY SUPPORTED</span>
           </span>
         );
       case 'CONTRADICTED':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-rose-100 text-rose-800 border border-rose-300">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-neutral-100 text-neutral-950 border border-neutral-900">
             CONTRADICTED
           </span>
         );
@@ -62,7 +62,7 @@ export const CompanyTimeline: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left: Interactive Timeline Spine (7 Cols) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative border-l-2 border-purple-200 ml-4 pl-6 space-y-6">
+          <div className="relative border-l-2 border-neutral-300 ml-4 pl-6 space-y-6">
             {record.events.map((ev) => {
               const isSelected = selectedEvent?.id === ev.id;
               return (
@@ -71,7 +71,7 @@ export const CompanyTimeline: React.FC = () => {
                   onClick={() => setSelectedEvent(ev)}
                   className={`relative p-3.5 rounded-xl border transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-purple-50/90 border-purple-300 shadow-xs ring-2 ring-purple-100'
+                      ? 'bg-neutral-100 border-neutral-900 shadow-xs ring-2 ring-neutral-300'
                       : 'bg-white hover:bg-neutral-50/80 border-neutral-200/80'
                   }`}
                 >
@@ -79,13 +79,13 @@ export const CompanyTimeline: React.FC = () => {
                   <span
                     className={`absolute -left-[31px] top-4 w-4 h-4 rounded-full border-2 bg-white transition-all ${
                       isSelected
-                        ? 'border-purple-600 bg-purple-600 ring-4 ring-purple-100'
-                        : 'border-purple-400'
+                        ? 'border-neutral-900 bg-neutral-900 ring-4 ring-neutral-200'
+                        : 'border-neutral-400'
                     }`}
                   />
 
                   <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span className="text-xs font-mono font-bold text-purple-700 bg-purple-100/70 px-1.5 py-0.5 rounded">
+                    <span className="text-xs font-mono font-bold text-neutral-900 bg-neutral-200 px-1.5 py-0.5 rounded">
                       {ev.period} • {ev.date}
                     </span>
                     {getStatusBadge(ev.evidenceStatus)}
@@ -101,7 +101,7 @@ export const CompanyTimeline: React.FC = () => {
 
                   <div className="mt-2.5 pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-500">
                     <span className="font-medium text-neutral-700">{ev.sourceType}</span>
-                    <span className="text-purple-600 font-semibold flex items-center gap-1">
+                    <span className="text-neutral-900 font-semibold flex items-center gap-1">
                       <span>Inspect Evidence</span> &rarr;
                     </span>
                   </div>
@@ -141,7 +141,7 @@ export const CompanyTimeline: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between py-1 border-b border-neutral-200/60">
                   <span className="text-neutral-500">Financial Magnitude:</span>
-                  <span className="font-bold font-mono text-purple-700">{selectedEvent.impactMagnitude}</span>
+                  <span className="font-bold font-mono text-neutral-900">{selectedEvent.impactMagnitude}</span>
                 </div>
                 <div className="flex items-start justify-between py-1">
                   <span className="text-neutral-500">Primary Source:</span>
@@ -157,7 +157,7 @@ export const CompanyTimeline: React.FC = () => {
                     `Cross-examine official disclosure: "${selectedEvent.title}" for ${record.name} against SEBI LODR Regulation 30`
                   )
                 }
-                className="w-full py-2 px-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                className="w-full py-2 px-3 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Cross-Examine Event in Chat</span>

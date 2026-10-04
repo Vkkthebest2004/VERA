@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 interface VeraFooterProps {
   onNavigateToVisualizer?: () => void;
@@ -42,94 +43,11 @@ export const VeraFooter: React.FC<VeraFooterProps> = ({
 
             {/* User-requested Action Segment Toolbar */}
             <div className="pt-2">
-              <div className="flex overflow-hidden bg-white border border-neutral-200 divide-x divide-neutral-200 rounded-lg rtl:flex-row-reverse shadow-2xs w-fit">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveAction('upload');
-                    if (onOpenIngestion) onOpenIngestion();
-                  }}
-                  title="Upload & Extract Filings (Cloud Storage)"
-                  className={`px-4 py-2 font-medium transition-colors duration-200 sm:px-5 cursor-pointer ${
-                    activeAction === 'upload'
-                      ? 'bg-neutral-900 text-white'
-                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950'
-                  }`}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveAction('archive');
-                    if (onOpenEvidence) onOpenEvidence();
-                  }}
-                  title="Regulatory Archives & Statutory Disclosures"
-                  className={`px-4 py-2 font-medium transition-colors duration-200 sm:px-5 cursor-pointer ${
-                    activeAction === 'archive'
-                      ? 'bg-neutral-900 text-white'
-                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950'
-                  }`}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveAction('scan');
-                    if (onNavigateToVisualizer) onNavigateToVisualizer();
-                  }}
-                  title="Multi-Dimensional Deep Scan & Visualizer Canvas"
-                  className={`px-4 py-2 font-medium transition-colors duration-200 sm:px-5 cursor-pointer ${
-                    activeAction === 'scan'
-                      ? 'bg-neutral-900 text-white'
-                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950'
-                  }`}
-                >
-                  <svg
-                    className="w-5 h-5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M7.5 3.75H6A2.25 2.25 0 003.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0120.25 6v1.5m0 9V18A2.25 2.25 0 0118 20.25h-1.5m-9 0H6A2.25 2.25 0 013.75 18v-1.5M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              </div>
+              <VeraActionToolbar
+                onUpload={onOpenIngestion}
+                onArchive={onOpenEvidence}
+                onScan={onNavigateToVisualizer}
+              />
             </div>
           </div>
 

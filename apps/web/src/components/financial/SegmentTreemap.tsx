@@ -45,9 +45,9 @@ export const SegmentTreemap: React.FC = () => {
           const share = ((rev / totalRev) * 100).toFixed(1);
 
           return `<div class="font-bold text-xs mb-1 pb-1 border-b border-neutral-700">${data.name}</div>
-            <div class="text-xs py-0.5">Revenue: <strong class="font-mono text-emerald-400">₹${rev.toLocaleString('en-IN')} Cr</strong></div>
+            <div class="text-xs py-0.5">Revenue: <strong class="font-mono text-white">₹${rev.toLocaleString('en-IN')} Cr</strong></div>
             <div class="text-xs py-0.5">Share of Total: <strong class="font-mono">${share}%</strong></div>
-            ${data.growth !== undefined ? `<div class="text-xs py-0.5">YoY Growth: <strong class="font-mono text-purple-300">${data.growth > 0 ? '+' : ''}${data.growth}%</strong></div>` : ''}
+            ${data.growth !== undefined ? `<div class="text-xs py-0.5">YoY Growth: <strong class="font-mono text-neutral-300">${data.growth > 0 ? '+' : ''}${data.growth}%</strong></div>` : ''}
             ${data.description ? `<div class="text-[11px] text-neutral-300 mt-1 max-w-xs leading-relaxed">${data.description}</div>` : ''}
             <div class="text-[10px] text-neutral-400 mt-1.5 italic">Click to focus segment in conversation</div>`;
         },
@@ -119,17 +119,17 @@ export const SegmentTreemap: React.FC = () => {
             onClick={() => setSelectedSegment(seg.name)}
             className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
               selectedSegment === seg.name
-                ? 'bg-purple-50/80 border-purple-300 ring-2 ring-purple-200'
+                ? 'bg-neutral-100 border-neutral-900 ring-2 ring-neutral-300'
                 : 'bg-neutral-50/60 hover:bg-neutral-100/70 border-neutral-200/70'
             }`}
           >
             <div className="flex items-center justify-between text-xs font-bold text-neutral-900 mb-1">
               <span className="truncate pr-1">{seg.name}</span>
-              <span className="font-mono text-purple-700 shrink-0">{seg.percentageContribution}%</span>
+              <span className="font-mono text-neutral-900 shrink-0">{seg.percentageContribution}%</span>
             </div>
             <div className="text-[11px] text-neutral-600 font-mono">
               ₹{seg.revenueCr.toLocaleString('en-IN')} Cr{' '}
-              <span className={seg.growthYoY >= 0 ? 'text-emerald-700' : 'text-rose-700'}>
+              <span className="text-neutral-900 font-semibold">
                 ({seg.growthYoY >= 0 ? '+' : ''}{seg.growthYoY}% YoY)
               </span>
             </div>

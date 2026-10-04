@@ -11,6 +11,7 @@ import { InvestigationDossier } from '@/types/investigation';
 import { VeraChatResponse } from '@/components/VeraChatResponse';
 import { CrawlerAnimationScreen } from '@/components/CrawlerAnimationScreen';
 import { CompanyData } from '@/data/mockCompanies';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 interface VeraEvidenceTrackerProps {
   company: CompanyData;
@@ -404,9 +405,42 @@ export const VeraEvidenceTracker: React.FC<VeraEvidenceTrackerProps> = ({
   return (
     <div className="flex flex-col h-full bg-white overflow-y-auto p-5 space-y-4">
       {/* ─────────────────────────────────────────────────────────────
+          Top Action Strip with Universal VeraActionToolbar
+      ────────────────────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-3 pb-3 border-b border-neutral-200">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-neutral-900" />
+          <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+            Invariant Evidence Verifier
+          </span>
+        </div>
+        <VeraActionToolbar
+          size="sm"
+          onUploadClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,application/pdf';
+            input.onchange = (e: any) => {
+              const file = e.target?.files?.[0];
+              if (file) {
+                setClaimText(`[Attached: ${file.name}] Auditing statutory claims against BSE/NSE records for ${company.ticker}...`);
+              }
+            };
+            input.click();
+          }}
+          onArchiveClick={() => {
+            handleVerify(`Auditing official BSE/NSE Regulation 30 filings and board resolutions for ${company.ticker}`);
+          }}
+          onScanClick={() => {
+            handleVerify(`Performing deep invariant verification across all public announcements for ${company.ticker}`);
+          }}
+        />
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────
           1. Minimal Claim Verification Input
       ────────────────────────────────────────────────────────────── */}
-      <div className="rounded-xl border border-neutral-200/90 bg-neutral-50/50 focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/10 transition-all shadow-2xs">
+      <div className="rounded-xl border border-neutral-200/90 bg-neutral-50/50 focus-within:border-neutral-900 focus-within:bg-white focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-2xs">
         <textarea
           rows={3}
           value={claimText}
@@ -423,14 +457,14 @@ export const VeraEvidenceTracker: React.FC<VeraEvidenceTrackerProps> = ({
 
         <div className="flex items-center justify-between px-3.5 pb-2.5 pt-1 border-t border-neutral-100">
           <div className="flex items-center gap-1.5 text-[11px] text-neutral-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <ShieldCheck className="w-3.5 h-3.5 text-neutral-900 shrink-0" />
             <span>Exchange filings & statutory disclosures</span>
           </div>
 
           <button
             disabled={isLoading || !claimText.trim()}
             onClick={() => handleVerify()}
-            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:hover:bg-emerald-600 text-white font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
+            className="px-3.5 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 disabled:opacity-40 disabled:hover:bg-neutral-900 text-white font-medium text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
           >
             {isLoading ? (
               <>
@@ -463,11 +497,11 @@ export const VeraEvidenceTracker: React.FC<VeraEvidenceTrackerProps> = ({
                   setClaimText(item.claim);
                   handleVerify(item.claim);
                 }}
-                className="p-2.5 rounded-xl border border-neutral-200/80 hover:border-emerald-400 hover:bg-emerald-50/30 text-left transition-all text-xs space-y-1 group cursor-pointer"
+                className="p-2.5 rounded-xl border border-neutral-200/80 hover:border-neutral-900 hover:bg-neutral-100 text-left transition-all text-xs space-y-1 group cursor-pointer"
               >
-                <div className="font-medium text-neutral-800 group-hover:text-emerald-800 flex items-center justify-between">
+                <div className="font-medium text-neutral-800 group-hover:text-neutral-950 flex items-center justify-between">
                   <span>{item.label}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-emerald-600 transition-transform group-hover:translate-x-0.5" />
+                  <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900 transition-transform group-hover:translate-x-0.5" />
                 </div>
                 <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">{item.claim}</p>
               </button>
@@ -489,7 +523,7 @@ export const VeraEvidenceTracker: React.FC<VeraEvidenceTrackerProps> = ({
         <div className="space-y-4 pt-1">
           <div className="flex items-center justify-between pb-1.5 border-b border-neutral-200">
             <h3 className="text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <ShieldCheck className="w-4 h-4 text-neutral-900" />
               <span>Evidence Verification Report</span>
             </h3>
             <span className="text-[10px] text-neutral-500 font-mono">

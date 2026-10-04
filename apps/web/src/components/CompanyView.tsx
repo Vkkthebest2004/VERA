@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { CompanyData, COMPANIES } from '@/data/mockCompanies';
 import { ScreenerStockChart } from './ScreenerStockChart';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 export type TabType =
   | 'chart'
@@ -250,12 +251,12 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                     {company.name}
                   </h1>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-blue-600 font-medium pt-1">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-700 font-medium pt-1">
                   <a
                     href={`https://${company.website}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:underline flex items-center gap-1"
+                    className="hover:underline hover:text-neutral-950 flex items-center gap-1"
                   >
                     <span>🔗 {company.website}</span>
                   </a>
@@ -278,13 +279,13 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                     ₹ {company.price.toLocaleString('en-IN')}
                   </span>
                   <span
-                    className={`text-xs font-semibold px-1.5 py-0.5 rounded flex items-center gap-1 ${
+                    className={`text-xs font-semibold px-1.5 py-0.5 rounded flex items-center gap-1 font-mono ${
                       company.changePercent >= 0
-                        ? 'text-emerald-700 bg-emerald-50'
-                        : 'text-rose-700 bg-rose-50'
+                        ? 'text-neutral-950 bg-neutral-100 border border-neutral-300'
+                        : 'text-neutral-700 bg-neutral-100 border border-neutral-200'
                     }`}
                   >
-                    <span className={`w-2 h-2 rounded-full ${company.changePercent >= 0 ? 'bg-emerald-600' : 'bg-rose-600'}`} />
+                    <span className={`w-2 h-2 rounded-full ${company.changePercent >= 0 ? 'bg-neutral-900' : 'bg-neutral-500'}`} />
                     <span>{company.changePercent >= 0 ? '+' : ''}{company.changePercent}%</span>
                   </span>
                 </div>
@@ -293,8 +294,15 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons: Export to Excel & Follow */}
-          <div className="flex items-center gap-2.5">
+          {/* Action Buttons: 3-Button Segment Toolbar, Export to Excel & Follow */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <VeraActionToolbar
+              size="sm"
+              onUpload={() => onOpenAiWithClaim(`Upload and parse latest financial statement or annual report for ${company.name}`)}
+              onArchive={() => (onOpenEvidence ? onOpenEvidence() : onOpenAiWithClaim(`Verify BSE & NSE disclosures for ${company.name}`))}
+              onScan={() => (onOpenChat ? onOpenChat() : onOpenAiWithClaim(`Multi-dimensional fundamental scan for ${company.name}`))}
+            />
+
             <button
               onClick={() => onOpenAiWithClaim(`Generate consolidated financial verification brief for ${company.name}`)}
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-neutral-300 hover:bg-neutral-50 text-neutral-700 text-xs font-semibold uppercase tracking-wider transition-colors shadow-2xs cursor-pointer"
@@ -379,11 +387,11 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <input
                   type="text"
                   placeholder="eg. Promoter holding"
-                  className="w-full max-w-md px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-blue-500 shadow-2xs"
+                  className="w-full max-w-md px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-neutral-900 shadow-2xs"
                 />
                 <button
                   onClick={() => onOpenAiWithClaim(`Verify financial ratios for ${company.name}`)}
-                  className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 uppercase tracking-wider"
+                  className="text-neutral-900 hover:text-neutral-700 font-bold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 uppercase tracking-wider"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                   <span>EDIT RATIOS</span>
@@ -413,7 +421,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
               </div>
               <button
                 onClick={() => setActiveTab('analysis')}
-                className="text-blue-600 hover:underline font-bold text-xs mt-2.5 inline-flex items-center gap-1 tracking-wider uppercase cursor-pointer"
+                className="text-neutral-900 hover:underline font-bold text-xs mt-2.5 inline-flex items-center gap-1 tracking-wider uppercase cursor-pointer"
               >
                 <span>READ MORE</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -422,8 +430,6 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           </div>
         </div>
       </div>
-
-
 
       {/* ─────────────────────────────────────────────────────────────
           5. Tab 1: Interactive Stock Chart Card (ECharts Dual-Axis Screener)
@@ -457,7 +463,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Analyze full corporate architecture and regulatory compliance for ${company.name}`)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold cursor-pointer transition-colors shadow-xs"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Audit Architecture</span>
@@ -467,7 +473,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3 bg-neutral-50/60 p-4 rounded-xl border border-neutral-100">
               <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-blue-600" />
+                <Building2 className="w-4 h-4 text-neutral-900" />
                 <span>Core Business Segments</span>
               </h3>
               <div className="space-y-2 text-xs text-neutral-700">
@@ -482,34 +488,34 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
 
             <div className="space-y-3 bg-neutral-50/60 p-4 rounded-xl border border-neutral-100">
               <h3 className="text-sm font-bold text-neutral-800 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <ShieldCheck className="w-4 h-4 text-neutral-900" />
                 <span>Statutory & LODR Health Check</span>
               </h3>
               <div className="space-y-2 text-xs">
-                <div className="p-3 bg-white rounded-lg border border-emerald-200/80 flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-white rounded-lg border border-neutral-200 flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-neutral-900 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-emerald-900">Regulation 30 Compliance: Up-to-Date</span>
+                    <span className="font-bold text-neutral-950">Regulation 30 Compliance: Up-to-Date</span>
                     <p className="text-neutral-600 text-[11px] mt-0.5">
                       All material board meetings, joint ventures, and Letter of Awards disclosed within the mandatory 24-hour LODR window.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-white rounded-lg border border-emerald-200/80 flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-white rounded-lg border border-neutral-200 flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-neutral-900 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-emerald-900">Regulation 33 Audited Financials: Clean</span>
+                    <span className="font-bold text-neutral-950">Regulation 33 Audited Financials: Clean</span>
                     <p className="text-neutral-600 text-[11px] mt-0.5">
                       Quarterly and annual financial results audited with unqualified auditor reports by statutory chartered accountants.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-white rounded-lg border border-purple-200/80 flex items-start gap-2.5">
-                  <Sparkles className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                <div className="p-3 bg-white rounded-lg border border-neutral-200 flex items-start gap-2.5">
+                  <Sparkles className="w-4 h-4 text-neutral-900 shrink-0 mt-0.5" />
                   <div>
-                    <span className="font-bold text-purple-900">VERA Evidence Integrity Score: 98.4 / 100</span>
+                    <span className="font-bold text-neutral-950">VERA Evidence Integrity Score: 98.4 / 100</span>
                     <p className="text-neutral-600 text-[11px] mt-0.5">
                       Zero substantiated allegations of undisclosed material debt defaults or unannounced plant shutdowns.
                     </p>
@@ -530,7 +536,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1">
             <div>
               <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Peer comparison</h2>
-              <div className="flex flex-wrap items-center gap-1.5 text-xs text-blue-600 pt-1.5">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs text-neutral-700 pt-1.5">
                 <span className="flex items-center gap-1 hover:underline cursor-pointer">
                   <span>🌐</span> Fast Moving Consumer Goods
                 </span>
@@ -551,7 +557,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
 
             <button
               onClick={() => onOpenAiWithClaim(`Compare valuation multiples and ROCE across peers for ${company.name}`)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer self-start sm:self-center"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-neutral-300 text-neutral-800 hover:bg-neutral-100 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer self-start sm:self-center transition-colors"
             >
               <Edit2 className="w-3.5 h-3.5" />
               <span>EDIT COLUMNS</span>
@@ -564,12 +570,12 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             {['Nifty 500', 'Nifty MNC', 'Nifty500 Equal Weight', 'Nifty500 LargeMidSmall Equal-Cap Weighted', 'BSE 1000'].map((tag) => (
               <span
                 key={tag}
-                className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-medium text-[11px] border border-blue-100"
+                className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 font-medium text-[11px] border border-neutral-200"
               >
                 {tag}
               </span>
             ))}
-            <button className="text-blue-600 hover:underline font-semibold text-xs ml-1 cursor-pointer">
+            <button className="text-neutral-700 hover:text-neutral-950 hover:underline font-semibold text-xs ml-1 cursor-pointer">
               show all
             </button>
           </div>
@@ -600,10 +606,10 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                   return (
                     <tr
                       key={i}
-                      className={`hover:bg-neutral-50 ${isCurrent ? 'bg-blue-50/40 font-bold' : ''}`}
+                      className={`hover:bg-neutral-50 ${isCurrent ? 'bg-neutral-100/70 font-bold' : ''}`}
                     >
                       <td className="py-2.5 px-3 text-neutral-500 font-mono">{i + 1}.</td>
-                      <td className="py-2.5 px-3 font-semibold text-blue-600 hover:underline cursor-pointer">
+                      <td className="py-2.5 px-3 font-semibold text-neutral-900 hover:underline cursor-pointer">
                         {peer.name}
                       </td>
                       <td className="py-2.5 px-3 text-right font-medium text-neutral-900 font-mono">
@@ -655,7 +661,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <input
               type="text"
               placeholder="eg. Infosys"
-              className="px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-blue-500 shadow-2xs w-64"
+              className="px-3 py-1.5 text-xs bg-white border border-neutral-300 rounded-md placeholder-neutral-400 focus:outline-hidden focus:border-neutral-900 shadow-2xs w-64"
             />
           </div>
         </div>
@@ -677,9 +683,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Verify quarterly sales and PAT figures for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Quarterly Filings</span>
             </button>
           </div>
@@ -708,7 +714,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                   <td className="py-2.5 px-3 text-center">
                     <button
                       onClick={() => onOpenAiWithClaim(`Verify reported quarterly sales for ${company.name}`)}
-                      className="text-purple-600 hover:text-purple-800 text-[11px] font-bold"
+                      className="text-neutral-900 hover:underline text-[11px] font-bold"
                     >
                       Audit
                     </button>
@@ -723,10 +729,10 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                   ))}
                   <td className="py-2.5 px-3 text-center" />
                 </tr>
-                <tr className="bg-emerald-50/30">
-                  <td className="py-2.5 px-3 font-bold text-emerald-800">Operating Profit</td>
+                <tr className="bg-neutral-50/70">
+                  <td className="py-2.5 px-3 font-bold text-neutral-950">Operating Profit</td>
                   {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 text-right font-bold text-emerald-700 font-mono">
+                    <td key={i} className="py-2.5 px-3 text-right font-bold text-neutral-900 font-mono">
                       ₹ {q.operatingProfitCr.toLocaleString('en-IN')}
                     </td>
                   ))}
@@ -786,17 +792,17 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                   ))}
                   <td className="py-2.5 px-3 text-center" />
                 </tr>
-                <tr className="bg-purple-50/50">
-                  <td className="py-2.5 px-3 font-bold text-purple-900">Net Profit (PAT)</td>
+                <tr className="bg-neutral-100/70">
+                  <td className="py-2.5 px-3 font-bold text-neutral-950">Net Profit (PAT)</td>
                   {company.quarters.map((q, i) => (
-                    <td key={i} className="py-2.5 px-3 text-right font-bold text-purple-900 font-mono">
+                    <td key={i} className="py-2.5 px-3 text-right font-bold text-neutral-950 font-mono">
                       ₹ {q.patCr.toLocaleString('en-IN')}
                     </td>
                   ))}
                   <td className="py-2.5 px-3 text-center">
                     <button
                       onClick={() => onOpenAiWithClaim(`Verify quarterly Net Profit (PAT) for ${company.name}`)}
-                      className="text-purple-600 hover:text-purple-800 text-[11px] font-bold"
+                      className="text-neutral-900 hover:underline text-[11px] font-bold"
                     >
                       Audit
                     </button>
@@ -828,7 +834,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
               <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Profit & Loss</h2>
               <p className="text-xs text-neutral-500 pt-0.5">
                 Consolidated Figures in Rs. Crores /{' '}
-                <button className="text-blue-600 hover:underline font-semibold cursor-pointer">
+                <button className="text-neutral-700 hover:text-neutral-950 hover:underline font-semibold cursor-pointer">
                   View Standalone
                 </button>
               </p>
@@ -838,21 +844,21 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => onOpenAiWithClaim(`Generate predictive revenue and PAT trajectory for ${company.name}`)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-300 text-neutral-800 hover:bg-neutral-100 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer transition-colors"
               >
                 <LineChart className="w-3.5 h-3.5" />
                 <span>FORECAST</span>
               </button>
               <button
                 onClick={() => onOpenAiWithClaim(`Inspect related-party transactions for ${company.name}`)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-300 text-neutral-800 hover:bg-neutral-100 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer transition-colors"
               >
                 <Users className="w-3.5 h-3.5" />
                 <span>RELATED PARTY</span>
               </button>
               <button
                 onClick={() => onOpenAiWithClaim(`Inspect segment revenue and profitability breakdown for ${company.name}`)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-300 text-neutral-800 hover:bg-neutral-100 text-xs font-bold uppercase tracking-wider shadow-2xs cursor-pointer transition-colors"
               >
                 <PieChart className="w-3.5 h-3.5" />
                 <span>PRODUCT SEGMENTS</span>
@@ -936,7 +942,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
               <div className="flex justify-between text-neutral-600"><span>10 Years:</span><span className="font-mono">%</span></div>
               <div className="flex justify-between text-neutral-600"><span>5 Years:</span><span className="font-mono">%</span></div>
               <div className="flex justify-between text-neutral-600"><span>3 Years:</span><span className="font-mono">%</span></div>
-              <div className="flex justify-between text-neutral-600"><span>1 Year:</span><span className="font-mono font-bold text-rose-600">-15%</span></div>
+              <div className="flex justify-between text-neutral-600"><span>1 Year:</span><span className="font-mono font-bold text-neutral-900">-15%</span></div>
             </div>
 
             <div className="bg-white rounded-lg border border-neutral-200 p-3.5 shadow-2xs space-y-1.5 text-xs">
@@ -961,7 +967,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <h2 className="text-base font-bold text-neutral-900">
                   Balance Sheet (Consolidated in ₹ Crores)
                 </h2>
-                <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-[10px] font-bold uppercase border border-neutral-200">
                   Audited Balance Sheet
                 </span>
               </div>
@@ -971,9 +977,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Verify historical borrowings and capital structure for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Balance Sheet</span>
             </button>
           </div>
@@ -1007,7 +1013,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                         <td
                           key={cIdx}
                           className={`py-2 px-3 text-right font-mono ${
-                            row.label === 'Borrowings' ? 'text-amber-800 font-semibold' : ''
+                            row.label === 'Borrowings' ? 'text-neutral-950 font-semibold' : ''
                           }`}
                         >
                           {v || '—'}
@@ -1018,7 +1024,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                           onClick={() =>
                             onOpenAiWithClaim(`Verify ${row.label} figure in balance sheet for ${company.name}`)
                           }
-                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                          className="text-neutral-900 hover:underline font-bold text-[11px]"
                         >
                           Audit
                         </button>
@@ -1043,7 +1049,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <h2 className="text-base font-bold text-neutral-900">
                   Cash Flow Statement (Consolidated in ₹ Crores)
                 </h2>
-                <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-[10px] font-bold uppercase border border-neutral-200">
                   Audited Cash Flow
                 </span>
               </div>
@@ -1053,9 +1059,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Audit operating cash flow vs net profit conversion for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Cash Quality</span>
             </button>
           </div>
@@ -1089,7 +1095,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                           key={cIdx}
                           className={`py-2.5 px-3 text-right font-mono ${
                             row.label.includes('Operating')
-                              ? 'text-emerald-700 font-semibold'
+                              ? 'text-neutral-950 font-semibold'
                               : row.label.includes('Investing')
                               ? 'text-neutral-700'
                               : 'text-neutral-800'
@@ -1103,7 +1109,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                           onClick={() =>
                             onOpenAiWithClaim(`Verify ${row.label} reported by ${company.name} in statutory cash flow statements`)
                           }
-                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                          className="text-neutral-900 hover:underline font-bold text-[11px]"
                         >
                           Audit
                         </button>
@@ -1128,7 +1134,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <h2 className="text-base font-bold text-neutral-900">
                   Key Financial Ratios (10-Year Historical Track Record)
                 </h2>
-                <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-[10px] font-bold uppercase border border-neutral-200">
                   Verified Ratios
                 </span>
               </div>
@@ -1138,9 +1144,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Audit ROCE and working capital days trend for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Ratio Anomalies</span>
             </button>
           </div>
@@ -1166,14 +1172,14 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                   return (
                     <tr
                       key={rIdx}
-                      className={`hover:bg-neutral-50 ${isRoce ? 'bg-purple-50/40 font-bold text-purple-900' : ''}`}
+                      className={`hover:bg-neutral-50 ${isRoce ? 'bg-neutral-100/70 font-bold text-neutral-950' : ''}`}
                     >
                       <td className="py-2 px-3 font-medium text-neutral-800">{row.label}</td>
                       {row.values.map((v, cIdx) => (
                         <td
                           key={cIdx}
                           className={`py-2 px-3 text-right font-mono ${
-                            isRoce ? 'text-purple-900 font-bold' : 'text-neutral-700'
+                            isRoce ? 'text-neutral-950 font-bold' : 'text-neutral-700'
                           }`}
                         >
                           {v || '—'}
@@ -1184,7 +1190,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                           onClick={() =>
                             onOpenAiWithClaim(`Verify ${row.label} calculation for ${company.name}`)
                           }
-                          className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                          className="text-neutral-900 hover:underline font-bold text-[11px]"
                         >
                           Audit
                         </button>
@@ -1209,7 +1215,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <h2 className="text-base font-bold text-neutral-900">
                   Shareholding Pattern (SEBI LODR Regulation 31 Disclosures)
                 </h2>
-                <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-[10px] font-bold uppercase border border-neutral-200">
                   Verified Ownership
                 </span>
               </div>
@@ -1219,9 +1225,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Verify promoter pledge and foreign institutional changes for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Institutional Inflows</span>
             </button>
           </div>
@@ -1232,7 +1238,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <div className="w-full h-4 rounded-full overflow-hidden flex bg-neutral-200">
               {company.shareholding.map((sh, idx) => {
                 const latestQuarter = sh.quarters[sh.quarters.length - 1];
-                const colors = ['bg-indigo-600', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500'];
+                const colors = ['bg-neutral-900', 'bg-neutral-700', 'bg-neutral-500', 'bg-neutral-400'];
                 return (
                   <div
                     key={idx}
@@ -1246,7 +1252,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             <div className="flex flex-wrap items-center gap-4 text-xs">
               {company.shareholding.map((sh, idx) => {
                 const latestQuarter = sh.quarters[sh.quarters.length - 1];
-                const dotColors = ['bg-indigo-600', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500'];
+                const dotColors = ['bg-neutral-900', 'bg-neutral-700', 'bg-neutral-500', 'bg-neutral-400'];
                 return (
                   <div key={idx} className="flex items-center gap-1.5 font-medium">
                     <span className={`w-2.5 h-2.5 rounded-full ${dotColors[idx % dotColors.length]}`} />
@@ -1285,7 +1291,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                         onClick={() =>
                           onOpenAiWithClaim(`Verify ${row.category} shareholding filings for ${company.name} under SEBI Regulation 31`)
                         }
-                        className="text-purple-600 hover:text-purple-800 font-bold text-[11px]"
+                        className="text-neutral-900 hover:underline font-bold text-[11px]"
                       >
                         Audit
                       </button>
@@ -1309,7 +1315,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 <h2 className="text-base font-bold text-neutral-900">
                   Regulatory Disclosures & Exchange Filings
                 </h2>
-                <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 text-[10px] font-bold uppercase border border-neutral-200">
                   SEBI LODR Verified
                 </span>
               </div>
@@ -1319,9 +1325,9 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
             </div>
             <button
               onClick={() => onOpenAiWithClaim(`Audit all recent material exchange announcements for ${company.name}`)}
-              className="text-xs text-purple-600 font-bold flex items-center gap-1 hover:text-purple-800 cursor-pointer"
+              className="text-xs text-neutral-900 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-neutral-700" />
               <span>Audit Recent Announcements</span>
             </button>
           </div>
@@ -1362,12 +1368,12 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                 className="p-3.5 bg-neutral-50/80 rounded-xl border border-neutral-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-neutral-50 transition-colors"
               >
                 <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-white border border-neutral-200 text-purple-600 shadow-2xs">
+                  <div className="p-2 rounded-lg bg-white border border-neutral-200 text-neutral-900 shadow-2xs">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-bold text-xs text-neutral-900 hover:text-blue-600 cursor-pointer">
+                      <h4 className="font-bold text-xs text-neutral-900 hover:text-neutral-700 cursor-pointer">
                         {doc.title}
                       </h4>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-200 text-neutral-700 font-mono">
@@ -1379,7 +1385,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                       <span>•</span>
                       <span>PDF Document ({doc.size})</span>
                       <span>•</span>
-                      <span className="text-emerald-700 font-medium">BSE / NSE Disclosed</span>
+                      <span className="text-neutral-900 font-medium">BSE / NSE Disclosed</span>
                     </div>
                   </div>
                 </div>
@@ -1389,7 +1395,7 @@ export const CompanyView: React.FC<CompanyViewProps> = ({
                     onClick={() =>
                       onOpenAiWithClaim(`Cross-examine statutory statements in '${doc.title}' for ${company.name}`)
                     }
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold shadow-2xs cursor-pointer"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold shadow-2xs cursor-pointer transition-colors"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Audit with VERA</span>

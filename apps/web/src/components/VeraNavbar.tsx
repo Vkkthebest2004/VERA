@@ -17,6 +17,7 @@ import {
   LayoutGrid,
 } from 'lucide-react';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 
 interface VeraNavbarProps {
   currentView: 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento';
@@ -138,9 +139,9 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                       else if (onToggleAiSidebar) onToggleAiSidebar();
                       setIsToolsOpen(false);
                     }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-purple-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-100 flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
-                    <MessageSquare className="w-4 h-4 text-purple-600 shrink-0" />
+                    <MessageSquare className="w-4 h-4 text-neutral-900 shrink-0" />
                     <div>
                       <div className="font-semibold text-neutral-900">✦ Artha</div>
                       <div className="text-[10px] text-neutral-500">Financial Intelligence Copilot</div>
@@ -152,9 +153,9 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                       else if (onToggleAiSidebar) onToggleAiSidebar();
                       setIsToolsOpen(false);
                     }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-emerald-50 flex items-center gap-2.5 transition-colors cursor-pointer"
+                    className="w-full px-3.5 py-2 text-left text-xs font-medium text-neutral-700 hover:bg-neutral-100 flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <ShieldCheck className="w-4 h-4 text-neutral-900 shrink-0" />
                     <div>
                       <div className="font-semibold text-neutral-900">Evidence & Filings</div>
                       <div className="text-[10px] text-neutral-500">Statutory filings & regulatory records</div>
@@ -244,11 +245,11 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                       <div className="text-right">
                         <div className="font-bold text-neutral-900">₹{company.price}</div>
                         <div
-                          className={`text-[11px] font-medium ${
-                            company.changePercent >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                          className={`text-[11px] font-medium font-mono ${
+                            company.changePercent >= 0 ? 'text-neutral-900' : 'text-neutral-500'
                           }`}
                         >
-                          {company.changePercent >= 0 ? '▲' : '▼'}{' '}
+                          {company.changePercent >= 0 ? '▲ +' : '▼ '}
                           {Math.abs(company.changePercent)}%
                         </div>
                       </div>
@@ -296,9 +297,9 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                     else if (onToggleAiSidebar) onToggleAiSidebar();
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-purple-50 flex items-center gap-2 cursor-pointer"
+                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
                 >
-                  <MessageSquare className="w-3.5 h-3.5 text-purple-600" />
+                  <MessageSquare className="w-3.5 h-3.5 text-neutral-900" />
                   <span>✦ Artha</span>
                 </button>
                 <button
@@ -307,13 +308,23 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                     else if (onToggleAiSidebar) onToggleAiSidebar();
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer"
+                  className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-neutral-900" />
                   <span>Evidence</span>
                 </button>
               </div>
             )}
+          </div>
+
+          {/* User's 3-Button Action Segment Toolbar */}
+          <div className="hidden sm:block">
+            <VeraActionToolbar
+              size="sm"
+              onUpload={() => onViewChange('raw_ingestion')}
+              onArchive={() => (onOpenEvidence ? onOpenEvidence() : onViewChange('company'))}
+              onScan={() => onViewChange('visualizer')}
+            />
           </div>
 
           {/* ─────────────────────────────────────────────────────────────

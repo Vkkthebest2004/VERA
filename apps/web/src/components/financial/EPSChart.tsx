@@ -43,7 +43,7 @@ export const EPSChart: React.FC = () => {
           if (!Array.isArray(params)) return '';
           const p = params[0];
           return `<div class="font-bold text-xs mb-1 pb-1 border-b border-neutral-700">${p.name}</div>
-            <div class="text-xs py-0.5">Diluted EPS: <strong class="font-mono text-purple-300">₹${p.value} per share</strong></div>`;
+            <div class="text-xs py-0.5">Diluted EPS: <strong class="font-mono text-white">₹${p.value} per share</strong></div>`;
         },
       },
       grid: {

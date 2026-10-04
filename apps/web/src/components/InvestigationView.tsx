@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { InvestigationDossier } from '@/types/investigation';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -45,29 +46,29 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
     switch (verdict) {
       case 'CONFIRMED_TRUE':
         return {
-          bg: 'bg-emerald-950/40 border-emerald-500/50 text-emerald-400',
-          badge: 'bg-emerald-500 text-slate-950',
+          bg: 'bg-neutral-900 border-neutral-900 text-white',
+          badge: 'bg-neutral-900 text-white',
           icon: ShieldCheck,
           label: 'OFFICIALLY VERIFIED',
         };
       case 'MISLEADING_OR_EXAGGERATED':
         return {
-          bg: 'bg-amber-950/40 border-amber-500/50 text-amber-400',
-          badge: 'bg-amber-500 text-slate-950',
+          bg: 'bg-neutral-100 border-neutral-400 text-neutral-900',
+          badge: 'bg-neutral-800 text-white',
           icon: AlertTriangle,
           label: 'MISLEADING / EXAGGERATED',
         };
       case 'DEBUNKED_FAKE':
         return {
-          bg: 'bg-rose-950/40 border-rose-500/50 text-rose-400',
-          badge: 'bg-rose-500 text-white',
+          bg: 'bg-neutral-100 border-neutral-900 text-neutral-950',
+          badge: 'bg-black text-white',
           icon: XCircle,
           label: 'DEBUNKED / CONTRADICTED',
         };
       default:
         return {
-          bg: 'bg-yellow-950/40 border-yellow-500/50 text-yellow-400',
-          badge: 'bg-yellow-500 text-slate-950',
+          bg: 'bg-neutral-100 border-neutral-300 text-neutral-800',
+          badge: 'bg-neutral-700 text-white',
           icon: HelpCircle,
           label: 'UNSUBSTANTIATED SPECULATION',
         };
@@ -77,28 +78,28 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'SUPPORTED':
-        return 'bg-emerald-950 text-emerald-400 border-emerald-800/60';
+        return 'bg-neutral-900 text-white border-neutral-900';
       case 'PARTIALLY_SUPPORTED':
-        return 'bg-amber-950 text-amber-400 border-amber-800/60';
+        return 'bg-neutral-200 text-neutral-800 border-neutral-400';
       case 'CONTRADICTED':
-        return 'bg-rose-950 text-rose-400 border-rose-800/60';
+        return 'bg-neutral-100 text-neutral-950 border-neutral-900';
       case 'INSUFFICIENT_EVIDENCE':
-        return 'bg-slate-800 text-slate-300 border-slate-700';
+        return 'bg-neutral-100 text-neutral-700 border-neutral-300';
       default:
-        return 'bg-indigo-950 text-indigo-300 border-indigo-800/60';
+        return 'bg-neutral-100 text-neutral-700 border-neutral-300';
     }
   };
 
   const getRelationshipBadge = (rel: string) => {
     switch (rel) {
       case 'SUPPORTS':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        return 'bg-neutral-900 text-white border-neutral-900';
       case 'PARTIAL_MATCH':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        return 'bg-neutral-200 text-neutral-800 border-neutral-400';
       case 'CONTRADICTS':
-        return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+        return 'bg-neutral-100 text-neutral-950 border-neutral-900';
       default:
-        return 'bg-slate-800 text-slate-400 border-slate-700';
+        return 'bg-neutral-100 text-neutral-600 border-neutral-200';
     }
   };
 
@@ -140,14 +141,22 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
             </div>
           </div>
 
-          {onReset && (
-            <button
-              onClick={onReset}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer self-start sm:self-auto"
-            >
-              Verify Another Claim
-            </button>
-          )}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <VeraActionToolbar
+              size="sm"
+              onUploadClick={onReset}
+              onArchiveClick={() => {}}
+              onScanClick={() => {}}
+            />
+            {onReset && (
+              <button
+                onClick={onReset}
+                className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
+              >
+                Verify Another Claim
+              </button>
+            )}
+          </div>
         </div>
 
         <p className="text-sm text-slate-300 mt-4 leading-relaxed font-sans">
@@ -156,17 +165,17 @@ export const InvestigationView: React.FC<InvestigationViewProps> = ({
 
         {/* 🌟 PLAIN LANGUAGE TAKEAWAY (FOR NON-FINANCIAL / EVERYDAY INVESTORS) */}
         {investigation.plain_language_takeaway && (
-          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 via-cyan-500/10 to-indigo-500/10 border border-cyan-500/40 shadow-xl backdrop-blur-md">
+          <div className="mt-4 p-4 rounded-xl bg-neutral-900 border border-neutral-800 shadow-xl backdrop-blur-md">
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 shrink-0 mt-0.5">
+              <div className="p-2 rounded-lg bg-neutral-800 border border-neutral-700 text-white shrink-0 mt-0.5">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-cyan-300">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-neutral-300">
                     Simple Explanation for Everyday Investors
                   </span>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-700/60 text-cyan-300 font-mono font-semibold">
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-neutral-800 border border-neutral-700 text-white font-mono font-semibold">
                     No Financial Jargon
                   </span>
                 </div>

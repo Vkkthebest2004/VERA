@@ -113,10 +113,10 @@ export const PeerComparisonChart: React.FC = () => {
   return (
     <div className="bg-white rounded-2xl border border-neutral-200/80 p-5 shadow-2xs space-y-4">
       {/* Strict Non-Advisory Notice */}
-      <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200/80 flex items-start gap-2.5 text-xs text-amber-900">
-        <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+      <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 flex items-start gap-2.5 text-xs text-neutral-800">
+        <Info className="w-4 h-4 text-neutral-700 shrink-0 mt-0.5" />
         <div>
-          <span className="font-bold">SEBI Non-Advisory Disclaimer:</span> Peer comparisons are provided solely to illustrate relative operating metrics, capital efficiency, and leverage. VERA does not provide buy/sell/hold ratings or price forecasts.
+          <span className="font-bold">SEBI Non-Advisory Notice:</span> Peer comparisons are provided solely to illustrate relative operating metrics, capital efficiency, and leverage. VERA does not provide buy/sell/hold ratings or price forecasts.
         </div>
       </div>
 
@@ -143,12 +143,12 @@ export const PeerComparisonChart: React.FC = () => {
           </thead>
           <tbody className="divide-y divide-neutral-100">
             {activePeers.map((p, idx) => (
-              <tr key={idx} className={`hover:bg-neutral-50 ${p.ticker === record.ticker ? 'bg-purple-50/40 font-bold' : ''}`}>
+              <tr key={idx} className={`hover:bg-neutral-50 ${p.ticker === record.ticker ? 'bg-neutral-100 font-bold' : ''}`}>
                 <td className="py-2 px-3 font-semibold text-neutral-900">{p.name}</td>
                 <td className="py-2 px-3 text-right font-mono">₹{p.cmp.toLocaleString('en-IN')}</td>
                 <td className="py-2 px-3 text-right font-mono">₹{p.marketCapCr.toLocaleString('en-IN')} Cr</td>
-                <td className="py-2 px-3 text-right font-mono text-emerald-700">{p.revenueGrowthPct}%</td>
-                <td className="py-2 px-3 text-right font-mono text-purple-700">{p.rocePct}%</td>
+                <td className="py-2 px-3 text-right font-mono text-neutral-900">{p.revenueGrowthPct}%</td>
+                <td className="py-2 px-3 text-right font-mono text-neutral-900">{p.rocePct}%</td>
                 <td className="py-2 px-3 text-right font-mono">{p.debtToEbitda}x</td>
                 <td className="py-2 px-3 text-right font-mono">{p.peRatio}</td>
               </tr>

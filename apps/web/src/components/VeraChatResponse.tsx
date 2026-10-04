@@ -179,20 +179,20 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
   const getVerdictTheme = () => {
     if (verdict.includes('VERIFIED') && !verdict.includes('PARTIALLY')) {
       return {
-        badge: 'bg-emerald-50 border-emerald-300 text-emerald-800',
-        cardBorder: 'border-emerald-200',
+        badge: 'bg-neutral-900 border-neutral-900 text-white',
+        cardBorder: 'border-neutral-900',
         icon: ShieldCheck,
       };
     } else if (verdict.includes('PARTIALLY')) {
       return {
-        badge: 'bg-amber-50 border-amber-300 text-amber-800',
-        cardBorder: 'border-amber-200',
+        badge: 'bg-neutral-100 border-neutral-400 text-neutral-900',
+        cardBorder: 'border-neutral-400',
         icon: AlertTriangle,
       };
     } else {
       return {
-        badge: 'bg-rose-50 border-rose-300 text-rose-800',
-        cardBorder: 'border-rose-200',
+        badge: 'bg-neutral-100 border-neutral-900 text-neutral-950 font-bold',
+        cardBorder: 'border-neutral-400',
         icon: XCircle,
       };
     }
@@ -311,7 +311,7 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
               <div className="space-y-1.5 pt-1">
                 {searchSteps.map((s) => (
                   <div key={s.step} className="flex items-start gap-2 text-xs">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-neutral-900 mt-0.5 shrink-0" />
                     <div className="space-y-0.5">
                       <span className="font-semibold text-neutral-900 text-[11px]">{s.label}: </span>
                       <span className="text-neutral-600 text-[11px]">{s.detail}</span>
@@ -341,7 +341,7 @@ export const VeraChatResponse: React.FC<VeraChatResponseProps> = ({
               className="p-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-black transition cursor-pointer text-xs flex items-center gap-1 font-medium"
               title="Copy concise verdict"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-neutral-900" /> : <Copy className="w-3.5 h-3.5" />}
               <span className="text-[11px] hidden sm:inline">{copied ? 'Copied' : 'Copy'}</span>
             </button>
 

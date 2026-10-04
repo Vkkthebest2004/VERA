@@ -557,7 +557,7 @@ const FormattedText: React.FC<{
               key={idx}
               type="button"
               onClick={() => onCitationClick?.(num)}
-              className="inline-flex items-center text-[10px] font-mono font-medium text-neutral-500 hover:text-purple-700 mx-0.5 px-1 py-0.2 rounded bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 transition-colors align-baseline cursor-pointer"
+              className="inline-flex items-center text-[10px] font-mono font-medium text-neutral-500 hover:text-neutral-950 mx-0.5 px-1 py-0.2 rounded bg-neutral-100 hover:bg-neutral-200 border border-neutral-200 transition-colors align-baseline cursor-pointer"
               title={`Source citation [${num}] · Verified Statutory Filing`}
             >
               [{num}]

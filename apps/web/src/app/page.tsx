@@ -9,6 +9,7 @@ import { VeraAssistantDrawer, AssistantMode } from '@/components/VeraAssistantDr
 import { VeraConversationalVisualizer } from '@/components/visualization/VeraConversationalVisualizer';
 import { VeraBentoShowcase } from '@/components/VeraBentoShowcase';
 import { VeraFooter } from '@/components/VeraFooter';
+import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { ShieldCheck } from 'lucide-react';
 
@@ -57,7 +58,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#fcfcfd] text-neutral-900 selection:bg-purple-900 selection:text-white relative">
+    <main className="min-h-screen bg-[#fcfcfd] text-neutral-900 selection:bg-neutral-900 selection:text-white relative">
       {/* 1. Screener-style Top Navbar with Separated AI Chat & Evidence Tracker Buttons */}
       <VeraNavbar
         currentView={currentView}
@@ -104,19 +105,30 @@ export default function Home() {
 
         {currentView === 'raw_ingestion' && (
           <div className="max-w-5xl mx-auto px-4 py-6">
-            <div className="mb-4 flex items-center justify-between pb-3 border-b border-neutral-200">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                <ShieldCheck className="w-5 h-5 text-neutral-900" />
                 <h2 className="font-bold text-base text-neutral-900">
                   Multimodal Media Ingestion & Fact-Check Dossier Studio
                 </h2>
               </div>
-              <button
-                onClick={() => setCurrentView('company')}
-                className="text-xs text-blue-600 hover:underline font-semibold"
-              >
-                &larr; Back to Company View
-              </button>
+              <div className="flex items-center gap-3">
+                <VeraActionToolbar
+                  size="sm"
+                  onUploadClick={() => {
+                    const el = document.getElementById('ingest-file-upload');
+                    if (el) el.click();
+                  }}
+                  onArchiveClick={handleOpenEvidence}
+                  onScanClick={handleOpenChat}
+                />
+                <button
+                  onClick={() => setCurrentView('company')}
+                  className="text-xs text-neutral-600 hover:text-neutral-950 hover:underline font-semibold cursor-pointer"
+                >
+                  &larr; Back to Company View
+                </button>
+              </div>
             </div>
             <IngestionStudio />
           </div>
@@ -124,19 +136,27 @@ export default function Home() {
 
         {currentView === 'bento' && (
           <div className="max-w-7xl mx-auto px-4 py-6">
-            <div className="mb-4 flex items-center justify-between pb-3 border-b border-neutral-200">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-200">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-neutral-900" />
                 <h2 className="font-bold text-base text-neutral-900">
                   VERA Monochrome Architecture Grid
                 </h2>
               </div>
-              <button
-                onClick={() => setCurrentView('company')}
-                className="text-xs text-neutral-600 hover:text-neutral-950 font-semibold cursor-pointer"
-              >
-                &larr; Back to Company View
-              </button>
+              <div className="flex items-center gap-3">
+                <VeraActionToolbar
+                  size="sm"
+                  onUploadClick={() => setCurrentView('raw_ingestion')}
+                  onArchiveClick={handleOpenEvidence}
+                  onScanClick={() => setCurrentView('visualizer')}
+                />
+                <button
+                  onClick={() => setCurrentView('company')}
+                  className="text-xs text-neutral-600 hover:text-neutral-950 font-semibold cursor-pointer"
+                >
+                  &larr; Back to Company View
+                </button>
+              </div>
             </div>
             <VeraBentoShowcase
               onNavigateToVisualizer={() => setCurrentView('visualizer')}

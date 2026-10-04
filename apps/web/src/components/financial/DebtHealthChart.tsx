@@ -149,7 +149,7 @@ export const DebtHealthChart: React.FC = () => {
 
         <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200/70 text-xs">
           <span className="text-neutral-500 text-[11px] block mb-0.5">Interest Coverage</span>
-          <span className="text-lg font-bold text-emerald-700 font-mono">
+          <span className="text-lg font-bold text-neutral-900 font-mono">
             {latestMetrics?.interestCoverageRatio}x
           </span>
           <p className="text-[10px] text-neutral-500 mt-0.5">
@@ -177,7 +177,7 @@ export const DebtHealthChart: React.FC = () => {
 
       <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
         <span className="flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          <ShieldCheck className="w-4 h-4 text-neutral-900" />
           <span>Interest coverage above 3.0x indicates strong debt solvency and minimal default risk.</span>
         </span>
         <span className="text-[11px] font-mono text-neutral-400">SEBI Reg 33 Audited</span>

@@ -172,7 +172,7 @@ export const CompanyGrowthChart: React.FC = () => {
       {/* Retail Investor Footnote */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-neutral-100 text-xs text-neutral-500">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="w-2 h-2 rounded-full bg-neutral-900" />
           <span>
             {record.ticker}: 10-Yr Revenue CAGR is{' '}
             <strong className="text-neutral-900 font-mono">

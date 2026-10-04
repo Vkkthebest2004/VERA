@@ -51,15 +51,15 @@ export const FreeCashFlowChart: React.FC = () => {
           const fcfVal = params.find((p: any) => p.seriesName.includes('Free Cash Flow'))?.value || 0;
 
           return `<div class="font-bold text-xs mb-1.5 pb-1 border-b border-neutral-700">${name} Free Cash Flow</div>
-            <div class="flex items-center justify-between gap-4 text-xs py-0.5 text-sky-300">
+            <div class="flex items-center justify-between gap-4 text-xs py-0.5 text-neutral-300">
               <span>(+) Cash from Operations:</span>
               <span class="font-mono font-bold">₹${Number(ocfVal).toLocaleString('en-IN')} Cr</span>
             </div>
-            <div class="flex items-center justify-between gap-4 text-xs py-0.5 text-rose-300">
+            <div class="flex items-center justify-between gap-4 text-xs py-0.5 text-neutral-400">
               <span>(-) CapEx Spent:</span>
               <span class="font-mono font-bold">-₹${Number(capexVal).toLocaleString('en-IN')} Cr</span>
             </div>
-            <div class="flex items-center justify-between gap-4 text-xs py-1 mt-1 border-t border-neutral-700 text-emerald-300 font-bold">
+            <div class="flex items-center justify-between gap-4 text-xs py-1 mt-1 border-t border-neutral-700 text-white font-bold">
               <span>(=) Free Cash Flow:</span>
               <span class="font-mono">₹${Number(fcfVal).toLocaleString('en-IN')} Cr</span>
             </div>`;
@@ -131,7 +131,7 @@ export const FreeCashFlowChart: React.FC = () => {
 
       <div className="pt-2 border-t border-neutral-100 flex flex-wrap items-center justify-between text-xs text-neutral-500 gap-2">
         <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="w-2 h-2 rounded-full bg-neutral-900" />
           <span>Positive Free Cash Flow means the company self-funds its expansion without reliance on debt.</span>
         </span>
         <span className="font-mono text-[11px] text-neutral-400">Audited Cash Flow Statements</span>
