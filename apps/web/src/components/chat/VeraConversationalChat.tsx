@@ -10,9 +10,11 @@ import {
   User,
   ArrowUpRight,
   BarChart3,
+  LayoutGrid,
 } from 'lucide-react';
 import { CompanyData } from '@/data/mockCompanies';
 import { VeraMessageRenderer } from './VeraMessageRenderer';
+import { VeraChatBentoGrid } from './VeraChatBentoGrid';
 
 interface Message {
   id: string;
@@ -53,6 +55,7 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
 
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showBento, setShowBento] = useState(true);
   const [expandedSources, setExpandedSources] = useState<Record<string, boolean>>({});
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
@@ -229,7 +232,19 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setShowBento(!showBento)}
+            className={`px-2 py-1 rounded text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1 border ${
+              showBento
+                ? 'bg-neutral-900 text-white border-neutral-900 shadow-2xs'
+                : 'bg-white text-neutral-600 border-neutral-200 hover:text-neutral-900 hover:bg-neutral-100'
+            }`}
+            title="Toggle Bento Exploration Grid"
+          >
+            <LayoutGrid className="w-3 h-3" />
+            <span className="hidden sm:inline">Bento</span>
+          </button>
           <button
             onClick={() => setMessages([])}
             className="text-neutral-400 hover:text-neutral-700 p-1 rounded hover:bg-neutral-200/60 transition-colors cursor-pointer"
@@ -380,6 +395,18 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
             </div>
           );
         })}
+
+        {/* 2b. Interactive Monochrome Bento Grid when starting exploration */}
+        {showBento && messages.length <= 1 && (
+          <div className="pt-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <VeraChatBentoGrid
+              company={company}
+              onSelectQuery={handleSendMessage}
+              onOpenVisualizer={onNavigateToVisualizer}
+              onOpenEvidence={onOpenEvidenceTab}
+            />
+          </div>
+        )}
 
         {/* Typing indicator */}
         {isTyping && (
