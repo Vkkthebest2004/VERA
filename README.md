@@ -9,7 +9,8 @@
 
 ![VERA Full Workflow Demo](docs/recordings/vera_full_workflow.gif)
 
-> 📹 **High-Definition Master Video**: [Download / Watch MP4 (1440x900, 50.9s)](docs/recordings/vera_full_workflow.mp4) | [WebM Format](docs/recordings/vera_full_workflow.webm)
+> 📹 **High-Definition Master Video**: [Download / Watch MP4 (1440x900, 1m 42s)](docs/recordings/vera_full_workflow.mp4) | [WebM Format](docs/recordings/vera_full_workflow.webm)  
+> 🎙️ **Official Voiceover Script**: [`docs/VERA_VOICEOVER_SCRIPT.md`](docs/VERA_VOICEOVER_SCRIPT.md) (Complete scene-by-scene audio narration guide)
 
 ### 🚀 Key Functional Modules Shown in Workflow
 | Feature | Capabilities Demonstrated | Visual Evidence |
