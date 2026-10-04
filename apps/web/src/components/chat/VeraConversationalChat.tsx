@@ -44,12 +44,12 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
     {
       id: 'welcome-1',
       sender: 'assistant',
-      content: `Hello Vaibhav! I am **Artha**, your financial companion for **${company.name} (${company.ticker})**.\n\nI can analyze financial statements, explain valuation multiples, evaluate peer fundamentals, and verify corporate events against authentic exchange filings under SEBI regulations.\n\nWhat would you like to explore about ${company.ticker} today?`,
+      content: `Hello! I am **Artha**, your financial companion and tutor for **${company.name} (${company.ticker})**.\n\nI am here to help you understand finance without confusing jargon. Whether you want to explore how ${shortName} makes money, evaluate how an investor analyzes this business, understand financial ratios, or verify corporate announcements against official BSE/NSE filings—I will walk through it with you step-by-step.\n\nWhat would you like to explore about ${company.ticker} today?`,
       timestamp: Date.now(),
       suggestedFollowUps: [
-        'Segment performance',
-        `Does ${shortName} have heavy debt?`,
-        'Compare with peers',
+        `How does ${shortName} make money?`,
+        `Should I invest in ${shortName}?`,
+        'Explain ROCE vs ROE',
       ],
     },
   ]);
@@ -71,8 +71,8 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
   const getSuggestedQuestions = () => {
     if (company.id === 'AWL') {
       return [
-        { label: 'Business & FMCG', q: 'Explain AWL Agri Business model and FMCG expansion' },
-        { label: 'FY24 Profit Rebound', q: 'Why did net profit fall in FY24 before rebounding in FY25?' },
+        { label: 'Business Model', q: 'How does Adani Wilmar make money across its segments?' },
+        { label: 'Should I Invest?', q: 'How should an investor evaluate investing in Adani Wilmar?' },
         { label: 'ROCE vs ROE', q: 'Explain why ROCE is 18.3% while ROE is 10.7%' },
       ];
     } else if (company.id === 'ALLETEC') {
@@ -83,16 +83,16 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
       ];
     } else if (company.id === 'RELIANCE') {
       return [
-        { label: 'Compare with peers', q: 'Compare Reliance valuation with peers' },
-        { label: 'Segment performance', q: 'Explain Reliance business model and segment mix' },
-        { label: 'Debt & CapEx', q: 'Does Reliance have heavy debt?' },
+        { label: 'Should I Invest?', q: 'How should an investor evaluate an investment in Reliance?' },
+        { label: 'Segment Mix', q: 'Explain Reliance business model and segment mix' },
+        { label: 'Debt & CapEx', q: 'Does Reliance have heavy debt relative to its cash flow?' },
       ];
     } else {
       // TATAPOWER & defaults
       return [
         { label: 'Clean Energy', q: 'Explain Tata Power green energy orderbook and solar projects' },
         { label: 'Debt Coverage', q: 'Analyze Tata Power debt levels and interest coverage safety' },
-        { label: 'Growth Outlook', q: 'Summarize Tata Power 5-year compounded revenue and profit CAGR' },
+        { label: 'Should I Invest?', q: 'How should an investor evaluate Tata Power today?' },
       ];
     }
   };
@@ -151,19 +151,29 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
       let followUps: string[] = [];
       let visualizerLink = false;
 
+      // 0. Beginner onboarding
+      if (lower.includes('beginner') || lower.includes('new to') || lower.includes('start from scratch') || lower.includes('explain like')) {
+        reply = `### Welcome to Finance with Artha!\n\nYou never have to feel shy about asking basic questions here. Finance is simply common sense wrapped in accounting vocabulary.\n\nThink of a business like a neighborhood bakery:\n• **Revenue** is the total money collected from selling bread.\n• **Profit** is what remains after buying flour, butter, and paying electricity.\n• **Cash Flow** is the actual bank balance (since some customers buy on credit!).\n• **Market Cap** is how much it would cost to buy the entire bakery today.\n\nWhere would you like to start? We can take it one simple step at a time!`;
+        followUps = ['Explain Revenue vs Profit', 'What is Market Cap?', `How does ${shortName} make money?`];
+      }
+      // 0b. Investment Inquiry / Should I buy?
+      else if (lower.includes('should i buy') || lower.includes('should i invest') || lower.includes('is it good to invest') || lower.includes('worth buying') || lower.includes('should i sell')) {
+        reply = `### How to Evaluate an Investment in ${company.name} (${company.ticker})\n\nRather than giving a simplistic 'buy' or 'sell' command, let's walk through how a thoughtful investor evaluates this decision:\n\n**Core Rule First**: Company Quality is NOT the same as Stock Quality. A great company can be an expensive stock!\n\n• **01 Business Model**: Operates with strong market standing and verified BSE/NSE disclosures. [1]\n• **02 Capital Efficiency**: ROCE stands at **${company.roce}%** against an ROE of **${company.roe}%** [2]. When ROCE exceeds borrowing costs, the business generates genuine economic value.\n• **03 Cash Flow Conversion**: Check whether reported Net Profit translates into Operating Cash Flow.\n• **04 Valuation Multiples**: Currently trading at **${company.pe}× P/E** against a Book Value of **₹${company.bookValue}**.\n• **05 The Bull Case**: Expansion into higher-margin segments and operational scale tailwinds.\n• **06 The Bear Case**: Raw material inflation and broader market cyclicality.\n\nSources: BSE · NSE Statutory Filings · FY2025 Annual Report`;
+        followUps = ['Show Profit vs Cash Flow', 'Compare with peers', `Does ${shortName} have heavy debt?`];
+      }
       // 1. Business model / Segments
-      if (lower.includes('business') || lower.includes('model') || lower.includes('product') || lower.includes('segment')) {
+      else if (lower.includes('business') || lower.includes('model') || lower.includes('product') || lower.includes('segment') || lower.includes('make money')) {
         if (company.id === 'RELIANCE') {
-          reply = `### Business model\nReliance operates through three major businesses:\n\n**01 Consumer Retail**\nGrocery, electronics, fashion, lifestyle, and e-commerce across 18,000+ stores. [1]\n\n**02 Digital Services**\nJio telecom network serving 475M+ subscribers and pan-India standalone 5G infrastructure. [2]\n\n**03 Oil-to-Chemicals (O2C)**\nRefining complex at Jamnagar, petrochemicals, and ongoing green energy transition. [1]\n\nSources: BSE · NSE · FY2025 Annual Report`;
+          reply = `### How Reliance Makes Money\nReliance operates through three major growth engines:\n\n**01 Consumer Retail**\nGrocery, electronics, fashion, lifestyle, and e-commerce across 18,000+ stores. [1]\n\n**02 Digital Services**\nJio telecom network serving 475M+ subscribers and pan-India standalone 5G infrastructure. [2]\n\n**03 Oil-to-Chemicals (O2C)**\nRefining complex at Jamnagar, petrochemicals, and ongoing green energy transition. [1]\n\nSources: BSE · NSE · FY2025 Annual Report`;
           followUps = ['Does Reliance have heavy debt?', 'Compare with peers', 'Segment revenue mix'];
         } else if (company.id === 'AWL') {
-          reply = `### Business model\nAWL Agri Business operates across three key consumer pillars:\n\n**01 Edible Oils (~75% of Volume)**\nMarket leader through flagship brand Fortune in refined sunflower, mustard, and soya oils. [1]\n\n**02 Packaged Foods & Staples (~15% of Revenue)**\nHigh-margin branded consumer staples including chakki atta, basmati rice, besan, and sugar. [2]\n\n**03 Industry Essentials (~10% of Revenue)**\nSpecialty oleochemicals, castor derivatives, and de-oiled cakes for industrial clients. [1]\n\nSources: BSE · NSE · FY2025 Annual Report`;
+          reply = `### How Adani Wilmar Makes Money\nAWL Agri Business operates across three key consumer pillars:\n\n**01 Edible Oils (~75% of Volume)**\nMarket leader through flagship brand Fortune in refined sunflower, mustard, and soya oils. [1]\n\n**02 Packaged Foods & Staples (~15% of Revenue)**\nHigh-margin branded consumer staples including chakki atta, basmati rice, besan, and sugar. [2]\n\n**03 Industry Essentials (~10% of Revenue)**\nSpecialty oleochemicals, castor derivatives, and de-oiled cakes for industrial clients. [1]\n\nSources: BSE · NSE · FY2025 Annual Report`;
           followUps = ['Why did profit fluctuate in FY24?', 'Explain the 18.3% ROCE', 'Compare with peers'];
         } else if (company.id === 'ALLETEC') {
-          reply = `### Business model\nAll E Technologies operates as a specialized Microsoft Gold Certified Partner across digital enterprise services:\n\n**01 Enterprise Applications**\nMicrosoft Dynamics 365 Business Central and Finance & Operations implementations. [1]\n\n**02 Cloud Infrastructure**\nMicrosoft Azure cloud migrations, modern workplace, and data engineering. [2]\n\n**03 AI & Analytics**\nEnterprise Copilot enablement and Power Platform business automation. [1]\n\nSources: BSE SME Disclosures · FY2025 Annual Report`;
+          reply = `### How All E Technologies Makes Money\nAll E Technologies operates as a specialized Microsoft Gold Certified Partner across digital enterprise services:\n\n**01 Enterprise Applications**\nMicrosoft Dynamics 365 Business Central and Finance & Operations implementations. [1]\n\n**02 Cloud Infrastructure**\nMicrosoft Azure cloud migrations, modern workplace, and data engineering. [2]\n\n**03 AI & Analytics**\nEnterprise Copilot enablement and Power Platform business automation. [1]\n\nSources: BSE SME Disclosures · FY2025 Annual Report`;
           followUps = ['Analyze P/E valuation', 'Explain high ROCE (22.1%)', 'Debt & margins'];
         } else {
-          reply = `### Business model\n**${company.name}** operates nationwide infrastructure with long-term capital compounding:\n\n• **Core Operations:** Scale infrastructure generating consistent operational cash flows.\n• **Expansion Vectors:** Disciplined capital investments in digital efficiency and clean transition.\n\nSources: BSE · NSE Statutory Disclosures`;
+          reply = `### Business Model: ${company.name}\n**${company.name}** operates nationwide infrastructure with long-term capital compounding:\n\n• **Core Operations:** Scale infrastructure generating consistent operational cash flows.\n• **Expansion Vectors:** Disciplined capital investments in digital efficiency and clean transition.\n\nSources: BSE · NSE Statutory Disclosures`;
           followUps = ['Compare with peers', 'Capital efficiency', 'Debt status'];
         }
       }
@@ -173,18 +183,18 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
           reply = `Not particularly relative to its scale.\n\nReliance’s consolidated debt remains substantial in absolute terms, but the more useful question is debt relative to EBITDA and cash generation.\n\n• **Net debt / EBITDA:** 0.8× [1]\n• **Trend:** Decreasing from 1.1× in prior investment cycles\n\nThe balance sheet therefore doesn’t currently look highly leveraged.\n\n**Why this matters:**\nLower leverage gives Reliance more capacity to fund its retail, telecom and new-energy expansion without straining credit ratings.\n\nSources: FY2025 Annual Report · Q1 FY26 Results`;
           followUps = ['Segment performance', 'Compare with peers', 'Cash flow quality'];
         } else {
-          reply = `### Balance sheet leverage\nFor **${company.name}**, debt levels remain supported by ongoing operating cash flows:\n\n• **Net Debt / Equity:** Moderate gearing with conservative interest coverage ratios. [1]\n• **CapEx Financing:** Core capital expenditures are financed largely through internal operational accruals rather than speculative borrowing.\n\nSources: FY2025 Balance Sheet Disclosures · Statutory Auditor Report`;
+          reply = `### Balance Sheet Leverage: ${company.name}\nFor **${company.name}**, debt levels remain supported by ongoing operating cash flows:\n\n• **Net Debt / Equity:** Moderate gearing with conservative interest coverage ratios. [1]\n• **CapEx Financing:** Core capital expenditures are financed largely through internal operational accruals rather than speculative borrowing.\n\nSources: FY2025 Balance Sheet Disclosures · Statutory Auditor Report`;
           followUps = ['Compare with peers', 'ROCE vs ROE', 'Segment performance'];
         }
       }
       // 3. P/E, Valuation & Peer comparison
       else if (lower.includes('pe') || lower.includes('valuation') || lower.includes('peer') || lower.includes('compare')) {
-        reply = `### Valuation overview\nTrading at **${company.pe}× P/E** with a market capitalization of **₹${company.marketCapCr.toLocaleString('en-IN')} Cr** [1].\n\n• **Conglomerate Multiple:** Blended valuation reflecting stable cash-generating core businesses and faster-growing digital/consumer arms.\n• **Capital Efficiency:** Operating return on capital (ROCE) stands at **${company.roce}%** against an ROE of **${company.roe}%** [2].\n• **Book Value:** ₹${company.bookValue} per share, with current market price near historical support zones.\n\nSources: NSE Corporate Announcements · FY2025 Audited Statements`;
+        reply = `### Valuation Overview: ${company.name}\nTrading at **${company.pe}× P/E** with a market capitalization of **₹${company.marketCapCr.toLocaleString('en-IN')} Cr** [1].\n\n• **Conglomerate Multiple:** Blended valuation reflecting stable cash-generating core businesses and faster-growing digital/consumer arms.\n• **Capital Efficiency:** Operating return on capital (ROCE) stands at **${company.roce}%** against an ROE of **${company.roe}%** [2].\n• **Book Value:** ₹${company.bookValue} per share, with current market price near historical support zones.\n\nSources: NSE Corporate Announcements · FY2025 Audited Statements`;
         followUps = ['Segment performance', `Does ${shortName} have heavy debt?`, 'Explain ROCE vs ROE'];
       }
       // 4. ROCE vs ROE
       else if (lower.includes('roce') || lower.includes('roe') || lower.includes('capital efficiency')) {
-        reply = `### Capital efficiency: ROCE (${company.roce}%) vs ROE (${company.roe}%)\n\n• **ROCE (${company.roce}%):** Measures operating profit generated across all capital employed (equity plus long-term debt). [1]\n• **ROE (${company.roe}%):** Reflects net profit available solely to shareholders after debt servicing and taxes.\n• **Interpretation:** When ROCE consistently exceeds borrowing costs (~8.5%), management is deploying capital with genuine economic value creation.\n\nSources: FY2025 Audited Annual Report`;
+        reply = `### Capital Efficiency: ROCE (${company.roce}%) vs ROE (${company.roe}%)\n\n• **ROCE (${company.roce}%):** Measures operating profit generated across all capital employed (equity plus long-term debt). [1]\n• **ROE (${company.roe}%):** Reflects net profit available solely to shareholders after debt servicing and taxes.\n• **Interpretation:** When ROCE consistently exceeds borrowing costs (~8.5%), management is deploying capital with genuine economic value creation.\n\nSources: FY2025 Audited Annual Report`;
         followUps = ['Compare with peers', 'Debt & CapEx', 'Segment performance'];
       }
       // 5. Visualizer command or chart exploration

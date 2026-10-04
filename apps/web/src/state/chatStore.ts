@@ -36,23 +36,23 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
       id: 'welcome-1',
       sender: 'assistant',
       content:
-        "Welcome! I am **Artha**, your financial companion on VERA.\n\nI can analyze financial statements, explain corporate actions, evaluate peer fundamentals, and control the visualization canvas. You can ask questions or give me natural-language instructions like:\n• *\"Show revenue and PAT\"*\n• *\"Compare PAT with Operating Cash Flow\"*\n• *\"Why is ROCE higher than ROE?\"*\n• *\"What changed between FY25 and FY26?\"*\n• *\"Make this easier to understand\"*",
+        "Welcome! I am **Artha**, your conversational financial intelligence and literacy assistant inside VERA.\n\nI am here to help you understand finance without confusing jargon. You can ask me to explain any financial concept (like *EBITDA*, *ROCE vs ROE*, or *Cash Flow vs Profit*), walk through how to evaluate an investment decision, or guide the multi-dimensional charts on screen.\n\nTry asking:\n• *\"Should I invest in this company?\"*\n• *\"Explain ROCE vs ROE like I'm 15\"*\n• *\"Show Profit vs Operating Cash Flow\"*\n• *\"How does this business make money?\"*",
       timestamp: Date.now(),
       suggestedFollowUps: [
-        'Show Revenue + EBITDA + PAT trend',
-        'Show Profit vs Operating Cash Flow',
-        'What changed recently?',
-        'Compare with peers',
+        'Should I invest in this company?',
+        'Explain ROCE vs ROE like I\'m 15',
+        'Show Profit vs Cash Flow',
+        'What does this company do?',
       ],
     },
   ],
   isTyping: false,
   activeSuggestions: [
+    'Should I invest in this company?',
+    'Explain ROCE vs ROE like I\'m 15',
     'Show Profit vs Cash Flow',
-    'What changed recently?',
-    'Show Margins',
-    'Compare with peers',
-    'Make this easier',
+    'What does this company do?',
+    'I\'m a beginner — where should I start?',
   ],
 
   sendMessage: async (text: string) => {

@@ -54,12 +54,40 @@ def vera_chat_endpoint(payload: ChatRequest):
     intent = res.get("intent", "GENERAL_CONVERSATION")
 
     # Generate tailored, contextually relevant follow-up suggestions
-    if intent == "GREETING_CASUAL":
+    if intent == "BEGINNER_ONBOARDING":
+        follow_ups = [
+            "Explain Revenue vs Profit with an example",
+            "What is Market Cap?",
+            "Why is Cash Flow different from Net Profit?",
+            f"How does {cid} make money?",
+        ]
+    elif intent == "MISCONCEPTION_CORRECTION":
+        follow_ups = [
+            "Explain Stock Splits vs Bonus Shares",
+            "Why is a low stock price not necessarily cheap?",
+            "What does P/E actually tell us?",
+            f"Show {cid} Profit vs Cash Flow",
+        ]
+    elif intent == "INVESTMENT_DECISION":
+        follow_ups = [
+            f"What is the Bull Case for {cid}?",
+            f"What is the Bear Case for {cid}?",
+            f"Does {cid} have heavy debt?",
+            f"Compare {cid} valuation with peers",
+        ]
+    elif intent == "COMPANY_ANALYSIS":
+        follow_ups = [
+            f"Show {cid} Profit vs Cash Flow",
+            f"What are {cid}'s revenue segments?",
+            f"Analyze {cid} ROCE vs ROE",
+            f"What are key risks for {cid}?",
+        ]
+    elif intent == "GREETING_CASUAL":
         follow_ups = [
             f"Explain {cid}'s business model & products",
             "What is EBITDA and why is it important?",
-            "Show Revenue + EBITDA + PAT trend",
-            f"Analyze P/E valuation of {cid} vs peers",
+            f"Should I invest in {cid}?",
+            "I'm a beginner — where should I start?",
         ]
     elif intent == "FINANCIAL_EDUCATION":
         follow_ups = [
