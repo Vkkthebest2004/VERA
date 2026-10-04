@@ -19,6 +19,8 @@ import { VeraChatBentoGrid } from './VeraChatBentoGrid';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
 import { VeraMemoryDrawer } from './VeraMemoryDrawer';
 import { getAuthHeaders } from '@/lib/supabase';
+import { useLanguageStore } from '@/state/languageStore';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
 
 interface Message {
   id: string;
@@ -44,28 +46,41 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
   onOpenEvidenceTab,
 }) => {
   const shortName = company.name.split(' ')[0];
+  const { currentLanguage, t, getTranslations } = useLanguageStore();
 
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isMemoryOpen, setIsMemoryOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome-1',
-      sender: 'assistant',
-      content: `Hello! I am **Artha**, your financial companion and tutor for **${company.name} (${company.ticker})**.\n\nI am here to help you understand finance without confusing jargon. Whether you want to explore how ${shortName} makes money, evaluate how an investor analyzes this business, understand financial ratios, or verify corporate announcements against official BSE/NSE filings—I will walk through it with you step-by-step.\n\nWhat would you like to explore about ${company.ticker} today?`,
-      timestamp: Date.now(),
-      suggestedFollowUps: [
-        `How does ${shortName} make money?`,
-        `Should I invest in ${shortName}?`,
-        'Explain ROCE vs ROE',
-      ],
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showBento, setShowBento] = useState(true);
   const [expandedSources, setExpandedSources] = useState<Record<string, boolean>>({});
   const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  // Localized welcome greeting whenever language or company changes (if starting out)
+  useEffect(() => {
+    const trans = getTranslations(currentLanguage);
+    setMessages((prev) => {
+      if (prev.length <= 1 && (prev.length === 0 || prev[0].id.startsWith('welcome'))) {
+        const welcomeContent =
+          currentLanguage === 'en'
+            ? `Hello! I am **Artha**, your financial companion and tutor for **${company.name} (${company.ticker})**.\n\nI am here to help you understand finance without confusing jargon. Whether you want to explore how ${shortName} makes money, evaluate how an investor analyzes this business, understand financial ratios, or verify corporate announcements against official BSE/NSE filings—I will walk through it with you step-by-step.\n\nWhat would you like to explore about ${company.ticker} today?`
+            : `${trans.chatbotWelcome}\n\n**${company.name} (${company.ticker})** — ${trans.chatbotDescription}\n\n• **${trans.missionStatement}**\n\n${company.name} के वित्तीय विवरण, पूंजी दक्षता (ROCE / ROE), और सेबी खुलासों के बारे में आप क्या जानना चाहते हैं?`;
+
+        return [
+          {
+            id: `welcome-${currentLanguage}`,
+            sender: 'assistant',
+            content: welcomeContent,
+            timestamp: Date.now(),
+            suggestedFollowUps: trans.suggestedQuestions.slice(0, 3),
+          },
+        ];
+      }
+      return prev;
+    });
+  }, [currentLanguage, company, shortName, getTranslations, t]);
 
   // Auto-scroll on new message
   useEffect(() => {
@@ -74,8 +89,16 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
     }
   }, [messages, isTyping]);
 
-  // Company-specific dynamic suggested questions (Strictly 3 maximum)
+  // Dynamic suggested questions adapted to language & company
   const getSuggestedQuestions = () => {
+    const trans = getTranslations(currentLanguage);
+    if (currentLanguage !== 'en') {
+      const labels = ['व्यापार मॉडल', 'निवेश विश्लेषण', 'ROCE दक्षता', 'नकद प्रवाह'];
+      return trans.suggestedQuestions.slice(0, 3).map((q, i) => ({
+        label: labels[i] || 'प्रश्न',
+        q,
+      }));
+    }
     if (company.id === 'AWL') {
       return [
         { label: 'Business Model', q: 'How does Adani Wilmar make money across its segments?' },
@@ -95,7 +118,6 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
         { label: 'Debt & CapEx', q: 'Does Reliance have heavy debt relative to its cash flow?' },
       ];
     } else {
-      // TATAPOWER & defaults
       return [
         { label: 'Clean Energy', q: 'Explain Tata Power green energy orderbook and solar projects' },
         { label: 'Debt Coverage', q: 'Analyze Tata Power debt levels and interest coverage safety' },
@@ -134,6 +156,7 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
           conversation_id: conversationId,
           company_id: company.id,
           company_name: company.name,
+          language: currentLanguage,
         }),
       });
 
@@ -168,9 +191,26 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
       let reply = '';
       let followUps: string[] = [];
       let visualizerLink = false;
+      const trans = getTranslations(currentLanguage);
 
-      // 0. Beginner onboarding
-      if (lower.includes('beginner') || lower.includes('new to') || lower.includes('start from scratch') || lower.includes('explain like')) {
+      if (currentLanguage !== 'en') {
+        if (lower.includes('business') || lower.includes('model') || lower.includes('व्यापार') || lower.includes('कमाती') || lower.includes('उत्पाद')) {
+          reply = `### ${company.name} (${company.ticker})\n\n${trans.sampleBusinessExplain}\n\n• **SEBI LODR Reg 30/33**: प्रमाणित और लेखापरीक्षित प्रकटीकरण।\n• **कंपनी स्थिति**: BSE एवं NSE पर आधिकारिक डेटा।\n\n📌 *${trans.missionStatement}*`;
+          followUps = trans.suggestedQuestions.slice(0, 3);
+        } else if (lower.includes('invest') || lower.includes('निवेश') || lower.includes('खरीद') || lower.includes('शेयर')) {
+          reply = `### ${company.name} (${company.ticker}) - निवेश मूल्यांकन\n\n${trans.sampleInvestVerdict}\n\n• **मार्केट कैप**: ₹${company.marketCapCr} Cr\n• **ROCE**: **${company.roce}%**\n• **ROE**: **${company.roe}%**\n• **P/E अनुपात**: **${company.pe}x**\n• **बुक वैल्यू**: **₹${company.bookValue}**\n\nस्रोत: आधिकारिक BSE · NSE वैधानिक खुलासे।\n\n📌 *${trans.missionStatement}*`;
+          followUps = trans.suggestedQuestions.slice(0, 3);
+        } else if (lower.includes('roce') || lower.includes('roe') || lower.includes('दक्षता') || lower.includes('रेशियो')) {
+          reply = `### ROCE vs ROE - ${company.name}\n\n${trans.sampleRoceExplain}\n\n• **ROCE**: **${company.roce}%** (पूंजी पर परिचालन लाभ)\n• **ROE**: **${company.roe}%** (शेयरधारकों की इक्विटी पर शुद्ध लाभ)\n\n📌 *${trans.missionStatement}*`;
+          followUps = trans.suggestedQuestions.slice(0, 3);
+        } else if (lower.includes('cash') || lower.includes('रोकड़') || lower.includes('प्रवाह') || lower.includes('ocf')) {
+          reply = `### परिचालन नकदी प्रवाह (Operating Cash Flow) - ${company.name}\n\n${trans.sampleOcfExplain}\n\n• शुद्ध लाभ और वास्तविक नकद बैंक बैलेंस में अंतर को समझना आवश्यक है।\n\n📌 *${trans.missionStatement}*`;
+          followUps = trans.suggestedQuestions.slice(0, 3);
+        } else {
+          reply = `### ${company.name} (${company.ticker})\n\n${trans.chatbotDescription}\n\n• **बाजार पूंजीकरण**: ₹${company.marketCapCr} Cr\n• **P/E**: ${company.pe}x\n• **ROCE**: ${company.roce}%\n• **ROE**: ${company.roe}%\n\n${trans.sampleInvestVerdict}\n\n📌 *${trans.missionStatement}*`;
+          followUps = trans.suggestedQuestions.slice(0, 3);
+        }
+      } else if (lower.includes('beginner') || lower.includes('new to') || lower.includes('start from scratch') || lower.includes('explain like')) {
         reply = `### Welcome to Finance with Artha!\n\nYou never have to feel shy about asking basic questions here. Finance is simply common sense wrapped in accounting vocabulary.\n\nThink of a business like a neighborhood bakery:\n• **Revenue** is the total money collected from selling bread.\n• **Profit** is what remains after buying flour, butter, and paying electricity.\n• **Cash Flow** is the actual bank balance (since some customers buy on credit!).\n• **Market Cap** is how much it would cost to buy the entire bakery today.\n\nWhere would you like to start? We can take it one simple step at a time!`;
         followUps = ['Explain Revenue vs Profit', 'What is Market Cap?', `How does ${shortName} make money?`];
       }
@@ -262,6 +302,7 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <LanguageSelector variant="compact" />
           <VeraActionToolbar
             size="sm"
             onUploadClick={() => {
@@ -552,7 +593,7 @@ export const VeraConversationalChat: React.FC<VeraConversationalChatProps> = ({
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={`Ask about ${shortName}’s financials, valuation, segments…`}
+          placeholder={currentLanguage === 'en' ? `Ask about ${shortName}’s financials, valuation, segments…` : t('chatbotPlaceholder')}
           className="flex-1 px-3.5 py-2 rounded-lg border border-neutral-300 text-xs placeholder:text-neutral-400 focus:outline-hidden focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 font-normal transition-all"
         />
         <button

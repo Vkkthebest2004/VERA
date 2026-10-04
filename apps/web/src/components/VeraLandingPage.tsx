@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
+import { useLanguageStore } from '@/state/languageStore';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
 
 interface VeraLandingPageProps {
   onLaunchTerminal: (companyId?: string) => void;
@@ -109,6 +111,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
   onOpenChat,
   onOpenEvidence,
 }) => {
+  const { t } = useLanguageStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,10 +143,17 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
   return (
     <div className="w-full min-h-screen bg-[#fcfcfd] text-neutral-900 selection:bg-neutral-900 selection:text-white flex flex-col justify-between">
       {/* ─────────────────────────────────────────────────────────────
-          Search-First Institutional Core
+          Top Language Switcher Bar (Supports 20 Indian Languages)
       ────────────────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
-        <div className="w-full max-w-3xl mx-auto text-center space-y-8">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 pt-5 flex items-center justify-end">
+        <LanguageSelector variant="pill" />
+      </div>
+
+      {/* ─────────────────────────────────────────────────────────────
+          Search-First Institutional Core with Mission Statement
+      ────────────────────────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-16">
+        <div className="w-full max-w-3xl mx-auto text-center space-y-6">
           {/* Brand Header */}
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-3">
@@ -153,11 +163,19 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950">
-              Search Indian Equities
+            {/* User Requested Mission Statement */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-100/90 border border-neutral-200/90 text-xs sm:text-sm font-medium text-neutral-800 shadow-2xs max-w-2xl mx-auto">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span className="font-semibold tracking-tight text-neutral-900">
+                {t('missionStatement')}
+              </span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-neutral-950 font-sans">
+              {t('searchTitle')}
             </h1>
             <p className="text-sm sm:text-base text-neutral-600 max-w-lg mx-auto">
-              Analyze audited financial statements, capital efficiency metrics, and official BSE &amp; NSE statutory disclosures.
+              {t('searchSubtitle')}
             </p>
           </div>
 
@@ -180,14 +198,12 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                   setSearchQuery(e.target.value);
                   setIsDropdownOpen(true);
                 }}
-                placeholder="Search for a company (e.g. Reliance, Tata Power, Adani Wilmar)..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full py-4 pl-3 pr-10 text-sm font-medium text-neutral-900 bg-transparent placeholder-neutral-400 focus:outline-hidden"
               />
               {searchQuery && (
                 <button
-                  onClick={() => {
-                    setSearchQuery('');
-                  }}
+                  onClick={() => setSearchQuery('')}
                   className="p-1.5 mr-3 text-neutral-400 hover:text-neutral-700 cursor-pointer"
                   title="Clear search"
                 >
@@ -202,10 +218,12 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                 <div className="px-4 py-2 bg-neutral-50/90 border-b border-neutral-100 flex items-center justify-between text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
                   <span>
                     {searchQuery.trim()
-                      ? `Matching Companies (${filteredResults.length})`
-                      : 'Available Tracked Equities (4)'}
+                      ? `${t('matchingCompanies')} (${filteredResults.length})`
+                      : `${t('availableCompanies')} (4)`}
                   </span>
-                  <span className="font-mono text-[10px] text-neutral-400">Click to Open Terminal</span>
+                  <span className="font-mono text-[10px] text-neutral-400">
+                    {t('clickToOpenTerminal')}
+                  </span>
                 </div>
 
                 {filteredResults.length > 0 ? (
@@ -233,7 +251,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                           )}
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-sm text-neutral-950 group-hover:text-neutral-900">
+                              <span className="font-bold text-sm text-neutral-950 group-hover:text-neutral-900 font-sans">
                                 {c.name}
                               </span>
                               <span className="text-xs font-mono font-medium text-neutral-600 px-1.5 py-0.5 rounded bg-neutral-100 border border-neutral-200">
@@ -241,7 +259,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                               </span>
                               {c.isFullyAudited && (
                                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
-                                  SEBI AUDITED
+                                  {t('sebiAudited')}
                                 </span>
                               )}
                             </div>
@@ -264,7 +282,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                             </span>
                           </div>
                           <div className="text-[11px] text-neutral-500 font-mono mt-0.5">
-                            MCap: ₹{(c.marketCapCr / 1000).toFixed(1)}k Cr &bull; P/E: {c.pe}x
+                            {t('marketCap')}: ₹{(c.marketCapCr / 1000).toFixed(1)}k Cr &bull; {t('peRatio')}: {c.pe}x
                           </div>
                         </div>
                       </div>
@@ -272,7 +290,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
                   </div>
                 ) : (
                   <div className="p-6 text-center text-sm text-neutral-500">
-                    No matching companies found for &ldquo;{searchQuery}&rdquo;.
+                    {t('noMatchingFound')} &ldquo;{searchQuery}&rdquo;.
                   </div>
                 )}
               </div>
@@ -281,7 +299,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
 
           {/* Quick-Access Pills for Available Companies */}
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs pt-1">
-            <span className="text-neutral-400 font-medium mr-1">Available Companies:</span>
+            <span className="text-neutral-400 font-medium mr-1 font-sans">{t('availableCompanies')}:</span>
             {AVAILABLE_COMPANIES.map((c) => (
               <button
                 key={c.id}
@@ -297,8 +315,6 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
               </button>
             ))}
           </div>
-
-
         </div>
       </div>
 
@@ -306,7 +322,7 @@ export const VeraLandingPage: React.FC<VeraLandingPageProps> = ({
           Minimal Footer Note
       ────────────────────────────────────────────────────────────── */}
       <div className="py-4 border-t border-neutral-200/80 bg-white/70 text-center text-xs text-neutral-500 font-mono">
-        VERA 2.0 &bull; SEBI LODR Regulation 30 &amp; 33 Reconciliation Engine &bull; BSE &amp; NSE Verified Data
+        {t('statutoryFooter')}
       </div>
     </div>
   );

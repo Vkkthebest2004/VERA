@@ -163,6 +163,7 @@ export const useChatStore = create<ChatStoreState>((set, get) => ({
             company_id: currentRecord.ticker,
             company_name: currentRecord.name,
             graph_context: graphContext,
+            language: typeof window !== 'undefined' ? localStorage.getItem('vera_selected_indian_language') || 'en' : 'en',
           }),
         });
 

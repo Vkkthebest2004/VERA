@@ -38,7 +38,29 @@ from ..domain.company_profile_repository import CompanyProfileRepository
 from ..domain.intent_taxonomy import IntentTaxonomy
 from ..domain.user_knowledge_adapter import UserKnowledgeAdapter
 
-logger = logging.getLogger("financial_intelligence_engine")
+INDIAN_LANG_METADATA: Dict[str, Dict[str, str]] = {
+    "en": {"name": "English", "native": "English", "hello": "Hello!"},
+    "hi": {"name": "Hindi", "native": "हिन्दी", "hello": "नमस्ते!"},
+    "bn": {"name": "Bengali", "native": "বাংলা", "hello": "নমস্কার!"},
+    "te": {"name": "Telugu", "native": "తెలుగు", "hello": "నమస్కారం!"},
+    "mr": {"name": "Marathi", "native": "मराठी", "hello": "नमस्कार!"},
+    "ta": {"name": "Tamil", "native": "தமிழ்", "hello": "வணக்கம்!"},
+    "gu": {"name": "Gujarati", "native": "ગુજરાતી", "hello": "નમસ્તે!"},
+    "kn": {"name": "Kannada", "native": "ಕನ್ನಡ", "hello": "ನಮಸ್ಕಾರ!"},
+    "ml": {"name": "Malayalam", "native": "മലയാളം", "hello": "നമസ്കാരം!"},
+    "or": {"name": "Odia", "native": "ଓଡ଼ିଆ", "hello": "ନମସ୍କାର!"},
+    "pa": {"name": "Punjabi", "native": "ਪੰਜਾਬੀ", "hello": "ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ!"},
+    "as": {"name": "Assamese", "native": "অসমীয়া", "hello": "নমস্কাৰ!"},
+    "mai": {"name": "Maithili", "native": "मैथिली", "hello": "प्रणाम!"},
+    "sa": {"name": "Sanskrit", "native": "संस्कृतम्", "hello": "नमो नमः!"},
+    "ur": {"name": "Urdu", "native": "اردو", "hello": "آداب!"},
+    "bho": {"name": "Bhojpuri", "native": "भोजपुरी", "hello": "प्रणाम!"},
+    "ks": {"name": "Kashmiri", "native": "कॉशुर", "hello": "سلام!"},
+    "kok": {"name": "Konkani", "native": "कोंकणी", "hello": "नमस्कार!"},
+    "sd": {"name": "Sindhi", "native": "सिन्धी", "hello": "سلام!"},
+    "ne": {"name": "Nepali", "native": "नेपाली", "hello": "नमस्ते!"},
+    "sat": {"name": "Santhali", "native": "संथाली", "hello": "ᱡᱚᱦᱟᱨ!"},
+}
 
 
 class FinancialIntelligenceEngine:
@@ -54,6 +76,7 @@ class FinancialIntelligenceEngine:
         self._filings_repo = filings_repo
         self.ollama_url = ollama_url
         self._data_gatherer = None
+        self._active_target_language = "en"
 
     @property
     def filings_repo(self):
@@ -142,12 +165,26 @@ class FinancialIntelligenceEngine:
         Dynamically synthesizes a fresh, natural, non-canned response using the local LLM.
         If Ollama is offline or times out, gracefully returns fallback_text.
         """
+        target_lang = getattr(self, "_active_target_language", "en") or "en"
+        lang_meta = INDIAN_LANG_METADATA.get(target_lang.lower(), {"name": "English", "native": "English"})
+
+        if target_lang.lower() != "en":
+            lang_instruction = (
+                f"You MUST write your entire response fluently in {lang_meta['name']} ({lang_meta['native']}) script. "
+                f"Use accurate native financial vocabulary (e.g., पूँजी, लाभ, राजस्व, ऋण, मूल्य निर्धारण, लाभांश). "
+                "Ensure that numbers, percentages (%), and currency symbols (₹) remain exact. "
+                "SEBI and statutory citations should remain preserved. "
+            )
+        elif language == "hinglish":
+            lang_instruction = "Write in natural conversational Hinglish using English alphabet (e.g. 'Reliance ne latest quarter mein ₹23,196 Crore profit report kiya...'). "
+        else:
+            lang_instruction = "Write in fluent, approachable English. "
+
         system_prompt = (
             "You are Artha, the conversational financial intelligence and financial literacy assistant on VERA. "
             "You behave as an exceptionally knowledgeable financial mentor and patient tutor. "
-            f"Language: {language}. "
-            + ("Write in natural conversational Hinglish using English alphabet (e.g. 'Reliance ne latest quarter mein ₹23,196 Crore profit report kiya...'). " if language == "hinglish" else "Write in fluent, approachable English. ")
-            + f"User Level: {user_level}. "
+            f"{lang_instruction}"
+            f"User Level: {user_level}. "
             + ("Explain in simple everyday terms with analogies. Avoid jargon without explaining it. " if user_level == "beginner" else "Provide rigorous, professional analytical depth. ")
             + "Strict Factuality Invariant: Use the EXACT figures provided in the verified facts. Do not invent or alter any numbers. "
             "Never give blind buy/sell commands or guaranteed hype (no 'sure-shot', 'multibagger', 'guaranteed'). "
@@ -208,6 +245,7 @@ class FinancialIntelligenceEngine:
         active_company_name: Optional[str] = "Reliance Industries Ltd",
         history: Optional[List[Dict[str, str]]] = None,
         memory_context: Optional[str] = None,
+        target_language: Optional[str] = "en",
     ) -> Dict[str, Any]:
         """
         Processes any user query according to Section 58 response generation architecture:
@@ -219,6 +257,7 @@ class FinancialIntelligenceEngine:
         6. Synthesize fresh conversational response via LLM (with fallback to adapter)
         7. Produce structured InternalResponseObject
         """
+        self._active_target_language = target_language or "en"
         self._active_memory_context = memory_context or ""
         clean_q = query.strip()
         intents = IntentTaxonomy.classify_intents(clean_q)
@@ -960,6 +999,7 @@ class FinancialIntelligenceEngine:
         follow_ups: List[str],
     ) -> Dict[str, Any]:
         """Encapsulates response conforming to InternalResponseObject and ChatResponse."""
+        active_lang = getattr(self, "_active_target_language", language) or language
         return {
             "verdict": None,
             "raw_response": resp_text,
@@ -968,7 +1008,7 @@ class FinancialIntelligenceEngine:
             "model_used": "Artha Financial Intelligence",
             "intent": intents[0] if intents else "COMPANY_OVERVIEW",
             "user_level": user_level,
-            "language": language,
+            "language": active_lang,
             "market_intelligence": {},
             "citations": [
                 {"title": f"{entity_name} Reg 33 / Audited Financial Disclosures", "source": "BSE & NSE India", "url": "https://www.bseindia.com"}

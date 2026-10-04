@@ -28,6 +28,7 @@ class ChatRequest(BaseModel):
     graph_context: Optional[Dict[str, Any]] = Field(None, description="Active chart context")
     history: Optional[List[Dict[str, str]]] = Field(None, description="Recent conversation turns")
     conversation_id: Optional[str] = Field(None, description="Active Supabase conversation UUID")
+    language: Optional[str] = Field("en", description="Target language code (e.g. en, hi, ta, te, bn, mr, gu, etc.)")
 
 
 class ChatResponse(BaseModel):
@@ -104,13 +105,14 @@ async def vera_chat_endpoint(
         except Exception as e:
             logger.warning(f"Failed to persist user message: {e}")
 
-    # 4. Process through the central Financial Intelligence Engine with memory
+    # 4. Process through the central Financial Intelligence Engine with memory and Indian language adaptation
     res = financial_engine.process_query(
         query=msg,
         active_company_id=cid,
         active_company_name=entity,
         history=history,
         memory_context=formatted_memory,
+        target_language=payload.language or "en",
     )
 
     raw_response = res.get("raw_response", "")

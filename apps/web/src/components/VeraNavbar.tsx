@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { COMPANIES, CompanyData } from '@/data/mockCompanies';
 import { VeraActionToolbar } from '@/components/ui/VeraActionToolbar';
+import { useLanguageStore } from '@/state/languageStore';
+import { LanguageSelector } from '@/components/ui/LanguageSelector';
 
 interface VeraNavbarProps {
   currentView: 'landing' | 'visualizer' | 'company' | 'watchlist' | 'raw_ingestion' | 'bento';
@@ -44,6 +46,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
   activeDrawerMode,
   watchlistCount,
 }) => {
+  const { t } = useLanguageStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
@@ -88,7 +91,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
           </button>
 
           {/* Primary Nav Menu: OVERVIEW, TERMINAL, SCREENS, VISUALIZER, TOOLS */}
-          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700 h-14">
+          <nav className="hidden md:flex items-center gap-6 text-[13px] font-medium text-neutral-700 h-14 font-sans">
             <button
               onClick={() => onViewChange('landing')}
               className={`h-full flex items-center hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold cursor-pointer ${
@@ -97,7 +100,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   : 'text-neutral-600'
               }`}
             >
-              OVERVIEW
+              {t('navOverview')}
             </button>
 
             <button
@@ -108,7 +111,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   : 'text-neutral-600'
               }`}
             >
-              TERMINAL
+              {t('navTerminal')}
             </button>
 
             <button
@@ -119,7 +122,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   : 'text-neutral-600'
               }`}
             >
-              SCREENS
+              {t('navScreens')}
             </button>
 
             <button
@@ -131,7 +134,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-neutral-800" />
-              <span>VISUALIZER</span>
+              <span>{t('navVisualizer')}</span>
             </button>
 
             <div className="relative">
@@ -139,7 +142,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                 onClick={() => setIsToolsOpen(!isToolsOpen)}
                 className="hover:text-neutral-950 transition-colors uppercase tracking-wider font-semibold text-neutral-600 flex items-center gap-1"
               >
-                <span>TOOLS</span>
+                <span>{t('navTools')}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-neutral-500" />
               </button>
 
@@ -287,6 +290,9 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
             )}
           </div>
 
+          {/* 20 Indian Languages Selector */}
+          <LanguageSelector variant="navbar" />
+
           {/* User Profile Pill matching Screener.in */}
           <div className="relative">
             <button
@@ -323,7 +329,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
                 >
                   <MessageSquare className="w-3.5 h-3.5 text-neutral-900" />
-                  <span>✦ Artha Copilot</span>
+                  <span>{t('arthaCopilot')}</span>
                 </button>
                 <button
                   onClick={() => {
@@ -334,7 +340,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
                   className="w-full px-3 py-1.5 text-left text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-neutral-900" />
-                  <span>Evidence</span>
+                  <span>{t('navEvidenceTracker')}</span>
                 </button>
               </div>
             )}
@@ -370,7 +376,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               title="Chat with Artha"
             >
               <Sparkles className="w-3.5 h-3.5 text-neutral-300" />
-              <span>✦ Artha</span>
+              <span>{t('arthaCopilot')}</span>
             </button>
 
             {/* OPTION 2: Statutory Evidence Tracker */}
@@ -387,7 +393,7 @@ export const VeraNavbar: React.FC<VeraNavbarProps> = ({
               title="Audit Viral Rumors & Verify SEBI LODR 30 Filings"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-neutral-700" />
-              <span className="hidden sm:inline">Evidence Tracker</span>
+              <span className="hidden sm:inline">{t('navEvidenceTracker')}</span>
               <span className="sm:hidden">Evidence</span>
             </button>
           </div>
